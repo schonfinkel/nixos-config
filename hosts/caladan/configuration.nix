@@ -10,6 +10,8 @@
       ./hardware-configuration.nix
 
       ../../services/localization.nix
+
+      ../../services/hyprland.nix
       # Virtualisation
       ../../virtualisation/docker.nix
     ];
@@ -65,6 +67,9 @@
   time.timeZone = "America/Fortaleza";
 
   # GPU Config
+  # Enable the X11 windowing system.
+  services.xserver.enable = true;
+
   hardware.nvidia = {
     # Use the NVidia open source kernel module
     # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus 
@@ -75,7 +80,12 @@
     nvidiaSettings = true;
 
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    # package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = config.boot.kernelPackages.nvidiaPackages.beta;
+  };
+
+  services.displayManager = {
+    sddm.enable = true;
   };
 
   services.xserver = {
@@ -83,21 +93,40 @@
     dpi = 180;
   };
 
-  # hyprland setup
-  #programs.hyprland = {
-  #  enable = true;
-  #  # set the flake package
-  #  package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-  #  # make sure to also set the portal package, so that they are in sync
-  #  portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-  #};
-
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
+  # Styling Options
+  stylix = {
+    enable = true;
+    image = ../../wallpapers/nixos-catppuccin-mocha.png;
+    polarity = "dark";
+    opacity.terminal = 0.9;
+    #cursor.package = pkgs.bibata-cursors;
+    #cursor.name = "Bibata-Modern-Ice";
+    cursor.size = 24;
+    fonts = {
+    #  monospace = {
+    #    package = pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; };
+    #    name = "JetBrainsMono Nerd Font Mono";
+    #  };
+    #  sansSerif = {
+    #    package = pkgs.montserrat;
+    #    name = "Montserrat";
+    #  };
+    #  serif = {
+    #    package = pkgs.montserrat;
+    #    name = "Montserrat";
+    #  };
+      sizes = {
+        applications = 16;
+        terminal = 16;
+        desktop = 14;
+        popups = 12;
+      };
+    };
+  };
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  #services.xserver.displayManager.gdm.enable = true;
+  #services.xserver.desktopManager.gnome.enable = true;
 
   # Configure keymap in X11
   services.xserver = {

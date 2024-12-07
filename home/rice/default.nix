@@ -7,6 +7,10 @@
       #(import ./alacritty.nix { inherit pkgs config; })
     ];
 
+  stylix.targets.waybar.enable = true;
+  stylix.targets.wofi.enable = true;
+  stylix.targets.hyprland.enable = false;
+
   home.packages = with pkgs; [
   ];
 }

@@ -10,6 +10,7 @@
       ../../home/common.nix
       ../../home/editors.nix
       ../../home/emacs.nix
+      ../../home/hyprland.nix
       ../../home/gaming.nix
       ../../home/ranger.nix
       ../../home/rice

@@ -31,7 +31,6 @@ in
       };
 
       "workbench.tree.indent" = 15;
-      "workbench.colorTheme" = "Default Dark Modern";
 
       "terminal.integrated.tabs.enabled" = true;
 

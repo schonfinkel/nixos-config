@@ -20,10 +20,12 @@
 
     hyprland.url = "github:hyprwm/Hyprland";
 
+    stylix.url = "github:danth/stylix";
+
     hosts.url = "github:StevenBlack/hosts";
   };
 
-  outputs = { self, impermanence, home, hosts, nixpkgs, ... }@inputs:
+  outputs = { self, impermanence, home, hosts, stylix, nixpkgs, ... }@inputs:
   let
     lib = nixpkgs.lib;
 
@@ -39,6 +41,7 @@
           ./fonts.nix
           ./hosts/caladan/configuration.nix
           ./overlays
+          stylix.nixosModules.stylix
           hosts.nixosModule {
             networking.stevenBlackHosts = {
               enable = true;
