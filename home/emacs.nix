@@ -77,6 +77,7 @@
         # Notifications
         alert
         # Org
+        citeproc
         helm-org-rifle
         org-appear
         org-books
@@ -88,8 +89,6 @@
         org-roam-ui
         org-superstar
         org-tree-slide
-        # Other
-        citeproc
       ]));
   };
 
