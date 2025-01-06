@@ -4,6 +4,7 @@
   (setq org-roam-v2-ack t)
   :custom
   (org-roam-directory (file-truename "~/Code/Personal/schonfinkel.github.io/notes"))
+  (org-roam-db-location (file-truename "~/Code/Personal/schonfinkel.github.io/notes/org-roam.db"))
   (org-roam-completion-everywhere t)
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)

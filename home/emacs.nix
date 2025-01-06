@@ -89,6 +89,9 @@
         org-roam-ui
         org-superstar
         org-tree-slide
+        # For org-publish
+        htmlize
+        ox-rss
       ]));
   };
 
