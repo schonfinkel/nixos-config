@@ -91,12 +91,4 @@
       };
     };
   };
-
-  templates = {
-    # nix flake init -t github:schonfinkel/nixos-config#gleam-app
-    gleam-app = {
-      path = ./templates/gleam-app;
-      description = "A template for webdev with gleam + postgres";
-    };
-  };
 }
