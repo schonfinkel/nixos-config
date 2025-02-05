@@ -23,8 +23,8 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  #boot.kernelPackages = pkgs.linuxPackages_6_11;
+  #boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_6_12;
 
   # https://github.com/nix-community/nixos-generators?tab=readme-ov-file#cross-compiling
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
@@ -91,11 +91,14 @@
     LIBVA_DRIVER_NAME = "nvidia"; 
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     NVD_BACKEND = "direct";
-    #ELECTRON_OZONE_PLATFORM_HINT = "auto";
+    #NIXOS_OZONE_WL = "1";
+    #MOZ_ENABLE_WAYLAND = "1";
   };
 
   services.displayManager = {
-    sddm.enable = true;
+    sddm = {
+      enable = true;
+    };
   };
 
   services.xserver = {
