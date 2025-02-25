@@ -30,6 +30,14 @@
     lib = nixpkgs.lib;
 
     system = "x86_64-linux";
+    pkgs = import nixpkgs {
+      system = "${system}"; 
+      config= {
+        allowUnfree=true;
+        allowUnfreePredicate = _: true;
+        allowBroken = false;
+      };
+    };
   in
   {
     nixosConfigurations = {

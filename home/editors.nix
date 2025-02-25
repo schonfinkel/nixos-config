@@ -16,7 +16,7 @@ in
     enable = true;
     # package = pkgs.vscodium;
     package = pkgs.vscode-fhs;
-    userSettings = {
+    profiles.default.userSettings = {
       "update.mode" = "none";
 
       "editor.formatOnSave" = false;
@@ -59,7 +59,7 @@ in
       };
     };
 
-    extensions = with pkgs.vscode-extensions; [
+    profiles.default.extensions = with pkgs.vscode-extensions; [
       # .NET
       ms-dotnettools.csharp
       ionide.ionide-fsharp
