@@ -19,8 +19,6 @@ end
 vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", { expr = true })
 vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", { expr = true })
 vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
--- Autoformat on save
-vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
 
 -- Setup
 local lspconfig = require('lspconfig')
