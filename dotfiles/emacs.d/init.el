@@ -34,10 +34,10 @@
       backup-by-copying t)  ;; Copy all files, don't rename them.
 
 ;; Extra settings
-(load-file (file-truename "~/.emacs.d/edit.el"))
-(load-file (file-truename "~/.emacs.d/evil.el"))
-(load-file (file-truename "~/.emacs.d/git.el"))
-(load-file (file-truename "~/.emacs.d/ide.el"))
-(load-file (file-truename "~/.emacs.d/org.el"))
-(load-file (file-truename "~/.emacs.d/roam.el"))
-(load-file (file-truename "~/.emacs.d/ui.el"))
+(load-file "~/.emacs.d/edit.el")
+(load-file "~/.emacs.d/evil.el")
+(load-file "~/.emacs.d/git.el")
+(load-file "~/.emacs.d/ide.el")
+(load-file "~/.emacs.d/org.el")
+(load-file "~/.emacs.d/roam.el")
+(load-file "~/.emacs.d/ui.el")
