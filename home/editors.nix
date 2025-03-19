@@ -16,9 +16,11 @@ in
     enable = true;
     # package = pkgs.vscodium;
     package = pkgs.vscode-fhs;
+  
     profiles.default.userSettings = {
       "update.mode" = "none";
 
+      "editor"."fontFamily" = "Jetbrains Mono";
       "editor.formatOnSave" = false;
       "editor.linkedEditing" = true;
       "editor.rulers" = [ 80 120 ];
@@ -82,7 +84,6 @@ in
     ];
   };
 
-  programs.vscode.userSettings.editor.fontFamily = "Jetbrains Mono";
   home.packages = with pkgs; [ jetbrains-mono ];
 }
 

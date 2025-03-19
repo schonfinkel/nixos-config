@@ -7,8 +7,8 @@
     #base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
     polarity = "dark";
     opacity.terminal = 0.9;
-    #cursor.package = pkgs.bibata-cursors;
-    #cursor.name = "Bibata-Modern-Ice";
+    cursor.package = pkgs.bibata-cursors;
+    cursor.name = "Bibata-Modern-Ice";
     cursor.size = 24;
     override = {
       # catppuccin-mocha: but less blue in the background

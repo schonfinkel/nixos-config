@@ -106,9 +106,14 @@
     # Set some Emacs GUI properties in the .Xresources file because they are
     # expensive to set during initialization in Emacs lisp. This saves about
     # half a second on startup time. See the following link for more options:
-    # https://www.gnu.org/software/emacs/manual/html_node/emacs/Fonts.html#Fonts
+    # https://www.gnu.org/software/emacs/manual/html_node/emacs/Table-of-Resources.html
     "Emacs.menuBar" = false;
     "Emacs.toolBar" = false;
     "Emacs.verticalScrollBars" = false;
+    "Emacs.internalBorder" = 0;
+    "Emacs.borderWidth" = 0;
+    "Emacs.leftFringe" = 0;
+    "Emacs.rightFringe" = 0;
+    "Emacs.fullscreen" = "fullheight";
   };
 }
