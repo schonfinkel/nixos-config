@@ -65,9 +65,6 @@
 
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
-  time.timeZone = "America/Fortaleza";
-
   # GPU Config
   # Enable the X11 windowing system.
   services.xserver.enable = true;

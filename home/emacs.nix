@@ -1,5 +1,12 @@
 { pkgs, home, ... }:
 
+let
+  evilEtAll = with pkgs.emacsPackages; [
+    evil
+    evil-collection
+    treemacs-evil
+  ];
+in
 {
   # Treemacs requires python3
   home.packages = with pkgs; [
@@ -57,13 +64,10 @@
         auto-dim-other-buffers
         atom-one-dark-theme
         command-log-mode
-        evil
-        evil-collection
         flycheck
         helpful
         projectile
         treemacs
-        treemacs-evil
         treemacs-projectile
         treemacs-all-the-icons
         treemacs-magit
@@ -92,7 +96,7 @@
         # For org-publish
         htmlize
         ox-rss
-      ]));
+      ] ++ evilEtAll));
   };
 
   home.file = {
