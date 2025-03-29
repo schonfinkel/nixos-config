@@ -50,6 +50,7 @@ in
         p.make
         p.markdown
         p.nix
+        p.ocaml
         p.proto
         p.scheme
         p.sql

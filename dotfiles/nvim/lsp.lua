@@ -68,15 +68,6 @@ lspconfig.gleam.setup({
     --capabilities = capabilities
 })
 
--- Just
-require("nvim-treesitter.configs").setup({
-    highlight = {
-        enable = true,
-        disable = { "just" },
-    },
-    indent = { enable = true },
-})
-
 -- Nix
 lspconfig.nil_ls.setup({
     capabilities = capabilities,
@@ -87,6 +78,13 @@ lspconfig.nil_ls.setup({
             },
         },
     },
+})
+
+-- Ocaml
+lspconfig.ocamllsp.setup({
+    cmd = { "ocamllsp" },
+    filetypes = { "ocaml", "ocaml.menhir", "ocaml.interface", "ocaml.ocamllex", "reason", "dune" },
+    capabilities = capabilities
 })
 
 -- Terraform

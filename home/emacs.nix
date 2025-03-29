@@ -1,10 +1,42 @@
 { pkgs, home, ... }:
 
 let
-  evilEtAll = with pkgs.emacsPackages; [
+  programming = with pkgs.emacsPackages; [
+    dockerfile-mode
+    elpy
+    eshell-syntax-highlighting
+    fsharp-mode
+    graphviz-dot-mode
+    # haskell-mode
+    # Latex
+    org-fragtog
+    nix-mode
+    sqlformat
+  ];
+  evilEtAl = with pkgs.emacsPackages; [
     evil
     evil-collection
     treemacs-evil
+  ];
+  orgmode = with pkgs.emacsPackages; [
+    citeproc
+    helm-org-rifle
+    org-appear
+    org-books
+    org-drill
+    org-elp
+    org-pdftools
+    org-ql
+    org-roam
+    org-roam-ui
+    org-superstar
+    org-tree-slide
+  ];
+  treemacsEtAl = with pkgs.emacsPackages; [
+    treemacs
+    treemacs-projectile
+    treemacs-all-the-icons
+    treemacs-magit
   ];
 in
 {
@@ -37,18 +69,6 @@ in
         # Formatting
         format-all
         # Deveopment
-        ## Languages
-        dockerfile-mode
-        elpy
-        eshell-syntax-highlighting
-        fsharp-mode
-        # graphviz
-        graphviz-dot-mode
-        # haskell-mode
-        nix-mode
-        sqlformat
-        # Latex
-        org-fragtog
         ## Tooling
         direnv
         lsp-mode
@@ -67,10 +87,6 @@ in
         flycheck
         helpful
         projectile
-        treemacs
-        treemacs-projectile
-        treemacs-all-the-icons
-        treemacs-magit
         swiper
         rainbow-delimiters
         #rg
@@ -80,23 +96,11 @@ in
         which-key
         # Notifications
         alert
-        # Org
-        citeproc
-        helm-org-rifle
-        org-appear
-        org-books
-        org-drill
-        org-elp
-        org-pdftools
-        org-ql
-        org-roam
-        org-roam-ui
-        org-superstar
-        org-tree-slide
         # For org-publish
         htmlize
         ox-rss
-      ] ++ evilEtAll));
+      ]
+      ++ evilEtAl ++ orgmode ++ programming ++ treemacsEtAl));
   };
 
   home.file = {
