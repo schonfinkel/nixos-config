@@ -31,6 +31,9 @@ let
     org-roam-ui
     org-superstar
     org-tree-slide
+    # For org-publish
+    htmlize
+    ox-rss
   ];
   treemacsEtAl = with pkgs.emacsPackages; [
     treemacs
@@ -38,6 +41,7 @@ let
     treemacs-all-the-icons
     treemacs-magit
   ];
+  emacsExtras = evilEtAl ++ orgmode ++ programming ++ treemacsEtAl;
 in
 {
   # Treemacs requires python3
@@ -89,18 +93,15 @@ in
         projectile
         swiper
         rainbow-delimiters
-        #rg
+        rg
         undo-tree
         vimrc-mode
         web-mode
         which-key
         # Notifications
         alert
-        # For org-publish
-        htmlize
-        ox-rss
       ]
-      ++ evilEtAl ++ orgmode ++ programming ++ treemacsEtAl));
+      ++ emacsExtras));
   };
 
   home.file = {
