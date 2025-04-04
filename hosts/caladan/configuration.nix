@@ -23,8 +23,8 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
-  #boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelPackages = pkgs.linuxPackages_6_12;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  #boot.kernelPackages = pkgs.linuxPackages_6_12;
 
   # https://github.com/nix-community/nixos-generators?tab=readme-ov-file#cross-compiling
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];

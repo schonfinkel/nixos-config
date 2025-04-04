@@ -6,12 +6,17 @@ let
     elpy
     eshell-syntax-highlighting
     fsharp-mode
+    # Diagrams
     graphviz-dot-mode
+    plantuml-mode
     # haskell-mode
     # Latex
     org-fragtog
     nix-mode
     sqlformat
+    # Ops
+    terraform-mode
+    yaml-mode
   ];
   evilEtAl = with pkgs.emacsPackages; [
     evil
@@ -47,6 +52,7 @@ in
   # Treemacs requires python3
   home.packages = with pkgs; [
     emacs-all-the-icons-fonts
+    plantuml
     python3
   ];
 
@@ -78,10 +84,6 @@ in
         lsp-mode
         lsp-ui
         magit
-        ## Ops
-        plantuml-mode
-        terraform-mode
-        yaml-mode
         # Email
         #notmuch
         # Extra
