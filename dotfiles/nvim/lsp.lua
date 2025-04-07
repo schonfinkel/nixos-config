@@ -22,29 +22,80 @@ vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
 
 -- Setup
 local lspconfig = require('lspconfig')
-
--- Set up lspconfig.
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+-- On Attach customizations
+local opts = { noremap = true, silent = true }
+vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, opts)
+vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer.
+local on_attach = function (client, bufnr)
+	if client.name == "rust_analyzer" then
+		-- WARNING: This feature requires Neovim v0.10+
+		vim.lsp.inlay_hint.enable()
+	end
+
+	-- See `:help vim.lsp.*` for documentation on any of the below functions
+	local bufopts = { noremap = true, silent = true, buffer = bufnr }
+
+    -- Displays hover information about the symbol under the cursor
+	vim.keymap.set("n", "K", vim.lsp.buf.declaration, bufopts)
+
+    -- Jump to declaration
+	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
+
+    -- Jump to the definition
+	vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
+
+    -- Jumps to the definition of the type symbol
+    vim.keymap.set("n", "go", vim.lsp.buf.type_definition, bufopts)
+
+    -- Lists all the implementations for the symbol under the cursor
+	vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
+
+    -- Displays a function's signature information
+	vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, bufopts)
+
+    -- Lists all the references
+    vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
+
+    -- Renames all references to the symbol under the cursor
+    vim.keymap.set("n", "<F2>", vim.lsp.buf.rename, bufopts)
+
+    -- Selects a code action available at the current cursor position
+    vim.keymap.set("n", "<F4>", vim.lsp.buf.code_action, bufopts)
+
+    -- Show diagnostics in a floating window
+    vim.keymap.set("n", "df", vim.diagnostic.open_float, bufopts)
+
+	vim.keymap.set("n", "gF", function()
+		require("conform").format({ async = true, lsp_fallback = true })
+	end, bufopts)
+end
 
 -- Elixir
 -- Every Elixir devenv needs to have this envar defined
 local elixir_ls_path = os.getenv("ELIXIR_LS_PATH")
 lspconfig.elixirls.setup {
-    cmd = { elixir_ls_path },
-    filetypes = { "elixir", "eelixir", "heex", "surface" },
+    on_attach = on_attach,
     capabilities = capabilities,
+    cmd = { elixir_ls_path },
+    -- filetypes = { "elixir", "eelixir", "heex", "surface" },
     -- root_dir = root_pattern("mix.exs", ".git") or vim.loop.os_homedir(),
 }
 
 -- Erlang
 require 'lspconfig'.erlangls.setup {
+    on_attach = on_attach,
     capabilities = capabilities,
 }
 
 -- F#
 require("ionide").setup {
     autostart = true,
-    --on_attach = on_attach,
+    on_attach = on_attach,
     capabilities = capabilities,
 }
 
@@ -63,13 +114,15 @@ vim.g["fsharp#fsi_focus_on_send"] = 1
 
 -- Gleam
 lspconfig.gleam.setup({
-    --cmd = { "gleam", "lsp" },
+    on_attach = on_attach,
+    capabilities = capabilities,
+    cmd = { "gleam", "lsp" },
     --filetypes = { "gleam" },
-    --capabilities = capabilities
 })
 
 -- Nix
 lspconfig.nil_ls.setup({
+    on_attach = on_attach,
     capabilities = capabilities,
     settings = {
         ['nil'] = {
@@ -82,18 +135,31 @@ lspconfig.nil_ls.setup({
 
 -- Ocaml
 lspconfig.ocamllsp.setup({
-    cmd = { "ocamllsp" },
-    filetypes = { "ocaml", "ocaml.menhir", "ocaml.interface", "ocaml.ocamllex", "reason", "dune" },
-    capabilities = capabilities
+    on_attach = on_attach,
+    capabilities = capabilities,
+    --cmd = { "ocamllsp" },
+    --filetypes = {
+    --    "ml",
+    --    "ocaml",
+    --    "ocaml.menhir",
+    --    "ocaml.interface",
+    --    "ocaml.ocamllex",
+    --    "reason",
+    --    "dune"
+    --}
 })
 
 -- Terraform
-require 'lspconfig'.terraformls.setup {}
+require 'lspconfig'.terraformls.setup {
+    on_attach = on_attach,
+    capabilities = capabilities
+}
 vim.g.terraform_fmt_on_save = 1
 vim.g.terraform_align = 1
 
 -- Lua
 require 'lspconfig'.lua_ls.setup {
+    on_attach = on_attach,
     capabilities = capabilities,
     settings = {
         Lua = {
@@ -117,168 +183,3 @@ require 'lspconfig'.lua_ls.setup {
     },
 }
 
------------------------
--- Autocompletion setup
-local cmp = require 'cmp'
-
-cmp.setup({
-    snippet = {
-        -- REQUIRED - you must specify a snippet engine
-        expand = function(args)
-            require('luasnip').lsp_expand(args.body)
-        end,
-    },
-    window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-    },
-    formatting = {
-        fields = { 'menu', 'abbr', 'kind' },
-        format = function(entry, item)
-            local menu_icon = {
-                nvim_lsp = 'λ',
-                luasnip = '⋗',
-                buffer = 'Ω',
-                path = '🖫',
-            }
-
-            item.menu = menu_icon[entry.source.name]
-            return item
-        end,
-    },
-    mapping = {
-        ['<Up>'] = cmp.mapping.select_prev_item(select_opts),
-        ['<Down>'] = cmp.mapping.select_next_item(select_opts),
-
-        ['<C-p>'] = cmp.mapping.select_prev_item(select_opts),
-        ['<C-n>'] = cmp.mapping.select_next_item(select_opts),
-
-        ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-        ['<C-d>'] = cmp.mapping.scroll_docs(4),
-
-        ['<C-e>'] = cmp.mapping.abort(),
-        ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-        ['<CR>'] = cmp.mapping.confirm({ select = false }),
-
-        ['<C-f>'] = cmp.mapping(function(fallback)
-            if luasnip.jumpable(1) then
-                luasnip.jump(1)
-            else
-                fallback()
-            end
-        end, { 'i', 's' }
-        ),
-        ['<C-b>'] = cmp.mapping(function(fallback)
-            if luasnip.jumpable(-1) then
-                luasnip.jump(-1)
-            else
-                fallback()
-            end
-        end, { 'i', 's' }
-        ),
-        ['<Tab>'] = cmp.mapping(function(fallback)
-            local col = vim.fn.col('.') - 1
-
-            if cmp.visible() then
-                cmp.select_next_item(select_opts)
-            elseif col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
-                fallback()
-            else
-                cmp.complete()
-            end
-        end, { 'i', 's' }
-        ),
-        ['<S-Tab>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-                cmp.select_prev_item(select_opts)
-            else
-                fallback()
-            end
-        end, { 'i', 's' }
-        ),
-    },
-    sources = cmp.config.sources({
-        { name = 'nvim_lsp' },
-        { name = 'luasnip' },
-        { name = 'treesitter' }
-    }, {
-        { name = 'buffer' },
-    })
-}
-)
-
--- Set configuration for specific filetype.
-cmp.setup.filetype('gitcommit', {
-    sources = cmp.config.sources({
-        { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
-    }, {
-        { name = 'buffer' },
-    })
-})
-
--- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline({ '/', '?' }, {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = {
-        { name = 'buffer' }
-    }
-})
-
--- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline(':', {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = cmp.config.sources({
-        { name = 'path' }
-    }, {
-        { name = 'cmdline' }
-    })
-}
-)
-
-
--- Keybindings
-vim.api.nvim_create_autocmd('LspAttach', {
-    desc = 'LSP actions',
-    callback = function()
-        local bufmap = function(mode, lhs, rhs)
-            local opts = { buffer = true }
-            vim.keymap.set(mode, lhs, rhs, opts)
-        end
-
-        -- Displays hover information about the symbol under the cursor
-        bufmap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>')
-
-        -- Jump to the definition
-        bufmap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>')
-
-        -- Jump to declaration
-        bufmap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>')
-
-        -- Lists all the implementations for the symbol under the cursor
-        bufmap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>')
-
-        -- Jumps to the definition of the type symbol
-        bufmap('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>')
-
-        -- Lists all the references
-        bufmap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>')
-
-        -- Displays a function's signature information
-        bufmap('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>')
-
-        -- Renames all references to the symbol under the cursor
-        bufmap('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>')
-
-        -- Selects a code action available at the current cursor position
-        bufmap('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>')
-
-        -- Show diagnostics in a floating window
-        bufmap('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>')
-
-        -- Move to the previous diagnostic
-        bufmap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>')
-
-        -- Move to the next diagnostic
-        bufmap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>')
-    end
-})

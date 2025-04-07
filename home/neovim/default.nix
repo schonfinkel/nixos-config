@@ -18,6 +18,7 @@ in
       luafile ${dotfiles "settings"}
       luafile ${dotfiles "line"}
       luafile ${dotfiles "lsp"}
+      luafile ${dotfiles "cmp"}
       luafile ${dotfiles "tabs"}
       luafile ${dotfiles "git"}
       luafile ${dotfiles "files"}

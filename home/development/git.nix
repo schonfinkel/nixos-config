@@ -43,9 +43,11 @@ in
       c = "clone";
       ca = "commit --amend";
       can = "commit --amend --no-edit";
+      cam = "commit --amend -m";
       cm = "commit -m";
       ds = "diff --staged";
       dc = "diff --name-only --diff-filter=U";
+      fixup = "!git log --oneline --decorate @{u}.. | fzy | awk '{ print $1 }' | xargs -I{} git commit --fixup={}";
       fo = "fetch origin";
       lo = "log --oneline";
       ls = "log -S";
@@ -70,6 +72,7 @@ in
     extraConfig = {
       core = {
         editor = "nvim";
+        commentChar = ";";
       };
 
       init = {
