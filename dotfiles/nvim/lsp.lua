@@ -32,6 +32,7 @@ vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer.
 local on_attach = function (client, bufnr)
+    -- Rust-specific configurations
 	if client.name == "rust_analyzer" then
 		-- WARNING: This feature requires Neovim v0.10+
 		vim.lsp.inlay_hint.enable()
@@ -43,14 +44,14 @@ local on_attach = function (client, bufnr)
     -- Displays hover information about the symbol under the cursor
 	vim.keymap.set("n", "K", vim.lsp.buf.declaration, bufopts)
 
-    -- Jump to declaration
-	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
-
     -- Jump to the definition
 	vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
 
+    -- Jump to declaration
+	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
+
     -- Jumps to the definition of the type symbol
-    vim.keymap.set("n", "go", vim.lsp.buf.type_definition, bufopts)
+    vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, bufopts)
 
     -- Lists all the implementations for the symbol under the cursor
 	vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
@@ -61,18 +62,11 @@ local on_attach = function (client, bufnr)
     -- Lists all the references
     vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
 
-    -- Renames all references to the symbol under the cursor
-    vim.keymap.set("n", "<F2>", vim.lsp.buf.rename, bufopts)
-
     -- Selects a code action available at the current cursor position
     vim.keymap.set("n", "<F4>", vim.lsp.buf.code_action, bufopts)
 
     -- Show diagnostics in a floating window
     vim.keymap.set("n", "df", vim.diagnostic.open_float, bufopts)
-
-	vim.keymap.set("n", "gF", function()
-		require("conform").format({ async = true, lsp_fallback = true })
-	end, bufopts)
 end
 
 -- Elixir

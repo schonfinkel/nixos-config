@@ -29,6 +29,7 @@
       vi="nvim";
       vim="nvim";
       sshk="kitty +kitten ssh";
+      ytdl="nix run nixpkgs#yt-dlp --";
     };
     history = {
       size = 5000;
