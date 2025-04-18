@@ -12,6 +12,8 @@
       ../../home/chats.nix
       ../../home/common.nix
       ../../home/editors.nix
+      ../../home/emacs.nix
+      ../../home/hyprland.nix
       ../../home/security.nix
       ../../home/ranger.nix
       ../../home/rice

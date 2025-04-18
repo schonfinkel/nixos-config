@@ -82,6 +82,7 @@
           ./documentation.nix
           ./fonts.nix
           ./hosts/euclid/configuration.nix
+          stylix.nixosModules.stylix
           hosts.nixosModule {
             networking.stevenBlackHosts = {
               enable = true;
