@@ -28,14 +28,13 @@ in
         modules-center = [ "hyprland/workspaces" ];
         modules-left = [
           "custom/startmenu"
-          "hyprland/window"
+          "battery"
           "idle_inhibitor"
           "tray"
         ];
         modules-right = [
           "custom/notification"
           "network"
-          "battery"
           "pulseaudio"
           "cpu"
           "memory"
@@ -80,14 +79,6 @@ in
               weekdays = "<span color='#${config.stylix.base16Scheme.base06}'><b>{}</b></span>";
               today = "<span color='#${config.stylix.base16Scheme.base0A}'><b><u>{}</u></b></span>";
             };
-          };
-        };
-
-        "hyprland/window" = {
-          max-length = 22;
-          separate-outputs = false;
-          rewrite = {
-            "" = "∅";
           };
         };
 
@@ -236,16 +227,16 @@ in
         #workspaces {
           color: #${config.stylix.base16Scheme.base04};
           background: #${config.stylix.base16Scheme.base01};
-          margin: 4px 4px;
-          padding: 5px 5px;
-          border-radius: 16px;
+          margin: 2px 2px;
+          padding: 3px 3px;
+          border-radius: 4px;
         }
 
         #workspaces button {
           font-weight: bold;
-          padding: 0px 5px;
+          padding: 0px 2px;
           margin: 0px 3px;
-          border-radius: 16px;
+          border-radius: 8px;
           color: #${config.stylix.base16Scheme.base04};
           background: #${config.stylix.base16Scheme.base01};
           opacity: 0.5;
@@ -256,12 +247,12 @@ in
           font-weight: bold;
           padding: 0px 5px;
           margin: 0px 3px;
-          border-radius: 16px;
+          border-radius: 4px;
           color: #${config.stylix.base16Scheme.base00};
           background: #${config.stylix.base16Scheme.base07};
           transition: ${betterTransition};
           opacity: 1.0;
-          min-width: 40px;
+          min-width: 20px;
         }
 
         #workspaces button.focused {
@@ -292,7 +283,6 @@ in
           color: #${config.stylix.base16Scheme.base04};
         }
 
-        #window,
         #pulseaudio,
         #network,
         #cpu,
@@ -302,8 +292,8 @@ in
         #idle_inhibitor {
           font-weight: bold;
           margin: 4px 0px;
-          margin-right: 7px;
-          padding: 0px 18px;
+          margin-right: 5px;
+          padding: 0px 12px;
           background: #${config.stylix.base16Scheme.base03};
           color: #${config.stylix.base16Scheme.base00};
           border-radius: 24px 10px 24px 10px;
@@ -312,11 +302,11 @@ in
         #custom-startmenu {
           color: #${config.stylix.base16Scheme.base00};
           background: #${config.stylix.base16Scheme.base05};
-          font-size: 28px;
+          font-size: 22px;
           margin: 0px;
-          margin-right: 7px;
-          padding: 0px 30px 0px 15px;
-          border-radius: 0px 0px 40px 0px;
+          margin-right: 5px;
+          padding: 0px 20px 0px 20px;
+          border-radius: 0px 0px 20px 0px;
         }
 
         #battery,
@@ -337,7 +327,7 @@ in
           color: #${config.stylix.base16Scheme.base00};
           margin: 0px;
           padding: 0px 15px 0px 30px;
-          border-radius: 0px 0px 0px 40px;
+          border-radius: 0px 0px 0px 30px;
         }
       ''
     ];
