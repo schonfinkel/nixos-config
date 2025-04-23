@@ -21,9 +21,11 @@
       directories = [
         ".config/BraveSoftware"
         ".config/Signal"
+        ".config/Slack"
         ".local/share/sddm"
         ".local/share/direnv"
         ".nuget"
+        ".opam"
         "Code"
         "Documents"
         "Downloads"

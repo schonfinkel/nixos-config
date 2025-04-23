@@ -29,12 +29,13 @@ in
         modules-left = [
           "custom/startmenu"
           "battery"
+          "hyprland/language"
           "idle_inhibitor"
           "tray"
         ];
         modules-right = [
           "custom/notification"
-          "network"
+          #"network"
           "pulseaudio"
           "cpu"
           "memory"
@@ -98,6 +99,13 @@ in
         "disk" = {
           format = " {free}";
           tooltip = true;
+        };
+
+        "hyprland/language" = {
+          format = "{}";
+          format-en = "🇺🇸";
+          format-br = "🇧🇷";
+          on-click = "hyprctl switchxkblayout at-translated-set-2-keyboard next";
         };
 
         "network" = {
@@ -310,6 +318,7 @@ in
         }
 
         #battery,
+        #hyprland-language,
         #custom-notification,
         #custom-exit {
           font-weight: bold;

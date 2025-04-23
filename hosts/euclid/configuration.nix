@@ -92,6 +92,11 @@
     videoDrivers = ["intel"];
   };
 
+  hardware.graphics.enable = true;
+  fonts.fontconfig.antialias = true;
+  fonts.fontconfig.hinting.enable = true;
+  #fonts.fontconfig.subpixel.rgba = "rgb";
+
   # Enable CUPS to print documents.
   # services.printing.enable = true;
 
