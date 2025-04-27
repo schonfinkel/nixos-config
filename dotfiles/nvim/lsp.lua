@@ -131,16 +131,17 @@ lspconfig.nil_ls.setup({
 lspconfig.ocamllsp.setup({
     on_attach = on_attach,
     capabilities = capabilities,
-    --cmd = { "ocamllsp" },
-    --filetypes = {
-    --    "ml",
-    --    "ocaml",
-    --    "ocaml.menhir",
-    --    "ocaml.interface",
-    --    "ocaml.ocamllex",
-    --    "reason",
-    --    "dune"
-    --}
+    cmd = { "ocamllsp" },
+    filetypes = {
+        "ml",
+        "mli",
+        "ocaml",
+        "ocaml.menhir",
+        "ocaml.interface",
+        "ocaml.ocamllex",
+        "reason",
+        "dune"
+    }
 })
 
 -- Terraform

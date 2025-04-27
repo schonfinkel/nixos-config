@@ -20,6 +20,7 @@
     users.mbenevides = {
       directories = [
         ".config/BraveSoftware"
+        ".config/discord"
         ".config/Signal"
         ".config/Slack"
         ".local/share/sddm"

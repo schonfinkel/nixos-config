@@ -7,7 +7,6 @@ let
 in
 {
   home.packages = with pkgs; [
-    feh
     mpv
     ncmpcpp
     graphviz

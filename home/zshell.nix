@@ -35,7 +35,7 @@
       size = 5000;
       ignoreDups = true;
     };
-    initExtra = builtins.readFile ../dotfiles/zsh/zshrc;
+    initContent = builtins.readFile ../dotfiles/zsh/zshrc;
   };
 
   programs.starship = {
