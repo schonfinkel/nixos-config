@@ -26,7 +26,6 @@
         ".local/share/sddm"
         ".local/share/direnv"
         ".nuget"
-        ".opam"
         "Code"
         "Documents"
         "Downloads"

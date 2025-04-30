@@ -67,6 +67,8 @@ in
     cmp-nvim-lsp
     cmp-path
     cmp-treesitter
+    # Formatting
+    conform-nvim
   ];
   prv = with private; [ vim-taskjuggler ];
   tooling = with plugins; [

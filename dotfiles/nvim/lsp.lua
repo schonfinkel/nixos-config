@@ -67,7 +67,19 @@ local on_attach = function (client, bufnr)
 
     -- Show diagnostics in a floating window
     vim.keymap.set("n", "df", vim.diagnostic.open_float, bufopts)
+
+    -- Run conform as the code's formatter
+    vim.keymap.set("n", "<space>cf", function()
+        require("conform").format({ async = true, lsp_fallback = true })
+    end, bufopts)
 end
+
+-- Code Formatter
+require("conform").setup({
+  formatters_by_ft = {
+    ocaml = { "ocamlformat" },
+  },
+})
 
 -- Elixir
 -- Every Elixir devenv needs to have this envar defined
@@ -178,3 +190,4 @@ require 'lspconfig'.lua_ls.setup {
     },
 }
 
+-- 

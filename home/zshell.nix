@@ -32,8 +32,7 @@
       ytdl="nix run nixpkgs#yt-dlp --";
     };
     history = {
-      size = 5000;
-      ignoreDups = true;
+      size = 7000;
     };
     initContent = builtins.readFile ../dotfiles/zsh/zshrc;
   };
