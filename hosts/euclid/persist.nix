@@ -21,6 +21,7 @@
       directories = [
         ".config/BraveSoftware"
         ".config/discord"
+        ".config/ngrok"
         ".config/Signal"
         ".config/Slack"
         ".local/share/sddm"
