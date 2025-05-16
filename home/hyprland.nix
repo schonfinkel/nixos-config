@@ -70,7 +70,8 @@ in
           format-alt = "  {%d/%m/%y}";
           tooltip = true;
           tooltip-format = "<tt><big>{calendar}</big></tt>";
-          timezone = "America/Fortaleza";
+          timezone = "America/Cuiaba";
+          #timezone = config.time.timeZone;
           calendar = {
             mode = "month";
             format = {
@@ -222,7 +223,7 @@ in
       ''
         * {
           font-family: JetBrainsMono Nerd Font Mono;
-          font-size: 16px;
+          font-size: 24px;
           border-radius: 0px;
           border: none;
           min-height: 0px;

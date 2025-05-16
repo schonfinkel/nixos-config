@@ -5,5 +5,5 @@
   console.useXkbConfig = true;
 
   # Set your time zone.
-  time.timeZone = "America/Fortaleza";
+  time.timeZone = "America/New_York";
 }

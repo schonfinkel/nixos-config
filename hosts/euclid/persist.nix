@@ -21,11 +21,13 @@
       directories = [
         ".config/BraveSoftware"
         ".config/discord"
+        ".config/gh"
         ".config/ngrok"
         ".config/Signal"
         ".config/Slack"
         ".local/share/sddm"
         ".local/share/direnv"
+        ".local/share/TelegramDesktop"
         ".nuget"
         "Code"
         "Documents"

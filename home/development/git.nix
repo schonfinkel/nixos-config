@@ -15,6 +15,14 @@ in
     git-crypt
   ];
 
+  # Needed for some work stuff
+  programs.gh = {
+    enable = true;
+    settings = {
+      editor = "nvim";
+    };
+  };
+
   programs.git = {
     enable = true;
 
@@ -74,6 +82,8 @@ in
         editor = "nvim";
         commentChar = ";";
       };
+
+      push.autoSetupRemote = true;
 
       init = {
         defaultBranch = "main";

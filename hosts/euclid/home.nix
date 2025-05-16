@@ -14,6 +14,7 @@
       ../../home/editors.nix
       ../../home/emacs.nix
       ../../home/hyprland.nix
+      ../../home/media.nix
       ../../home/security.nix
       ../../home/ranger.nix
       ../../home/rice

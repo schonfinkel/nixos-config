@@ -88,8 +88,6 @@
     LIBVA_DRIVER_NAME = "nvidia"; 
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     NVD_BACKEND = "direct";
-    #NIXOS_OZONE_WL = "1";
-    #MOZ_ENABLE_WAYLAND = "1";
   };
 
   services.displayManager = {
