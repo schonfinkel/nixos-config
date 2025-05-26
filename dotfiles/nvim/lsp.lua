@@ -77,6 +77,7 @@ end
 -- Code Formatter
 require("conform").setup({
   formatters_by_ft = {
+    erlang = { "erlfmt "},
     ocaml = { "ocamlformat" },
   },
 })
@@ -88,7 +89,7 @@ lspconfig.elixirls.setup {
     on_attach = on_attach,
     capabilities = capabilities,
     cmd = { elixir_ls_path },
-    -- filetypes = { "elixir", "eelixir", "heex", "surface" },
+    -- filetypes = { "ex", "elixir", "eelixir", "heex", "surface" },
     -- root_dir = root_pattern("mix.exs", ".git") or vim.loop.os_homedir(),
 }
 
@@ -143,7 +144,7 @@ lspconfig.nil_ls.setup({
 lspconfig.ocamllsp.setup({
     on_attach = on_attach,
     capabilities = capabilities,
-    cmd = { "ocamllsp --fallback-read-dot-merlin" },
+    cmd = { "ocamllsp", "--fallback-read-dot-merlin" },
     filetypes = {
         "dune",
         "ml",
