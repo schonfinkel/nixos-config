@@ -42,19 +42,19 @@ local on_attach = function (client, bufnr)
 	local bufopts = { noremap = true, silent = true, buffer = bufnr }
 
     -- Displays hover information about the symbol under the cursor
-	vim.keymap.set("n", "K", vim.lsp.buf.declaration, bufopts)
+	vim.keymap.set({"n", "v"}, "K", vim.lsp.buf.hover, bufopts)
 
     -- Jump to the definition
-	vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
+	vim.keymap.set({"n", "v"}, "gd", vim.lsp.buf.definition, bufopts)
 
     -- Jump to declaration
-	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
+	vim.keymap.set({"n", "v"}, "gD", vim.lsp.buf.declaration, bufopts)
 
     -- Jumps to the definition of the type symbol
-    vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, bufopts)
+    vim.keymap.set({"n", "v"}, "gt", vim.lsp.buf.type_definition, bufopts)
 
     -- Lists all the implementations for the symbol under the cursor
-	vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
+	vim.keymap.set({"n", "v"}, "gi", vim.lsp.buf.implementation, bufopts)
 
     -- Displays a function's signature information
 	vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, bufopts)
@@ -143,26 +143,20 @@ lspconfig.nil_ls.setup({
 lspconfig.ocamllsp.setup({
     on_attach = on_attach,
     capabilities = capabilities,
-    cmd = { "ocamllsp" },
+    cmd = { "ocamllsp --fallback-read-dot-merlin" },
     filetypes = {
+        "dune",
         "ml",
         "mli",
+        "menhir",
         "ocaml",
         "ocaml.menhir",
         "ocaml.interface",
+        "ocamlinterface",
         "ocaml.ocamllex",
-        "reason",
-        "dune"
+        "reason"
     }
 })
-
--- Terraform
-require 'lspconfig'.terraformls.setup {
-    on_attach = on_attach,
-    capabilities = capabilities
-}
-vim.g.terraform_fmt_on_save = 1
-vim.g.terraform_align = 1
 
 -- Lua
 require 'lspconfig'.lua_ls.setup {
@@ -190,4 +184,11 @@ require 'lspconfig'.lua_ls.setup {
     },
 }
 
--- 
+-- Terraform
+require 'lspconfig'.terraformls.setup {
+    on_attach = on_attach,
+    capabilities = capabilities
+}
+vim.g.terraform_fmt_on_save = 1
+vim.g.terraform_align = 1
+
