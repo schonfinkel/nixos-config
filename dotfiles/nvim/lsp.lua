@@ -31,33 +31,33 @@ vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer.
-local on_attach = function (client, bufnr)
+local on_attach = function(client, bufnr)
     -- Rust-specific configurations
-	if client.name == "rust_analyzer" then
-		-- WARNING: This feature requires Neovim v0.10+
-		vim.lsp.inlay_hint.enable()
-	end
+    if client.name == "rust_analyzer" then
+        -- WARNING: This feature requires Neovim v0.10+
+        vim.lsp.inlay_hint.enable()
+    end
 
-	-- See `:help vim.lsp.*` for documentation on any of the below functions
-	local bufopts = { noremap = true, silent = true, buffer = bufnr }
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    local bufopts = { noremap = true, silent = true, buffer = bufnr }
 
     -- Displays hover information about the symbol under the cursor
-	vim.keymap.set({"n", "v"}, "K", vim.lsp.buf.hover, bufopts)
+    vim.keymap.set({ "n", "v" }, "K", vim.lsp.buf.hover, bufopts)
 
     -- Jump to the definition
-	vim.keymap.set({"n", "v"}, "gd", vim.lsp.buf.definition, bufopts)
+    vim.keymap.set({ "n", "v" }, "gd", vim.lsp.buf.definition, bufopts)
 
     -- Jump to declaration
-	vim.keymap.set({"n", "v"}, "gD", vim.lsp.buf.declaration, bufopts)
+    vim.keymap.set({ "n", "v" }, "gD", vim.lsp.buf.declaration, bufopts)
 
     -- Jumps to the definition of the type symbol
-    vim.keymap.set({"n", "v"}, "gt", vim.lsp.buf.type_definition, bufopts)
+    vim.keymap.set({ "n", "v" }, "gt", vim.lsp.buf.type_definition, bufopts)
 
     -- Lists all the implementations for the symbol under the cursor
-	vim.keymap.set({"n", "v"}, "gi", vim.lsp.buf.implementation, bufopts)
+    vim.keymap.set({ "n", "v" }, "gi", vim.lsp.buf.implementation, bufopts)
 
     -- Displays a function's signature information
-	vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, bufopts)
+    vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, bufopts)
 
     -- Lists all the references
     vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
@@ -76,10 +76,12 @@ end
 
 -- Code Formatter
 require("conform").setup({
-  formatters_by_ft = {
-    erlang = { "erlfmt "},
-    ocaml = { "ocamlformat" },
-  },
+    formatters_by_ft = {
+        erlang = { "erlfmt " },
+        elixir = { "elixir-ls" },
+        ocaml = { "ocamlformat" },
+        rust = { "rustfmt" },
+    },
 })
 
 -- Elixir
@@ -94,7 +96,7 @@ lspconfig.elixirls.setup {
 }
 
 -- Erlang
-require 'lspconfig'.erlangls.setup {
+lspconfig.erlangls.setup {
     on_attach = on_attach,
     capabilities = capabilities,
 }
@@ -160,7 +162,7 @@ lspconfig.ocamllsp.setup({
 })
 
 -- Lua
-require 'lspconfig'.lua_ls.setup {
+lspconfig.lua_ls.setup {
     on_attach = on_attach,
     capabilities = capabilities,
     settings = {
@@ -186,10 +188,9 @@ require 'lspconfig'.lua_ls.setup {
 }
 
 -- Terraform
-require 'lspconfig'.terraformls.setup {
+lspconfig.terraformls.setup {
     on_attach = on_attach,
     capabilities = capabilities
 }
 vim.g.terraform_fmt_on_save = 1
 vim.g.terraform_align = 1
-

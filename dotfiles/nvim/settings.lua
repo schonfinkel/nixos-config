@@ -24,8 +24,11 @@ vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 
 -- I always forget the regex replace syntax
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
--------
 
+-- Cancel search highlighting with ESC
+vim.keymap.set("n", "<ESC>", ":nohlsearch<Bar>:echo<CR>")
+
+--------------
 -- Performance
 opt.lazyredraw = true;
 opt.shell = "zsh"

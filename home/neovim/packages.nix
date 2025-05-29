@@ -35,14 +35,17 @@ in
     nvim-lspconfig
     (nvim-treesitter.withPlugins (p:
       [
-        p.c
         p.bash
+        p.c
+        p.css
         p.dockerfile
         p.erlang
         p.elixir
+        p.gitattributes
         p.gitignore
         p.gleam
         p.haskell
+        p.hcl
         p.json
         p.just
         p.latex
