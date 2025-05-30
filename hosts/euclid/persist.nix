@@ -43,6 +43,7 @@
       files = [
         ".bash_history"
         ".config/systemsettingsrc"
+        ".pgpass"
         ".zsh_history"
       ];
     };
