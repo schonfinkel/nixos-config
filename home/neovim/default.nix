@@ -27,6 +27,7 @@ in
     ];
 
     extraPackages = with pkgs; [
+      bash-language-server
       clang
       tree-sitter
     ];
@@ -34,10 +35,10 @@ in
     plugins = builtins.concatLists [
       vimPlugins.base
       vimPlugins.eyecandy
-      vimPlugins.ui
       vimPlugins.lsp
       vimPlugins.prv
       vimPlugins.tooling
+      vimPlugins.ui
     ];
   };
 

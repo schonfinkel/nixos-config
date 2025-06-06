@@ -35,17 +35,23 @@ in
     nvim-lspconfig
     (nvim-treesitter.withPlugins (p:
       [
+        p.agda
+        p.asm
         p.bash
         p.c
+        p.cmake
+        p.cpp
         p.css
         p.dockerfile
-        p.erlang
         p.elixir
+        p.erlang
         p.gitattributes
         p.gitignore
         p.gleam
         p.haskell
         p.hcl
+        p.hyprlang
+        p.idris
         p.json
         p.just
         p.latex
@@ -54,6 +60,8 @@ in
         p.markdown
         p.nix
         p.ocaml
+        p.ocaml_interface
+        #p.ocaml_type
         p.proto
         p.scheme
         p.sql
