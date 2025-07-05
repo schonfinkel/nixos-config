@@ -7,6 +7,7 @@ in
 {
   base = with plugins; [
     autoclose-nvim
+    comment-nvim
     hologram-nvim
     toggleterm-nvim
     vim-which-key

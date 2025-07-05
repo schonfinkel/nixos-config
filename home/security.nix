@@ -18,6 +18,7 @@
     );
     settings = {
       PASSWORD_STORE_DIR = "\$HOME/.password-store";
+      PASSWORD_STORE_CLIP_TIME = "60";
     };
   };
 }
