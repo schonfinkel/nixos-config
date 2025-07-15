@@ -10,6 +10,7 @@
       e = "edit";
       q = "quit";
       qa = "quitall";
+      "q!" = "quit!";
       f = "console fzf_filter%space";
     };
     settings = {
@@ -38,8 +39,8 @@
         command = ''zathura -- "$@"'';
       }
       {
-        condition = "ext mp4|m4v|mpv";
-        command = ''mpv -- "$@"'';
+        condition = "mime ^video|^audio, has mpv, X, flag f";
+        command = ''${pkgs.mpv}/bin/mpv -- "$@"'';
       }
     ];
     extraPackages = with pkgs; [
@@ -52,11 +53,4 @@
       zathura
     ];
   };
-
-  #xdg.configFile = {
-  #  "ranger" = {
-  #    source = ../dotfiles/ranger;
-  #    recursive = true;
-  #  };
-  #};
 }
