@@ -26,6 +26,11 @@
     # from stdin / stdout
     wl-clipboard
 
+    # Screensharing
+    wireplumber
+    xdg-desktop-portal-hyprland
+
+    # Logout
     wlogout
   ];
 
