@@ -8,9 +8,6 @@ map('n', '<Leader>t', ':NvimTreeToggle<CR>', options)
 map('n', '<Leader>k', ':NvimTreeClose<CR>', options)
 map('n', '<Leader>f', ':NvimTreeFocus<CR>', options)
 
--- Package options
-local g = vim.g
-
 -- Integration with tabs
 local tree ={}
 tree.open = function ()
