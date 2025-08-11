@@ -13,6 +13,7 @@ in
     gitAndTools.gitflow
     gitAndTools.git-subrepo
     git-crypt
+    meld
   ];
 
   # Needed for some work stuff
@@ -26,8 +27,8 @@ in
   programs.git = {
     enable = true;
 
-    userEmail = "marcos.schonfinkel@gmail.com";
-    userName = "Marcos Benevides";
+    userEmail = main.email;
+    userName = main.name;
 
     ignores = [
       # nix
@@ -91,6 +92,10 @@ in
 
       safe = {
         directory = "~/Code/NixOS";
+      };
+
+      merge = {
+        tool = "meld";
       };
     };
 
