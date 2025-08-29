@@ -5,6 +5,8 @@
     directories = [
       "/var/lib/nixos"
       "/var/log"
+      # Age keys for servers, etc
+      "/var/lib/sops-nix"
       "/var/lib/systemd/coredump"
       "/etc/NetworkManager/system-connections"
     ];
@@ -25,6 +27,8 @@
         ".config/ngrok"
         ".config/Signal"
         ".config/Slack"
+        # Age keys for local development
+        ".config/sops/age"
         ".local/share/sddm"
         ".local/share/direnv"
         ".local/share/TelegramDesktop"

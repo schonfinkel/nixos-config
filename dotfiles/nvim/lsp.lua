@@ -74,13 +74,26 @@ local on_attach = function(client, bufnr)
     end, bufopts)
 end
 
--- Code Formatter
+-- Code Formatters
+local erlfmt = {
+    meta = {
+        url = "https://github.com/WhatsApp/erlfmt",
+        description = "An opinionated Erlang code formatter.",
+    },
+    command = "erlfmt",
+    args = { "-" },
+    stdin = true,
+}
 require("conform").setup({
     formatters_by_ft = {
-        erlang = { "erlfmt " },
+        erlang = { "erlfmt" },
         elixir = { "elixir-ls" },
         ocaml = { "ocamlformat" },
         rust = { "rustfmt" },
+        zig = { "zigfmt" },
+    },
+    formatters = {
+        erlfmt = erlfmt,
     },
 })
 
