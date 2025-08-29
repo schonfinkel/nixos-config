@@ -67,13 +67,6 @@
 
         modules = [
           impermanence.nixosModules.impermanence
-          #agenix.nixosModules.default {
-          #  age.secrets."defaults.json".file = ./secrets/defaults.json.age;
-          #  age.identity.paths = "/run/user/1000/gnupg/S.gpg-agent.ssh";
-          #}
-          ./documentation.nix
-          ./fonts.nix
-          ./hosts/euclid/configuration.nix
           stylix.nixosModules.stylix
           hosts.nixosModule {
             networking.stevenBlackHosts = {
@@ -88,6 +81,9 @@
             home-manager.users.mbenevides = import ./hosts/euclid/home.nix;
           }
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-l13
+          ./documentation.nix
+          ./fonts.nix
+          ./hosts/euclid/configuration.nix
         ];
       };
     };
