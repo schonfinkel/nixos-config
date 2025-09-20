@@ -21,6 +21,7 @@
     ];
     users.mbenevides = {
       directories = [
+        ".aws"
         ".config/BraveSoftware"
         ".config/discord"
         ".config/gh"
