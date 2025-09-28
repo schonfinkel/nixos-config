@@ -18,6 +18,7 @@
       ../../home/security.nix
       ../../home/ranger.nix
       ../../home/rice
+      ../../home/udiskie.nix
       ../../home/zshell.nix
     ];
 

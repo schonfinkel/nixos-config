@@ -27,6 +27,11 @@
 (setq-default fill-column 80)
 ;; (setq truncate-partial-width-windows nil)
 
+;; Enable better scrolling support
+(setq mouse-wheel-tilt-scroll t)
+(setq mouse-wheel-flip-direction t)
+
+;; Eyecandy
 (use-package all-the-icons)
 
 ;; Orgmode
