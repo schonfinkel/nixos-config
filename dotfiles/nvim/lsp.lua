@@ -98,27 +98,30 @@ require("conform").setup({
 })
 
 -- Bash
-lspconfig.bashls.setup {
+vim.lsp.config["bashls"] = {
     on_attach = on_attach,
     capabilities = capabilities,
 }
+vim.lsp.enable("bashls")
 
 -- Elixir
 -- Every Elixir devenv needs to have this envar defined
 local elixir_ls_path = os.getenv("ELIXIR_LS_PATH")
-lspconfig.elixirls.setup {
+vim.lsp.config["elixirls"] = {
     on_attach = on_attach,
     capabilities = capabilities,
     cmd = { elixir_ls_path },
     -- filetypes = { "ex", "elixir", "eelixir", "heex", "surface" },
     -- root_dir = root_pattern("mix.exs", ".git") or vim.loop.os_homedir(),
 }
+vim.lsp.enable("elixirls")
 
 -- Erlang
-lspconfig.erlangls.setup {
+vim.lsp.config["erlang"] = {
     on_attach = on_attach,
     capabilities = capabilities,
 }
+vim.lsp.enable("erlang")
 
 -- F#
 require("ionide").setup {
@@ -141,14 +144,15 @@ vim.g["fsharp#show_signature_on_cursor_move"] = 1
 vim.g["fsharp#fsi_focus_on_send"] = 1
 
 -- Gleam
-lspconfig.gleam.setup({
+vim.lsp.config["gleam"] = {
     on_attach = on_attach,
     capabilities = capabilities,
     cmd = { "gleam", "lsp" },
-})
+}
+vim.lsp.enable("gleam")
 
 -- Lua
-lspconfig.lua_ls.setup {
+vim.lsp.config["lua_ls"] = {
     on_attach = on_attach,
     capabilities = capabilities,
     settings = {
@@ -172,22 +176,24 @@ lspconfig.lua_ls.setup {
         },
     },
 }
+vim.lsp.enable("lua_ls")
 
 -- Nix
-lspconfig.nil_ls.setup({
+vim.lsp.config["nil"] = {
     on_attach = on_attach,
     capabilities = capabilities,
     settings = {
         ['nil'] = {
             formatting = {
-                command = { "nixfmt" },
+                command = { "nix fmt" },
             },
         },
     },
-})
+}
+vim.lsp.enable("nil")
 
 -- Ocaml
-lspconfig.ocamllsp.setup({
+vim.lsp.config["ocamlsp"] = {
     on_attach = on_attach,
     capabilities = capabilities,
     cmd = { "ocamllsp", "--fallback-read-dot-merlin" },
@@ -203,12 +209,15 @@ lspconfig.ocamllsp.setup({
         "ocaml.ocamllex",
         "reason"
     }
-})
+}
+vim.lsp.enable("ocamlsp")
 
 -- Terraform
-lspconfig.terraformls.setup {
+vim.lsp.config["terraformls"] = {
     on_attach = on_attach,
     capabilities = capabilities
 }
+vim.lsp.enable("terraformls")
+
 vim.g.terraform_fmt_on_save = 1
 vim.g.terraform_align = 1
