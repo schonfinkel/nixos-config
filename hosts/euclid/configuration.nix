@@ -119,39 +119,34 @@
 
   # Enable Host modules
   hostModules.agenix = {
-    agenix = {
-      enable = false;
-    };
+    enable = false;
   };
 
   hostModules.audio = {
-      enable = true;
-    };
+    enable = true;
   };
 
-  hostModules = {
-    commons = {
-      enable = true;
-      hostName = "euclid";
-    };
+  hostModules.commons = {
+    enable = true;
+    hostName = "euclid";
+  };
 
-    hyprland = {
-      enable = true;
-    };
+  hostModules.hyprland = {
+    enable = true;
+  };
 
-    impermanence = {
-      enable = true;
-      username = config.users.users.mbenevides.name;
-    };
+  hostModules.impermanence = {
+    enable = true;
+    username = config.users.users.mbenevides.name;
+  };
 
-    ssh = {
-      enable = true;
-      allowUsers = [ config.users.users.mbenevides.name ];
-    };
+  hostModules.ssh = {
+    enable = true;
+    allowUsers = [ config.users.users.mbenevides.name ];
+  };
 
-    themes = {
-      enable = true;
-    };
+  hostModules.themes = {
+    enable = true;
   };
 
   # Copy the NixOS configuration file and link it from the resulting system
