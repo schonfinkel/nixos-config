@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 let
   dotfiles = f: "${builtins.toString ../../dotfiles/nvim}/${f}.lua";
@@ -15,14 +20,14 @@ in
     # https://github.com/nix-community/home-manager/issues/1907#issuecomment-934316296
     extraConfig = builtins.concatStringsSep "\n" [
       ''
-      luafile ${dotfiles "settings"}
-      luafile ${dotfiles "line"}
-      luafile ${dotfiles "lsp"}
-      luafile ${dotfiles "cmp"}
-      luafile ${dotfiles "tabs"}
-      luafile ${dotfiles "git"}
-      luafile ${dotfiles "files"}
-      luafile ${dotfiles "treesitter"}
+        luafile ${dotfiles "settings"}
+        luafile ${dotfiles "line"}
+        luafile ${dotfiles "lsp"}
+        luafile ${dotfiles "cmp"}
+        luafile ${dotfiles "tabs"}
+        luafile ${dotfiles "git"}
+        luafile ${dotfiles "files"}
+        luafile ${dotfiles "treesitter"}
       ''
     ];
 

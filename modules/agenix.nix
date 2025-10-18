@@ -1,55 +1,45 @@
 {
   lib,
   config,
+  pkgs,
   ...
 }:
 
-with lib;
 let
-  cfg = config.modules.agenix;
+  module_name = "modules.hostModules.agenix";
+  cfg = config."${module_name}";
+  impermanence_module = config.modules.host.impermanence;
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    mkMerge
+    mkOption
+    ;
 in
 {
-  options.modules.agenix = {
-    enable = mkEnableOption "Enable/Disable Agenix Secrets";
+  options = {
+    "${module_name}" = {
+      enable = mkEnableOption "Enable/Disable Agenix Secrets";
+    };
   };
 
-  config = mkMerge [
-    (mkIf cfg.enable {
+  config = mkIf cfg.enable (mkMerge [
+    ({
       # Agenix setup
       age = {
         secrets = {
-          pg_user_lyceum = {
-            file = ../secrets/pg_user_lyceum.age;
+          user_password = {
+            file = ../secrets/user_password.age;
             owner = config.systemd.services.postgresql.serviceConfig.User;
             group = config.systemd.services.postgresql.serviceConfig.Group;
             mode = "0440";
-            path = "/etc/agenix/pg_user_lyceum";
           };
 
-          pg_user_migrations = {
-            file = ../secrets/pg_user_migrations.age;
-            owner = config.systemd.services.postgresql.serviceConfig.User;
-            group = config.systemd.services.postgresql.serviceConfig.Group;
+          user_ssh_key = {
+            file = ../secrets/user_ssh_key.age;
             mode = "0440";
-            path = "/etc/agenix/pg_user_migrations";
-          };
-
-          server_ssh = {
-            file = ../secrets/server_ssh.age;
-            path = "/etc/agenix/server_ssh";
           };
         };
-      };
-
-      # SSH
-      services.openssh = {
-        hostKeys = [
-          {
-            type = "ed25519";
-            path = config.age.secrets.server_ssh.path;
-          }
-        ];
-        extraConfig = "HostKey /run/agenix/server_ssh";
       };
     })
 
@@ -74,6 +64,7 @@ in
         ];
       };
     })
+
     # Otherwise
     (mkIf (!impermanence_module.enable) {
       # Age
@@ -86,18 +77,5 @@ in
         "/etc/agenix/server_ssh"
       ];
     })
-
-    # Only run this for local VM builds
-    (mkIf (disko_module.profile == "vm") {
-      # SSH
-      services.openssh = {
-        hostKeys = [
-          {
-            type = "ed25519";
-            path = config.age.secrets.server_ssh.path;
-          }
-        ];
-      };
-    })
-  ];
+  ]);
 }

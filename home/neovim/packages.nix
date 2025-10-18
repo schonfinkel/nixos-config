@@ -1,4 +1,9 @@
-{ pkgs, config, lib, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 
 let
   plugins = pkgs.vimPlugins;
@@ -34,42 +39,40 @@ in
   lsp = with plugins // private; [
     nvim-cmp
     nvim-lspconfig
-    (nvim-treesitter.withPlugins (p:
-      [
-        p.agda
-        p.asm
-        p.bash
-        p.c
-        p.cmake
-        p.cpp
-        p.css
-        p.dockerfile
-        p.elixir
-        p.erlang
-        p.gitattributes
-        p.gitignore
-        p.gleam
-        p.haskell
-        p.hcl
-        p.hyprlang
-        p.idris
-        p.json
-        p.just
-        p.latex
-        p.lua
-        p.make
-        p.markdown
-        p.nix
-        p.ocaml
-        p.ocaml_interface
-        #p.ocaml_type
-        p.proto
-        p.scheme
-        p.sql
-        p.terraform
-        p.yaml
-      ]
-    ))
+    (nvim-treesitter.withPlugins (p: [
+      p.agda
+      p.asm
+      p.bash
+      p.c
+      p.cmake
+      p.cpp
+      p.css
+      p.dockerfile
+      p.elixir
+      p.erlang
+      p.gitattributes
+      p.gitignore
+      p.gleam
+      p.haskell
+      p.hcl
+      p.hyprlang
+      p.idris
+      p.json
+      p.just
+      p.latex
+      p.lua
+      p.make
+      p.markdown
+      p.nix
+      p.ocaml
+      p.ocaml_interface
+      #p.ocaml_type
+      p.proto
+      p.scheme
+      p.sql
+      p.terraform
+      p.yaml
+    ]))
     # Snippets
     luasnip
     cmp-git

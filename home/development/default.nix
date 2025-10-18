@@ -1,13 +1,11 @@
-{pkgs, ...}:
+{ pkgs, ... }:
 
 {
-  imports =
-    [
-      ./cloud.nix
-      ./git.nix
-      ./kubernetes.nix
-      ./programming.nix
-    ];
+  imports = [
+    ./git.nix
+    ./kubernetes.nix
+    ./programming.nix
+  ];
 
   manual.manpages.enable = true;
 

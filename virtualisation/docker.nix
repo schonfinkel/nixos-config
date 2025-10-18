@@ -1,4 +1,12 @@
-{config, lib, modulesPath, pkgs, options, specialArgs, ...}:
+{
+  config,
+  lib,
+  modulesPath,
+  pkgs,
+  options,
+  specialArgs,
+  ...
+}:
 
 {
   virtualisation.docker = {
@@ -10,7 +18,10 @@
     };
   };
 
-  environment.systemPackages = (with pkgs; [
-    docker-compose
-  ]);
+  environment.systemPackages = (
+    with pkgs;
+    [
+      docker-compose
+    ]
+  );
 }

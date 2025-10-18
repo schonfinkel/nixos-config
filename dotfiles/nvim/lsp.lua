@@ -21,7 +21,6 @@ vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", { expr = true })
 vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
 
 -- Setup
-local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 -- On Attach customizations
@@ -32,9 +31,7 @@ vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer.
 local on_attach = function(client, bufnr)
-    -- Rust-specific configurations
-    if client.name == "rust_analyzer" then
-        -- WARNING: This feature requires Neovim v0.10+
+    if client.server_capabilities.inlayHintProvider then
         vim.lsp.inlay_hint.enable()
     end
 
@@ -63,7 +60,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
 
     -- Selects a code action available at the current cursor position
-    vim.keymap.set("n", "<F4>", vim.lsp.buf.code_action, bufopts)
+    vim.keymap.set("n", "ca", vim.lsp.buf.code_action, bufopts)
 
     -- Show diagnostics in a floating window
     vim.keymap.set("n", "df", vim.diagnostic.open_float, bufopts)
@@ -97,6 +94,13 @@ require("conform").setup({
     },
 })
 
+vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*",
+    callback = function(args)
+        require("conform").format({ bufnr = args.buf })
+    end,
+})
+
 -- Bash
 vim.lsp.config["bashls"] = {
     on_attach = on_attach,
@@ -117,10 +121,22 @@ vim.lsp.config["elixirls"] = {
 vim.lsp.enable("elixirls")
 
 -- Erlang
-vim.lsp.config["erlang"] = {
+vim.lsp.config["elp"] = {
     on_attach = on_attach,
     capabilities = capabilities,
+    settings = {
+        elp = {
+            diagnostics = {
+                disabled = {
+                    "W0030",
+                    "W0031",
+                    "W0032"
+                }
+            }
+        }
+    }
 }
+
 vim.lsp.enable("erlang")
 
 -- F#

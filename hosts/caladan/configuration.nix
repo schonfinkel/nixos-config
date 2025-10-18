@@ -2,21 +2,26 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
 
-      # Extra services
-      ../../services/localization.nix
-      ../../services/hyprland.nix
-      ../../services/theme.nix
+    # Extra services
+    ../../services/localization.nix
+    ../../services/hyprland.nix
+    ../../services/theme.nix
 
-      # Virtualisation
-      ../../virtualisation/docker.nix
-    ];
+    # Virtualisation
+    ../../virtualisation/docker.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -71,11 +76,11 @@
 
   hardware.nvidia = {
     # Use the NVidia open source kernel module
-    # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus 
+    # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
     open = false;
 
     # Enable the Nvidia settings menu,
-	# accessible via `nvidia-settings`.
+    # accessible via `nvidia-settings`.
     nvidiaSettings = true;
 
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
@@ -85,7 +90,7 @@
 
   # Some extra hyprland + nvidia crap
   environment.sessionVariables = {
-    LIBVA_DRIVER_NAME = "nvidia"; 
+    LIBVA_DRIVER_NAME = "nvidia";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     NVD_BACKEND = "direct";
   };
@@ -159,8 +164,8 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
+    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    #  wget
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

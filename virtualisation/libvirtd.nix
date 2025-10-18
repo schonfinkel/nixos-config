@@ -1,4 +1,11 @@
-{pkgs, lib, config, options, modulesPath, ...}:
+{
+  pkgs,
+  lib,
+  config,
+  options,
+  modulesPath,
+  ...
+}:
 
 {
   virtualisation.libvirtd.enable = true;

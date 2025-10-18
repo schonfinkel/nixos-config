@@ -1,12 +1,23 @@
-{ config, lib, pkgs, ...}:
-
-with lib;
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
+  module_name = "modules.hostModules.batteryNotifier";
   cfg = config.services.batteryNotifier;
-in {
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    mkMerge
+    mkOption
+    ;
+in
+{
   options = {
-    services.batteryNotifier = {
+    "${module_name}" = {
       enable = mkOption {
         default = false;
         description = ''
@@ -40,7 +51,7 @@ in {
       timerConfig.OnBootSec = "1m";
       timerConfig.OnUnitInactiveSec = "1m";
       timerConfig.Unit = "lowbatt.service";
-      wantedBy = ["timers.target"];
+      wantedBy = [ "timers.target" ];
     };
     systemd.user.services."lowbatt" = {
       description = "battery level notifier";
