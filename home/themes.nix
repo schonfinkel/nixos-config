@@ -6,8 +6,7 @@
 }:
 
 let
-  module_name = "homeModules.themes";
-  cfg = config."${module_name}";
+  cfg = config.homeModules.themes;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -16,10 +15,8 @@ let
     ;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable custom themes with Stylix";
-    };
+  options.homeModules.themes = {
+    enable = mkEnableOption "Enable custom themes with Stylix";
   };
 
   config = mkIf cfg.enable {

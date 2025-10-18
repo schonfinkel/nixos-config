@@ -6,8 +6,7 @@
 }:
 
 let
-  module_name = "hostModules.commons";
-  cfg = config."${module_name}";
+  cfg = config.hostModules.commons;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -16,18 +15,16 @@ let
     ;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable/Disable common services and packages";
+  options.hostModules.commons = {
+    enable = mkEnableOption "Enable/Disable common services and packages";
 
-      hostName = mkOption {
-        type = lib.types.str;
-      };
+    hostName = mkOption {
+      type = lib.types.str;
+    };
 
-      timeZone = mkOption {
-        type = lib.types.str;
-        default = "America/Cuiaba";
-      };
+    timeZone = mkOption {
+      type = lib.types.str;
+      default = "America/Cuiaba";
     };
   };
 

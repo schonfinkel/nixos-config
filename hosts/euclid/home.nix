@@ -25,38 +25,36 @@
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
 
-  # Home modules
-  homeModules = {
-    common = {
-      enable = true;
-    };
+  # Custom Home modules
+  homeModules.commons = {
+    enable = true;
+  };
 
-    chats = {
-      enable = true;
-    };
+  homeModules.chats = {
+    enable = true;
+  };
 
-    emacs = {
-      enable = true;
-    };
+  homeModules.emacs = {
+    enable = true;
+  };
 
-    hyprland = {
-      enable = true;
-    };
+  homeModules.hyprland = {
+    enable = true;
+  };
 
-    media = {
-      enable = true;
-    };
+  homeModules.media = {
+    enable = true;
+  };
 
-    security = {
-      enable = true;
-    };
+  homeModules.security = {
+    enable = true;
+  };
 
-    themes = {
-      enable = true;
-    };
+  homeModules.themes = {
+    enable = true;
+  };
 
-    zshell = {
-      enable = true;
-    };
+  homeModules.zshell = {
+    enable = true;
   };
 }

@@ -6,8 +6,7 @@
 }:
 
 let
-  module_name = "homeModules.zshell";
-  cfg = config."${module_name}";
+  cfg = config.homeModules.zshell;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -16,14 +15,12 @@ let
     ;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable a custom VS Code setup";
+  options.homeModules.zshell = {
+    enable = mkEnableOption "Enable a custom VS Code setup";
 
-      histSize = mkOption {
-        type = lib.types.int;
-        default = 7000;
-      };
+    histSize = mkOption {
+      type = lib.types.int;
+      default = 7000;
     };
   };
 

@@ -6,8 +6,7 @@
 }:
 
 let
-  module_name = "homeModules.media";
-  cfg = config."${module_name}";
+  cfg = config.homeModules.media;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -16,10 +15,8 @@ let
     ;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable a file manager and other applications";
-    };
+  options.homeModules.media = {
+    enable = mkEnableOption "Enable a file manager and other applications";
   };
 
   config = mkIf cfg.enable {

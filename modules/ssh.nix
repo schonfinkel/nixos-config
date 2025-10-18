@@ -7,8 +7,7 @@
 }:
 
 let
-  module_name = "hostModules.ssh";
-  cfg = config."${module_name}";
+  cfg = config.hostModules.ssh;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -17,19 +16,17 @@ let
     ;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable/Disable Agenix Secrets";
+  options.hostModules.ssh = {
+    enable = mkEnableOption "Enable/Disable Agenix Secrets";
 
-      allowUsers = mkOption {
-        type = lib.types.listOf lib.types.str;
-        default = [ ];
-      };
+    allowUsers = mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+    };
 
-      port = mkOption {
-        type = lib.types.int;
-        default = 22;
-      };
+    port = mkOption {
+      type = lib.types.int;
+      default = 22;
     };
   };
 
@@ -49,15 +46,28 @@ in
 
       services.fail2ban = {
         enable = true;
-        jails.DEFAULT = ''
-          bantime = 3600
-        '';
-        jails.ssh = ''
-          filter = sshd
-          maxretry = 4
-          action = iptables[name=ssh, port=ssh, protocol=tcp]
-          enabled = true
-        '';
+        maxretry = 5;
+        bantime-increment = {
+          # Enable increment of bantime after each violation
+          enable = true;
+          multipliers = "1 2 4 8 16 32 64";
+          # Do not ban for more than 1 week
+          maxtime = "168h";
+          # Calculate the bantime based on all the violations
+          overalljails = true;
+        };
+        jails = {
+          sshd = {
+            settings = {
+              enabled = true;
+              port = "ssh";
+              filter = "sshd";
+              logpath = "/var/log/auth.log";
+              maxretry = 5;
+              bantime = 600;
+            };
+          };
+        };
       };
     })
   ]);

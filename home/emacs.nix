@@ -6,8 +6,7 @@
 }:
 
 let
-  module_name = "homeModules.emacs";
-  cfg = config."${module_name}";
+  cfg = config.homeModules.emacs;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -63,10 +62,8 @@ let
   emacsExtras = evilEtAl ++ orgmode ++ programming ++ treemacsEtAl;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable a custom Emacs installation";
-    };
+  options.homeModules.emacs = {
+    enable = mkEnableOption "Enable a custom Emacs installation";
   };
 
   config = mkIf cfg.enable {

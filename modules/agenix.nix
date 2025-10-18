@@ -6,8 +6,7 @@
 }:
 
 let
-  module_name = "hostModules.agenix";
-  cfg = config."${module_name}";
+  cfg = config.hostModules.agenix;
   impermanence_module = config.hostModules.impermanence;
   inherit (lib)
     mkEnableOption
@@ -17,10 +16,8 @@ let
     ;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable/Disable Agenix Secrets";
-    };
+  options.hostModules.agenix = {
+    enable = mkEnableOption "Enable/Disable Agenix Secrets";
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -50,15 +47,12 @@ in
       # Age
       age = {
         identityPaths = [
-          "${impermanence_module.directory}/etc/agenix/server_key"
+          "${impermanence_module.persistDirectory}/etc/agenix/server_key"
         ];
       };
-      virtualisation.vmVariantWithDisko.agenix.age.sshKeyPaths = [
-        "${impermanence_module.directory}/etc/agenix/server_key"
-      ];
 
       # Agenix Keys
-      environment.persistence."${impermanence_module.directory}" = {
+      environment.persistence."${impermanence_module.persistDirectory}" = {
         directories = [
           "/etc/agenix"
         ];
@@ -73,9 +67,6 @@ in
           "/etc/agenix/server_ssh"
         ];
       };
-      virtualisation.vmVariantWithDisko.agenix.age.sshKeyPaths = [
-        "/etc/agenix/server_ssh"
-      ];
     })
   ]);
 }

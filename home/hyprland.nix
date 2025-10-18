@@ -6,12 +6,12 @@
 }:
 
 let
-  module_name = "homeModules.hyprland";
-  cfg = config."${module_name}";
+  cfg = config.homeModules.hyprland;
   themes_module = config.homeModules.themes;
   inherit (lib)
     mkEnableOption
     mkIf
+    mkOption
     ;
 
   # hyprpaper
@@ -27,24 +27,22 @@ let
   wallpapers = map format files;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Home manager settings for 'Hyprland'";
+  options.homeModules.hyprland = {
+    enable = mkEnableOption "Home manager settings for 'Hyprland'";
 
-      timeZone = mkOption {
-        type = lib.types.str;
-        default = "America/Cuiaba";
-      };
+    timeZone = mkOption {
+      type = lib.types.str;
+      default = "America/Cuiaba";
+    };
 
-      transitionAnimation = mkOption {
-        type = lib.types.str;
-        default = "all 0.3s cubic-bezier(.55,-0.68,.48,1.682)";
-      };
+    transitionAnimation = mkOption {
+      type = lib.types.str;
+      default = "all 0.3s cubic-bezier(.55,-0.68,.48,1.682)";
+    };
 
-      wallpapers = mkOption {
-        type = lib.types.listOf lib.types.path;
-        default = wallpapers;
-      };
+    wallpapers = mkOption {
+      type = lib.types.listOf lib.types.path;
+      default = wallpapers;
     };
   };
 
@@ -287,7 +285,7 @@ in
             color: #${config.stylix.base16Scheme.base04};
             background: #${config.stylix.base16Scheme.base01};
             opacity: 0.5;
-            transition: ${transitionAnimation};
+            transition: ${cfg.transitionAnimation};
           }
 
           #workspaces button.active {
@@ -297,7 +295,7 @@ in
             border-radius: 4px;
             color: #${config.stylix.base16Scheme.base00};
             background: #${config.stylix.base16Scheme.base07};
-            transition: ${transitionAnimation};
+            transition: ${cfg.transitionAnimation};
             opacity: 1.0;
             min-width: 20px;
           }
@@ -317,7 +315,7 @@ in
             color: #${config.stylix.base16Scheme.base00};
             background: #${config.stylix.base16Scheme.base07};
             opacity: 0.8;
-            transition: ${transitionAnimation};
+            transition: ${cfg.transitionAnimation};
           }
 
           tooltip {

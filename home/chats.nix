@@ -6,18 +6,15 @@
 }:
 
 let
-  module_name = "homeModules.chats";
-  cfg = config."${module_name}";
+  cfg = config.homeModules.chats;
   inherit (lib)
     mkEnableOption
     mkIf
     ;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable some 'Chat' applications";
-    };
+  options.homeModules.chats = {
+    enable = mkEnableOption "Enable some 'Chat' applications";
   };
 
   config = mkIf cfg.enable {

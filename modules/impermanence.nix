@@ -7,8 +7,7 @@
 }:
 
 let
-  module_name = "hostModules.impermanence";
-  cfg = config."${module_name}";
+  cfg = config.hostModules.impermanence;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -17,18 +16,16 @@ let
     ;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable/Disable the 'impermanence' module";
+  options.hostModules.impermanence = {
+    enable = mkEnableOption "Enable/Disable the 'impermanence' module";
 
-      persistDirectory = mkOption {
-        type = lib.types.str;
-        default = "/nix/persist";
-      };
+    persistDirectory = mkOption {
+      type = lib.types.str;
+      default = "/nix/persist";
+    };
 
-      username = mkOption {
-        type = lib.types.str;
-      };
+    username = mkOption {
+      type = lib.types.str;
     };
   };
 

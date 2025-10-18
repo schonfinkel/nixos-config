@@ -6,8 +6,7 @@
 }:
 
 let
-  module_name = "homeModules.security";
-  cfg = config."${module_name}";
+  cfg = config.homeModules.security;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -16,10 +15,8 @@ let
     ;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable security apps, password managers, etc.";
-    };
+  options.homeModules.security = {
+    enable = mkEnableOption "Enable security apps, password managers, etc.";
   };
 
   config = mkIf cfg.enable {

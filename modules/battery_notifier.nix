@@ -6,8 +6,7 @@
 }:
 
 let
-  module_name = "hostModules.batteryNotifier";
-  cfg = config.services.batteryNotifier;
+  cfg = config.hostModules.batteryNotifier;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -16,32 +15,30 @@ let
     ;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkOption {
-        default = false;
-        description = ''
-          Whether to enable battery notifier.
-        '';
-      };
-      device = mkOption {
-        default = "BAT0";
-        description = ''
-          Device to monitor.
-        '';
-      };
-      notifyCapacity = mkOption {
-        default = 10;
-        description = ''
-          Battery level at which a notification shall be sent.
-        '';
-      };
-      suspendCapacity = mkOption {
-        default = 5;
-        description = ''
-          Battery level at which a suspend unless connected shall be sent.
-        '';
-      };
+  options.hostModules.batteryNotifier = {
+    enable = mkOption {
+      default = false;
+      description = ''
+        Whether to enable battery notifier.
+      '';
+    };
+    device = mkOption {
+      default = "BAT0";
+      description = ''
+        Device to monitor.
+      '';
+    };
+    notifyCapacity = mkOption {
+      default = 10;
+      description = ''
+        Battery level at which a notification shall be sent.
+      '';
+    };
+    suspendCapacity = mkOption {
+      default = 5;
+      description = ''
+        Battery level at which a suspend unless connected shall be sent.
+      '';
     };
   };
 

@@ -7,8 +7,7 @@
 }:
 
 let
-  module_name = "hostModules.themes";
-  cfg = config."${module_name}";
+  cfg = config.hostModules.themes;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -19,24 +18,22 @@ let
   defaultWallpaper = ../wallpapers/wallpaper.png;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable/Disable common services and packages";
+  options.hostModules.themes = {
+    enable = mkEnableOption "Enable/Disable common services and packages";
 
-      cursorSize = mkOption {
-        type = lib.types.int;
-        default = 24;
-      };
+    cursorSize = mkOption {
+      type = lib.types.int;
+      default = 24;
+    };
 
-      opacity = mkOption {
-        type = lib.types.float;
-        default = 0.9;
-      };
+    opacity = mkOption {
+      type = lib.types.float;
+      default = 0.9;
+    };
 
-      wallpaperPath = mkOption {
-        type = lib.types.listOf lib.types.path;
-        default = defaultWallpaper;
-      };
+    wallpaperPath = mkOption {
+      type = lib.types.path;
+      default = defaultWallpaper;
     };
   };
 

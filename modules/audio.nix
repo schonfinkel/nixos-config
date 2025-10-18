@@ -6,8 +6,7 @@
 }:
 
 let
-  module_name = "hostModules.audio";
-  cfg = config."${module_name}";
+  cfg = config.hostModules.audio;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -16,10 +15,8 @@ let
     ;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable/Disable common services and packages";
-    };
+  options.hostModules.audio = {
+    enable = mkEnableOption "Enable/Disable common services and packages";
   };
 
   config = mkIf cfg.enable (mkMerge [

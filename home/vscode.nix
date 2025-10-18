@@ -6,8 +6,7 @@
 }:
 
 let
-  module_name = "homeModules.vscode";
-  cfg = config."${module_name}";
+  cfg = config.homeModules.vscode;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -16,10 +15,8 @@ let
     ;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable a custom VS Code setup";
-    };
+  options.homeModules.vscode = {
+    enable = mkEnableOption "Enable a custom VS Code setup";
   };
 
   config = mkIf cfg.enable {

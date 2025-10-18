@@ -6,18 +6,15 @@
 }:
 
 let
-  module_name = "homeModules.commons";
-  cfg = config."${module_name}";
+  cfg = config.homeModules.commons;
   inherit (lib)
     mkEnableOption
     mkIf
     ;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable the 'Commons' module";
-    };
+  options.homeModules.commons = {
+    enable = mkEnableOption "Enable the 'Commons' module";
   };
 
   config = mkIf cfg.enable {

@@ -96,7 +96,7 @@
           system = "x86_64-linux";
 
           mkHost =
-            host: extraModules:
+            host: user: extraModules:
             lib.nixosSystem {
               inherit system;
 
@@ -117,7 +117,7 @@
                   home-manager.useGlobalPkgs = true;
                   home-manager.useUserPackages = true;
                   home-manager.backupFileExtension = "bkp";
-                  home-manager.users.leto = import ./hosts/${host}/home.nix;
+                  home-manager.users."${user}" = import ./hosts/${host}/home.nix;
                 }
               ]
               ++ extraModules;
@@ -128,7 +128,7 @@
         {
 
           nixosConfigurations = {
-            caladan = mkHost "caladan" [ ];
+            caladan = mkHost "caladan" "schonfinkel" [ ];
 
             euclid =
               let
@@ -139,8 +139,7 @@
                   nixos-hardware.nixosModules.lenovo-thinkpad-l13
                 ];
               in
-              mkHost "euclid" extraModules;
-
+              mkHost "euclid" "mbenevides" extraModules;
           };
 
         };

@@ -7,8 +7,7 @@
 }:
 
 let
-  module_name = "hostModules.hyprland";
-  cfg = config."${module_name}";
+  cfg = config.hostModules.hyprland;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -17,10 +16,8 @@ let
     ;
 in
 {
-  options = {
-    "${module_name}" = {
-      enable = mkEnableOption "Enable/Disable common services and packages";
-    };
+  options.hostModules.hyprland = {
+    enable = mkEnableOption "Enable/Disable common services and packages";
   };
 
   config = mkIf cfg.enable (mkMerge [
