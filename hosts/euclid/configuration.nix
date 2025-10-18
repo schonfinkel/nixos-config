@@ -122,6 +122,9 @@
   # Enable Host modules
   hostModules.agenix = {
     enable = true;
+    paths = [
+      "/home/mbenevides/.ssh/default_ed25519"
+    ]
   };
 
   hostModules.audio = {

@@ -18,6 +18,10 @@ in
 {
   options.hostModules.agenix = {
     enable = mkEnableOption "Enable/Disable Agenix Secrets";
+
+    paths = mkOption {
+      type = lib.types.listOf lib.types.path;
+    };
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -30,6 +34,12 @@ in
             mode = "0440";
           };
         };
+
+        # Private key of the SSH key pair. This is the other pair of what was supplied
+        # in `secrets.nix`.
+        #
+        # This tells `agenix` where to look for the private key.
+        identityPaths = paths;
       };
     })
   ]);
