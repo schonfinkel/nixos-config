@@ -20,7 +20,7 @@ in
     enable = mkEnableOption "Enable/Disable Agenix Secrets";
 
     paths = mkOption {
-      type = lib.types.listOf lib.types.path;
+      type = lib.types.listOf lib.types.str;
     };
   };
 
@@ -39,7 +39,7 @@ in
         # in `secrets.nix`.
         #
         # This tells `agenix` where to look for the private key.
-        identityPaths = paths;
+        identityPaths = cfg.paths;
       };
     })
   ]);
