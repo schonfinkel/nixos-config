@@ -6,7 +6,7 @@
 }:
 
 let
-  module_name = "modules.hostModules.commons";
+  module_name = "hostModules.commons";
   cfg = config."${module_name}";
   inherit (lib)
     mkEnableOption

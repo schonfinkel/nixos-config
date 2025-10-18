@@ -6,9 +6,8 @@
 }:
 
 let
-  module_name = "modules.homeModules.commons";
+  module_name = "homeModules.commons";
   cfg = config."${module_name}";
-  cfg = config.home.commons;
   inherit (lib)
     mkEnableOption
     mkIf

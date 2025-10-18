@@ -118,15 +118,18 @@
   };
 
   # Enable Host modules
-  hostModules = {
+  hostModules.agenix = {
     agenix = {
       enable = false;
     };
+  };
 
-    audio = {
+  hostModules.audio = {
       enable = true;
     };
+  };
 
+  hostModules = {
     commons = {
       enable = true;
       hostName = "euclid";

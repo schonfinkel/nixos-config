@@ -6,7 +6,7 @@
 }:
 
 let
-  module_name = "modules.homeModules.vscode";
+  module_name = "homeModules.vscode";
   cfg = config."${module_name}";
   inherit (lib)
     mkEnableOption

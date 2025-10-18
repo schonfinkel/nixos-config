@@ -7,7 +7,7 @@
 }:
 
 let
-  module_name = "modules.hostModules.ssh";
+  module_name = "hostModules.ssh";
   cfg = config."${module_name}";
   inherit (lib)
     mkEnableOption

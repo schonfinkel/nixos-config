@@ -6,7 +6,7 @@
 }:
 
 let
-  module_name = "modules.homeModules.zshell";
+  module_name = "homeModules.zshell";
   cfg = config."${module_name}";
   inherit (lib)
     mkEnableOption

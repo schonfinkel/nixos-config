@@ -7,7 +7,7 @@
 }:
 
 let
-  module_name = "modules.hostModules.impermanence";
+  module_name = "hostModules.impermanence";
   cfg = config."${module_name}";
   inherit (lib)
     mkEnableOption

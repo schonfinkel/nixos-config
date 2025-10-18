@@ -26,7 +26,7 @@
   systemd.user.startServices = "sd-switch";
 
   # Home modules
-  modules.home = {
+  homeModules = {
     common = {
       enable = true;
     };

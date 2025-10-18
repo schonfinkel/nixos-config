@@ -6,7 +6,7 @@
 }:
 
 let
-  module_name = "modules.homeModules.emacs";
+  module_name = "homeModules.emacs";
   cfg = config."${module_name}";
   inherit (lib)
     mkEnableOption

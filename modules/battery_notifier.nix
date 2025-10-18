@@ -6,7 +6,7 @@
 }:
 
 let
-  module_name = "modules.hostModules.batteryNotifier";
+  module_name = "hostModules.batteryNotifier";
   cfg = config.services.batteryNotifier;
   inherit (lib)
     mkEnableOption

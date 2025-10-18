@@ -6,7 +6,7 @@
 }:
 
 let
-  module_name = "modules.hostModules.audio";
+  module_name = "hostModules.audio";
   cfg = config."${module_name}";
   inherit (lib)
     mkEnableOption

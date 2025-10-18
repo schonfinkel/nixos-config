@@ -6,7 +6,7 @@
 }:
 
 let
-  module_name = "modules.homeModules.chats";
+  module_name = "homeModules.chats";
   cfg = config."${module_name}";
   inherit (lib)
     mkEnableOption

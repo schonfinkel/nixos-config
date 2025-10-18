@@ -6,9 +6,9 @@
 }:
 
 let
-  module_name = "modules.homeModules.hyprland";
+  module_name = "homeModules.hyprland";
   cfg = config."${module_name}";
-  themes_module = config.home.themes;
+  themes_module = config.homeModules.themes;
   inherit (lib)
     mkEnableOption
     mkIf

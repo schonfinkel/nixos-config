@@ -7,7 +7,7 @@
 }:
 
 let
-  module_name = "modules.hostModules.hyprland";
+  module_name = "hostModules.hyprland";
   cfg = config."${module_name}";
   inherit (lib)
     mkEnableOption

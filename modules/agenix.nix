@@ -6,9 +6,9 @@
 }:
 
 let
-  module_name = "modules.hostModules.agenix";
+  module_name = "hostModules.agenix";
   cfg = config."${module_name}";
-  impermanence_module = config.modules.host.impermanence;
+  impermanence_module = config.hostModules.impermanence;
   inherit (lib)
     mkEnableOption
     mkIf

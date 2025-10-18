@@ -6,7 +6,7 @@
 }:
 
 let
-  module_name = "modules.homeModules.themes";
+  module_name = "homeModules.themes";
   cfg = config."${module_name}";
   inherit (lib)
     mkEnableOption

@@ -6,7 +6,7 @@
 }:
 
 let
-  module_name = "modules.homeModules.security";
+  module_name = "homeModules.security";
   cfg = config."${module_name}";
   inherit (lib)
     mkEnableOption
