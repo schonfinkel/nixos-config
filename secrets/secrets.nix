@@ -8,5 +8,5 @@ let
   ];
 in
 {
-  "secrets/hashed_password.age".publicKeys = keys;
+  "hashed_password.age".publicKeys = keys;
 }
