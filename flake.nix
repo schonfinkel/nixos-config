@@ -31,6 +31,11 @@
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     stylix.url = "github:danth/stylix";
@@ -49,6 +54,7 @@
       hosts,
       hyprland,
       nixpkgs,
+      nixos-generators,
       nixos-hardware,
       stylix,
       treefmt-nix,
@@ -77,12 +83,37 @@
             config.allowUnfree = true;
           };
 
+          # nix build
+          packages = {
+          };
+
           # nix run
           apps = {
           };
 
           # nix develop
           devShells = {
+            # nix develop --impure
+            default = devenv.lib.mkShell {
+              inherit inputs pkgs;
+              modules = [
+                (
+                  { pkgs, lib, ... }:
+                  {
+                    packages = with pkgs; [
+                      age
+                      agenix.packages.${system}.default
+                      just
+                    ];
+
+                    enterShell = ''
+                      Adding mg_cli to $PATH
+                      export PATH="$(pwd)/mg_cli:$PATH"
+                    '';
+                  }
+                )
+              ];
+            };
           };
 
           # nix fmt
@@ -135,8 +166,8 @@
                 extraModules = [
                   agenix.nixosModules.default
                   impermanence.nixosModules.impermanence
-                  stylix.nixosModules.stylix
                   nixos-hardware.nixosModules.lenovo-thinkpad-l13
+                  stylix.nixosModules.stylix
                 ];
               in
               mkHost "euclid" "mbenevides" extraModules;

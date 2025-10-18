@@ -44,6 +44,9 @@ in
         };
       };
 
+      programs.ssh.agentTimeout = "1h";
+      programs.ssh.startAgent = true;
+
       services.fail2ban = {
         enable = true;
         maxretry = 5;
