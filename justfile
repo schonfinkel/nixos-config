@@ -33,6 +33,7 @@ repl:
 # ----------------------------
 # Age-related Commands
 # ----------------------------
+
 # Resets the agenix file
 rekey:
     cd {{ secrets_dir }} && nix run github:ryantm/agenix -- -r

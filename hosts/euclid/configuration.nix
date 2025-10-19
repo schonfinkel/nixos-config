@@ -98,21 +98,11 @@
 
   users.mutableUsers = false;
   users.users = {
-    # root.hashedPasswordFile = config.age.secrets.hashed_password.path;
-    root.hashedPassword = "$y$j9T$6zLPFDkAeDgRk2Aw4JUTL1$adKhB4NX2bJ3hn4jHLiNd40plkUr0Dmy3GaRzVacGa.";
-    test = {
-      uid = 1001;
-      isNormalUser = true;
-      hashedPasswordFile = config.age.secrets.hashed_password.path;
-      extraGroups = [
-        "wheel"
-      ];
-    };
+    root.hashedPasswordFile = config.age.secrets.hashed_password.path;
     mbenevides = {
       uid = 1000;
       isNormalUser = true;
       hashedPasswordFile = config.age.secrets.hashed_password.path;
-      # hashedPassword = "$y$j9T$6zLPFDkAeDgRk2Aw4JUTL1$adKhB4NX2bJ3hn4jHLiNd40plkUr0Dmy3GaRzVacGa.";
       extraGroups = [
         "audio"
         "disk"

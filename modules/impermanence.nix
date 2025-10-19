@@ -35,6 +35,7 @@ in
         hideMounts = true;
         directories = [
           "/etc/NetworkManager/system-connections"
+          "/etc/ssh"
           "/var/lib/nixos"
           "/var/lib/systemd/coredump"
           "/var/log"
@@ -63,7 +64,6 @@ in
             ".config/Signal"
             ".config/Slack"
             # Age keys for local development
-            ".config/sops/age"
             ".local/share/sddm"
             ".local/share/direnv"
             ".local/share/TelegramDesktop"
