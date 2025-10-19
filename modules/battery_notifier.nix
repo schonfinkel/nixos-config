@@ -1,36 +1,44 @@
-{ config, lib, pkgs, ...}:
-
-with lib;
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
-  cfg = config.services.batteryNotifier;
-in {
-  options = {
-    services.batteryNotifier = {
-      enable = mkOption {
-        default = false;
-        description = ''
-          Whether to enable battery notifier.
-        '';
-      };
-      device = mkOption {
-        default = "BAT0";
-        description = ''
-          Device to monitor.
-        '';
-      };
-      notifyCapacity = mkOption {
-        default = 10;
-        description = ''
-          Battery level at which a notification shall be sent.
-        '';
-      };
-      suspendCapacity = mkOption {
-        default = 5;
-        description = ''
-          Battery level at which a suspend unless connected shall be sent.
-        '';
-      };
+  cfg = config.hostModules.batteryNotifier;
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    mkMerge
+    mkOption
+    ;
+in
+{
+  options.hostModules.batteryNotifier = {
+    enable = mkOption {
+      default = false;
+      description = ''
+        Whether to enable battery notifier.
+      '';
+    };
+    device = mkOption {
+      default = "BAT0";
+      description = ''
+        Device to monitor.
+      '';
+    };
+    notifyCapacity = mkOption {
+      default = 10;
+      description = ''
+        Battery level at which a notification shall be sent.
+      '';
+    };
+    suspendCapacity = mkOption {
+      default = 5;
+      description = ''
+        Battery level at which a suspend unless connected shall be sent.
+      '';
     };
   };
 
@@ -40,7 +48,7 @@ in {
       timerConfig.OnBootSec = "1m";
       timerConfig.OnUnitInactiveSec = "1m";
       timerConfig.Unit = "lowbatt.service";
-      wantedBy = ["timers.target"];
+      wantedBy = [ "timers.target" ];
     };
     systemd.user.services."lowbatt" = {
       description = "battery level notifier";

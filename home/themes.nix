@@ -1,14 +1,34 @@
-{ pkgs, stylix, ... }:
-
 {
-  stylix.targets = {
-    waybar.enable = true;
-    wofi.enable = true;
-    neovim.enable = true;
-    hyprland.enable = true;
-    kitty.enable = true;
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+
+let
+  cfg = config.homeModules.themes;
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    mkMerge
+    mkOption
+    ;
+in
+{
+  options.homeModules.themes = {
+    enable = mkEnableOption "Enable custom themes with Stylix";
   };
 
-  home.packages = with pkgs; [
-  ];
+  config = mkIf cfg.enable {
+    home.packages = with pkgs; [
+    ];
+
+    stylix.targets = {
+      waybar.enable = true;
+      wofi.enable = true;
+      neovim.enable = true;
+      hyprland.enable = true;
+      kitty.enable = true;
+    };
+  };
 }

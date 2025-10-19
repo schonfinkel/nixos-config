@@ -55,7 +55,6 @@ flycheck_*.el
 # Lua
 .luarc.json
 
-# age secrets
-*.age
-secrets/*
-!secrets/secrets.nix
+# Extras
+.devenv
+.direnv

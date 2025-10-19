@@ -1,5 +1,7 @@
 # NixOS Configuration
 
+[![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
+
 My NixOS configuration files, used in my personal systems and work machines.
 
 ## TODO List
@@ -9,11 +11,20 @@ My NixOS configuration files, used in my personal systems and work machines.
    - [X] Integration with the [impermanence](https://github.com/nix-community/impermanence) module
    - [X] Add a wayland-based WM (`hyprland`)
    - [X] Declarative styling with [stylix](https://github.com/danth/stylix)
-   - [ ] Integration with one of the following secret management tools:
-     - :white_check_mark: [agenix](https://github.com/ryantm/agenix) 
-     - :x: [sops-nix](https://github.com/Mic92/sops-nix)
-   - [ ] Declarative disk partitions with [disko](https://github.com/nix-community/disko) 
+   - [X] Integration with one of the following secret management tools:
+     - [agenix](https://github.com/ryantm/agenix) 
+     - [sops-nix](https://github.com/Mic92/sops-nix)
+   - [X] Modurize configuration with `nix` modules
    - [ ] Add this entire config into CI
+   - [ ] Declarative disk partitions with [disko](https://github.com/nix-community/disko) 
+
+## Development Shell
+
+```shell
+  direnv allow
+  # or
+  nix develop --impure
+```
 
 ## How to use it?
 
@@ -30,10 +41,4 @@ My NixOS configuration files, used in my personal systems and work machines.
 ## Why should I use it?
 
 You probably shouldn't.
-
-## Screenshots
-
-- Neovim
-
-![Neovim01](./docs/neovim.png)
 

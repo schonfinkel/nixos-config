@@ -1,19 +1,22 @@
 {
-  config,
-  lib,
   pkgs,
+  config,
+  home,
+  inputs,
+  system,
   ...
 }:
-{
-  home = {
-    username = "mbenevides";
-    homeDirectory = "/home/mbenevides";
-  };
 
+{
   imports = [
     # Directories
     ../../home
   ];
+
+  home = {
+    username = "schonfinkel";
+    homeDirectory = "/home/schonfinkel";
+  };
 
   programs = {
     home-manager.enable = true;
@@ -48,10 +51,6 @@
   };
 
   homeModules.neovim = {
-    enable = true;
-  };
-
-  homeModules.programming = {
     enable = true;
   };
 
