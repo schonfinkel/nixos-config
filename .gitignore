@@ -56,3 +56,5 @@ flycheck_*.el
 .luarc.json
 
 # Extras
+.devenv
+.direnv

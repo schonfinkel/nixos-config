@@ -51,6 +51,10 @@
     enable = true;
   };
 
+  homeModules.programming = {
+    enable = true;
+  };
+
   homeModules.security = {
     enable = true;
     gpg = {

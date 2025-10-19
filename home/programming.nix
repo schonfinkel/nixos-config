@@ -85,9 +85,6 @@ in
           "result"
 
           # direnv/devenv
-          ".envrc"
-          ".direnv"
-          ".devenv"
           ".pre-commit-config.yaml"
         ];
 
