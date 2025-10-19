@@ -12,9 +12,6 @@
 
   imports = [
     # Directories
-    ../../home/development
-    ../../home/neovim
-    ../../home/rice
     ../../home
   ];
 
@@ -42,12 +39,26 @@
     enable = true;
   };
 
+  homeModules.kitty = {
+    enable = true;
+  };
+
   homeModules.media = {
+    enable = true;
+  };
+
+  homeModules.neovim = {
     enable = true;
   };
 
   homeModules.security = {
     enable = true;
+    gpg = {
+      enable = true;
+      sshKeys = [
+        "23C94318A1D57DA26574677539EC504CB2A49981"
+      ];
+    };
   };
 
   homeModules.themes = {

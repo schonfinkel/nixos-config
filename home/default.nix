@@ -8,7 +8,9 @@
     ./commons.nix
     ./emacs.nix
     ./hyprland.nix
+    ./kitty.nix
     ./media.nix
+    ./neovim
     ./security.nix
     ./themes.nix
     ./vscode.nix

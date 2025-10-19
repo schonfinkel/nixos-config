@@ -1,61 +1,75 @@
 {
-  pkgs,
-  lib,
   config,
+  lib,
+  pkgs,
   ...
 }:
 
 let
+  cfg = config.homeModules.neovim;
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    mkMerge
+    mkOption
+    ;
+
   dotfiles = f: "${builtins.toString ../../dotfiles/nvim}/${f}.lua";
   vimPlugins = import ./packages.nix { inherit pkgs config lib; };
 in
 {
-  programs.neovim = {
-    enable = true;
-    viAlias = true;
-    vimAlias = true;
-    vimdiffAlias = true;
-    withPython3 = true;
-
-    # https://github.com/nix-community/home-manager/issues/1907#issuecomment-934316296
-    extraConfig = builtins.concatStringsSep "\n" [
-      ''
-        luafile ${dotfiles "settings"}
-        luafile ${dotfiles "line"}
-        luafile ${dotfiles "lsp"}
-        luafile ${dotfiles "cmp"}
-        luafile ${dotfiles "tabs"}
-        luafile ${dotfiles "git"}
-        luafile ${dotfiles "files"}
-        luafile ${dotfiles "treesitter"}
-      ''
-    ];
-
-    extraPackages = with pkgs; [
-      bash-language-server
-      clang
-      tree-sitter
-    ];
-
-    plugins = builtins.concatLists [
-      vimPlugins.base
-      vimPlugins.eyecandy
-      vimPlugins.lsp
-      vimPlugins.prv
-      vimPlugins.tooling
-      vimPlugins.ui
-    ];
+  options.homeModules.neovim = {
+    enable = mkEnableOption "Enable a custom Neovim configuration";
   };
 
-  xdg.configFile = {
-    nvim = {
-      source = ../../dotfiles/nvim;
-      recursive = true;
+  config = mkIf cfg.enable {
+    programs.neovim = {
+      enable = true;
+      viAlias = true;
+      vimAlias = true;
+      vimdiffAlias = true;
+      withPython3 = true;
+
+      # https://github.com/nix-community/home-manager/issues/1907#issuecomment-934316296
+      extraConfig = builtins.concatStringsSep "\n" [
+        ''
+          luafile ${dotfiles "settings"}
+          luafile ${dotfiles "line"}
+          luafile ${dotfiles "lsp"}
+          luafile ${dotfiles "cmp"}
+          luafile ${dotfiles "tabs"}
+          luafile ${dotfiles "git"}
+          luafile ${dotfiles "files"}
+          luafile ${dotfiles "treesitter"}
+        ''
+      ];
+
+      extraPackages = with pkgs; [
+        bash-language-server
+        clang
+        tree-sitter
+      ];
+
+      plugins = builtins.concatLists [
+        vimPlugins.base
+        vimPlugins.eyecandy
+        vimPlugins.lsp
+        vimPlugins.prv
+        vimPlugins.tooling
+        vimPlugins.ui
+      ];
     };
-  };
 
-  home.sessionVariables = {
-    EDITOR = "nvim";
-    VISUAL = "nvim";
+    xdg.configFile = {
+      nvim = {
+        source = ../../dotfiles/nvim;
+        recursive = true;
+      };
+    };
+
+    home.sessionVariables = {
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+    };
   };
 }
