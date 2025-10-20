@@ -32,8 +32,14 @@ in
   options.homeModules.hyprland = {
     enable = mkEnableOption "Home manager settings for 'Hyprland'";
 
+    hyprlock = {
+      enable = mkEnableOption "Enable a custom 'hyprlock' configuration" // {
+        default = true;
+      };
+    };
+
     waybar = {
-      enable = mkEnableOption "Enable Git configuration" // {
+      enable = mkEnableOption "Enable a custom 'waybar' configuration" // {
         default = true;
       };
 
@@ -63,15 +69,290 @@ in
         };
       };
 
-      xdg.configFile = {
-        "hypr" = {
-          source = ../dotfiles/hypr;
-          recursive = true;
+      wayland.windowManager.hyprland = {
+        enable = true;
+        xwayland.enable = true;
+
+        settings = {
+          # Monitors
+          monitor = [
+            "HDMI-A-1,highres,0x0,2"
+            "eDP-1,highres,1920x0,1"
+          ];
+
+          # Programs
+          "$terminal" = "kitty";
+          "$fileManager" = "ranger";
+          "$menu" = "wofi --show drun";
+          "$mainMod" = "SUPER";
+
+          # Autostart
+          exec-once = [
+            "nm-applet &"
+            "waybar & hyprpaper"
+          ];
+
+          # Environment variables
+          env = [
+            "XCURSOR_SIZE,24"
+            "HYPRCURSOR_SIZE,24"
+            "WLR_NO_HARDWARE_CURSORS,1"
+            "QT_AUTO_SCREEN_SCALE_FACTOR,2"
+            "QT_QPA_PLATFORM,wayland;xcb"
+            "QT_QPA_PLATFORMTHEME,q6ct"
+            "QT_SCALE_FACTOR,2"
+            "GDK_SCALE,2"
+            "XDG_SESSION_DESKTOP,Hyprland"
+            "XDG_SESSION_TYPE,wayland"
+            "XDG_CURRENT_DESKTOP,Hyprland"
+            "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
+            "GDK_BACKEND,wayland"
+            "ELECTRON_OZONE_PLATFORM_HINT,wayland"
+            "NIXOS_OZONE_WL,1"
+            "MOZ_ENABLE_WAYLAND,1"
+            "WAYLAND_DISPLAY,wayland-0"
+          ];
+
+          # General settings
+          general = {
+            gaps_in = 5;
+            gaps_out = 10;
+            border_size = 2;
+            # "col.active_border" = "rgb(${stylix_theme.base0D}) rgb(${stylix_theme.base0B}) 45deg";
+            # "col.inactive_border" = "rgb(${stylix_theme.base03})";
+            resize_on_border = false;
+            allow_tearing = false;
+            layout = "dwindle";
+          };
+
+          # Decoration
+          decoration = {
+            rounding = 0;
+            active_opacity = 1.0;
+            inactive_opacity = 1.0;
+
+            shadow = {
+              enabled = true;
+              range = 4;
+              render_power = 3;
+              # color = "rgb(${stylix_theme.base00})";
+            };
+
+            blur = {
+              enabled = true;
+              size = 3;
+              passes = 1;
+              vibrancy = 0.1696;
+            };
+          };
+
+          # Animations
+          animations = {
+            enabled = true;
+
+            bezier = [
+              "easeOutQuint,0.23,1,0.32,1"
+              "easeInOutCubic,0.65,0.05,0.36,1"
+              "linear,0,0,1,1"
+              "almostLinear,0.5,0.5,0.75,1.0"
+              "quick,0.15,0,0.1,1"
+            ];
+
+            animation = [
+              "global,1,10,default"
+              "border,1,5.39,easeOutQuint"
+              "windows,1,4.79,easeOutQuint"
+              "windowsIn,1,4.1,easeOutQuint,popin 87%"
+              "windowsOut,1,1.49,linear,popin 87%"
+              "fadeIn,1,1.73,almostLinear"
+              "fadeOut,1,1.46,almostLinear"
+              "fade,1,3.03,quick"
+              "layers,1,3.81,easeOutQuint"
+              "layersIn,1,4,easeOutQuint,fade"
+              "layersOut,1,1.5,linear,fade"
+              "fadeLayersIn,1,1.79,almostLinear"
+              "fadeLayersOut,1,1.39,almostLinear"
+              "workspaces,1,1.94,almostLinear,fade"
+              "workspacesIn,1,1.21,almostLinear,fade"
+              "workspacesOut,1,1.94,almostLinear,fade"
+            ];
+          };
+
+          # Dwindle layout
+          dwindle = {
+            pseudotile = true;
+            preserve_split = true;
+          };
+
+          # Master layout
+          master = {
+            new_status = "master";
+          };
+
+          # XWayland
+          xwayland = {
+            force_zero_scaling = true;
+            use_nearest_neighbor = true;
+          };
+
+          # Input
+          input = {
+            kb_layout = "us,br(thinkpad)";
+            kb_options = "grp:win_space_toggle";
+            follow_mouse = 1;
+            sensitivity = 0;
+
+            touchpad = {
+              natural_scroll = false;
+            };
+          };
+
+          # Device specific config
+          device = {
+            name = "epic-mouse-v1";
+            sensitivity = -0.5;
+          };
+
+          # Keybindings
+          bind = [
+            # Applications
+            "$mainMod,Return,exec,$terminal"
+            "$mainMod SHIFT,Q,killactive,"
+            "$mainMod,E,exec,$fileManager"
+            "$mainMod,D,exec,$menu"
+
+            # Window management
+            "$mainMod,P,pseudo,"
+            "$mainMod,J,togglesplit,"
+            "$mainMod,F,togglefloating,"
+            "$mainMod SHIFT,F,fullscreen"
+
+            # Focus movement
+            "$mainMod,left,movefocus,l"
+            "$mainMod,right,movefocus,r"
+            "$mainMod,up,movefocus,u"
+            "$mainMod,down,movefocus,d"
+
+            # Workspace switching
+            "$mainMod,1,workspace,1"
+            "$mainMod,2,workspace,2"
+            "$mainMod,3,workspace,3"
+            "$mainMod,4,workspace,4"
+            "$mainMod,5,workspace,5"
+            "$mainMod,6,workspace,6"
+            "$mainMod,7,workspace,7"
+            "$mainMod,8,workspace,8"
+            "$mainMod,9,workspace,9"
+            "$mainMod,0,workspace,10"
+
+            # Move window to workspace
+            "$mainMod SHIFT,1,movetoworkspace,1"
+            "$mainMod SHIFT,2,movetoworkspace,2"
+            "$mainMod SHIFT,3,movetoworkspace,3"
+            "$mainMod SHIFT,4,movetoworkspace,4"
+            "$mainMod SHIFT,5,movetoworkspace,5"
+            "$mainMod SHIFT,6,movetoworkspace,6"
+            "$mainMod SHIFT,7,movetoworkspace,7"
+            "$mainMod SHIFT,8,movetoworkspace,8"
+            "$mainMod SHIFT,9,movetoworkspace,9"
+            "$mainMod SHIFT,0,movetoworkspace,10"
+
+            # Special workspace
+            "$mainMod,S,togglespecialworkspace,magic"
+            "$mainMod SHIFT,S,movetoworkspace,special:magic"
+
+            # Scroll through workspaces
+            "$mainMod,mouse_down,workspace,e+1"
+            "$mainMod,mouse_up,workspace,e-1"
+
+            # Window resizing
+            "$mainMod SHIFT,right,resizeactive,10 0"
+            "$mainMod SHIFT,left,resizeactive,-10 0"
+            "$mainMod SHIFT,up,resizeactive,0 -10"
+            "$mainMod SHIFT,down,resizeactive,0 10"
+
+            # Screenshot
+            ",PRINT,exec,hyprshot -m region"
+          ];
+
+          # Mouse bindings
+          bindm = [
+            "$mainMod,mouse:272,movewindow"
+            "$mainMod,mouse:273,resizewindow"
+          ];
+
+          # Media keys with repeat
+          bindel = [
+            ",XF86AudioRaiseVolume,exec,wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+            ",XF86AudioLowerVolume,exec,wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+            ",XF86AudioMute,exec,wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+            ",XF86AudioMicMute,exec,wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+            ",XF86MonBrightnessUp,exec,brightnessctl s 10%+"
+            ",XF86MonBrightnessDown,exec,brightnessctl s 10%-"
+          ];
+
+          # Media control keys
+          bindl = [
+            ",XF86AudioNext,exec,playerctl next"
+            ",XF86AudioPause,exec,playerctl play-pause"
+            ",XF86AudioPlay,exec,playerctl play-pause"
+            ",XF86AudioPrev,exec,playerctl previous"
+          ];
+
+          # Window rules
+          windowrulev2 = [
+            "suppressevent maximize,class:.*"
+            "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+
+            # XWayland video bridge fixes
+            "opacity 0.0 override,class:^(xwaylandvideobridge)$"
+            "noanim,class:^(xwaylandvideobridge)$"
+            "noinitialfocus,class:^(xwaylandvideobridge)$"
+            "maxsize 1 1,class:^(xwaylandvideobridge)$"
+            "noblur,class:^(xwaylandvideobridge)$"
+            "nofocus,class:^(xwaylandvideobridge)$"
+          ];
         };
       };
+
+      # xdg.configFile = {
+      #   "hypr" = {
+      #     source = ../dotfiles/hypr;
+      #     recursive = true;
+      #   };
+      # };
     }
 
-    # Waybar configuration
+    # Hyprlock Configuration
+    (mkIf cfg.hyprlock.enable {
+      programs.hyprlock = {
+        enable = true;
+
+        settings = {
+          background = [
+            {
+              monitor = "";
+              path = lib.mkForce (builtins.head cfg.wallpapers);
+            }
+          ];
+
+          input-field = [
+            {
+              size = "200, 50";
+              position = "0, -80";
+              monitor = "";
+              dots_center = true;
+              fade_on_empty = false;
+              outline_thickness = 5;
+              shadow_passes = 2;
+            }
+          ];
+        };
+      };
+
+    })
+
+    # Waybar Configuration
     (mkIf cfg.waybar.enable {
       programs.waybar = {
         enable = true;
@@ -147,27 +428,30 @@ in
             "memory" = {
               interval = 5;
               format = "  {}%";
-              # on-click = "neohtop";
               tooltip = true;
               tooltip-format = "  {used:0.1f}G/{total:0.1f}G";
+              # on-click = "neohtop";
             };
 
             "cpu" = {
               interval = 5;
               format = "  {usage:2}%";
-              # on-click = "neohtop";
               tooltip = true;
+              # on-click = "neohtop";
             };
 
             "disk" = {
-              format = "  {free}";
-              # on-click = "neohtop";
+              format = "  {percentage_used:2}%";
+              path = "/nix";
               tooltip = true;
+              tooltip-format = "{used} / {total} on {path}";
+              # on-click = "neohtop";
             };
 
             "hyprland/language" = {
+              format = "{}";
               format-en = "🇺🇸";
-              "format-br(thinkpad)" = "🇧🇷";
+              format-br = "🇧🇷";
               on-click = "hyprctl switchxkblayout at-translated-set-2-keyboard next";
             };
 
@@ -326,8 +610,8 @@ in
               font-size: 14px;
               font-weight: 600;
               min-height: 0;
-              padding: 3px;
-              margin: 3px 2px;
+              padding: 0;
+              margin: 0;
             }
 
             window#waybar {
@@ -351,8 +635,6 @@ in
             /* Workspaces */
             #workspaces {
               background: @bg1;
-              padding: 4px;
-              margin: 6px 2px;
               border-radius: 12px;
               border: 2px solid @border1;
             }
@@ -410,7 +692,7 @@ in
               background: @bg1;
               color: @text;
               border-left: 4px solid @border1;
-              margin: 6px 0px 6px 0;
+              margin: 4px 0px;
               padding: 8px 8px;
             }
 
@@ -419,7 +701,7 @@ in
               background: @bg1;
               color: @text;
               border-right: 4px solid @border1;
-              margin: 6px 2px;
+              margin: 4px 0px;
               padding: 8px 8px;
             }
 
@@ -445,7 +727,7 @@ in
               background: @bg1;
               color: @text;
               border-right: 4px solid @border1;
-              margin: 6px 2px;
+              margin: 4px 0px;
               padding: 8px 8px;
             }
 
@@ -459,9 +741,10 @@ in
               background: @bg1;
               color: @text;
               border-left: 4px solid @border1;
-              margin: 6px 2px;
-              padding: 8px 8px;
               border-radius: 12px 0px 0px 12px;
+              margin: 4px 0px;
+              margin: 4px 0 4px 4px;
+              padding: 8px 8px;
             }
 
             #network.disconnected {
@@ -478,18 +761,18 @@ in
             #language {
               background: @bg1;
               color: @text;
-              margin: 6px 2px;
-              padding: 8px 8px;
               border-right: 4px solid @border1;
+              margin: 4px 0px;
+              padding: 8px 8px;
             }
 
             /* System Tray */
             #tray {
               background: @bg2;
-              margin: 6px 2px;
-              padding: 8px 8px;
               border-radius: 0px 12px 12px 0px;
               border: 1px solid @border2;
+              margin: 4px 4px 4px 0;
+              padding: 8px 8px;
             }
 
             #tray > .passive {
@@ -507,10 +790,10 @@ in
               background: @bg1;
               color: @subtext;
               font-weight: bold;
-              margin: 6px 2px;
-              padding: 8px 8px;
               border-left: 4px solid @border1;
               font-size: 15px;
+              margin: 4px 0px 4px 4px;
+              padding: 8px 8px;
             }
 
             /* Custom Modules */
@@ -519,7 +802,7 @@ in
               background: @bg1;
               color: @text;
               border-left: 4px solid @border1;
-              margin: 6px 2px;
+              margin: 4px 0px;
               padding: 8px 8px;
             }
 
@@ -527,7 +810,7 @@ in
               background: @bg1;
               color: @text;
               border-right: 4px solid @border1;
-              margin: 6px 2px;
+              margin: 4px 0px;
               padding: 8px 8px;
             }
 
@@ -536,7 +819,7 @@ in
               background: @bg1;
               color: @text;
               border-right: 4px solid @border1;
-              margin: 6px 2px;
+              margin: 4px 0px;
               padding: 8px 8px;
             }
 
