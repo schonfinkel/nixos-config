@@ -24,11 +24,12 @@ in
     ];
 
     stylix.targets = {
-      waybar.enable = true;
-      wofi.enable = true;
-      neovim.enable = true;
       hyprland.enable = true;
       kitty.enable = true;
+      neovim.enable = true;
+      mako.enable = true;
+      waybar.enable = true;
+      wofi.enable = true;
     };
   };
 }

@@ -69,6 +69,8 @@ in
         };
       };
 
+      services.mako.enable = true;
+
       wayland.windowManager.hyprland = {
         enable = true;
         xwayland.enable = true;
@@ -83,6 +85,7 @@ in
           # Programs
           "$terminal" = "kitty";
           "$fileManager" = "ranger";
+          "$lock" = lib.getExe config.programs.hyprlock.package;
           "$menu" = "wofi --show drun";
           "$mainMod" = "SUPER";
 
@@ -118,8 +121,6 @@ in
             gaps_in = 5;
             gaps_out = 10;
             border_size = 2;
-            # "col.active_border" = "rgb(${stylix_theme.base0D}) rgb(${stylix_theme.base0B}) 45deg";
-            # "col.inactive_border" = "rgb(${stylix_theme.base03})";
             resize_on_border = false;
             allow_tearing = false;
             layout = "dwindle";
@@ -135,7 +136,6 @@ in
               enabled = true;
               range = 4;
               render_power = 3;
-              # color = "rgb(${stylix_theme.base00})";
             };
 
             blur = {
@@ -220,6 +220,7 @@ in
             "$mainMod SHIFT,Q,killactive,"
             "$mainMod,E,exec,$fileManager"
             "$mainMod,D,exec,$menu"
+            "$mainMod SHIFT,l,$lock"
 
             # Window management
             "$mainMod,P,pseudo,"
@@ -314,37 +315,102 @@ in
           ];
         };
       };
-
-      # xdg.configFile = {
-      #   "hypr" = {
-      #     source = ../dotfiles/hypr;
-      #     recursive = true;
-      #   };
-      # };
     }
 
     # Hyprlock Configuration
     (mkIf cfg.hyprlock.enable {
       programs.hyprlock = {
         enable = true;
-
         settings = {
-          background = [
+          general = {
+            disable_loading_bar = true;
+            hide_cursor = true;
+          };
+
+          background = lib.mkForce [
             {
               monitor = "";
-              path = lib.mkForce (builtins.head cfg.wallpapers);
+              path = builtins.head cfg.wallpapers;
+              color = "rgb(${stylix_theme.base00})";
+              blur_passes = 1;
+              blur_size = 1;
+              new_optimizations = true;
+              ignore_opacity = false;
             }
           ];
 
-          input-field = [
+          input-field = lib.mkOverride 10 [
             {
-              size = "200, 50";
-              position = "0, -80";
               monitor = "";
-              dots_center = true;
+              size = "300, 50";
+              outline_thickness = 2;
               fade_on_empty = false;
-              outline_thickness = 5;
-              shadow_passes = 2;
+              placeholder_text = "<i>Enter Password</i>";
+              dots_spacing = 0.2;
+              dots_center = true;
+              position = "0, 125";
+              valign = "bottom";
+              halign = "center";
+            }
+          ];
+
+          label = [
+            {
+              monitor = "";
+              text = "cmd[update:3600000] date +'%A, %B %d'";
+              font_family = "GeistMono Nerd Font Propo Bold";
+              font_size = 36;
+              color = "rgb(${stylix_theme.base0E})";
+              position = "0, -150";
+              valign = "top";
+              halign = "center";
+            }
+            {
+              monitor = "";
+              text = "$TIME";
+              font_family = "GeistMono Nerd Font Propo Bold";
+              font_size = 132;
+              color = "rgb(${stylix_theme.base0E})";
+              position = "0, -200";
+              valign = "top";
+              halign = "center";
+            }
+            {
+              monitor = "";
+              text = "   $USER";
+              font_family = "GeistMono Nerd Font Propo Bold";
+              font_size = 24;
+              color = "rgb(${stylix_theme.base0E})";
+              position = "0, 200";
+              valign = "bottom";
+              halign = "center";
+            }
+          ];
+        };
+      };
+
+      services.hypridle = {
+        enable = true;
+        settings = {
+          general = {
+            lock_cmd = lib.getExe config.programs.hyprlock.package;
+            before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
+            after_sleep_cmd = "hyprctl dispatch dpms on";
+          };
+
+          listener = [
+            {
+              timeout = 300;
+              on-timeout = "${pkgs.systemd}/bin/loginctl lock-session";
+            }
+            {
+              timeout = 330;
+              on-timeout = "hyprctl dispatch dpms off";
+              on-resume = "hyprctl dispatch dpms on";
+            }
+            {
+              timeout = 600;
+              on-timeout = "${pkgs.systemd}/bin/systemctl suspend";
             }
           ];
         };
