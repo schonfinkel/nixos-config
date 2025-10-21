@@ -85,7 +85,7 @@ in
           # Programs
           "$terminal" = "kitty";
           "$fileManager" = "ranger";
-          "$lock" = lib.getExe config.programs.hyprlock.package;
+          # "$lock" = "hyprlock";
           "$menu" = "wofi --show drun";
           "$mainMod" = "SUPER";
 
@@ -220,7 +220,7 @@ in
             "$mainMod SHIFT,Q,killactive,"
             "$mainMod,E,exec,$fileManager"
             "$mainMod,D,exec,$menu"
-            "$mainMod SHIFT,l,$lock"
+            # "$mainMod SHIFT,l,$lock"
 
             # Window management
             "$mainMod,P,pseudo,"
