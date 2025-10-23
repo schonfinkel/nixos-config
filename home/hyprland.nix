@@ -753,6 +753,27 @@ in
               font-weight: 500;
             }
 
+            /* RIGHT */
+            /* Clock */
+            #clock {
+              background: @bg1;
+              color: @subtext;
+              font-weight: bold;
+              border-left: 4px solid @border1;
+              font-size: 15px;
+              margin: 4px 0px;
+              padding: 8px 8px;
+            }
+
+            #custom-exit,
+            #custom-notification {
+              background: @bg1;
+              color: @text;
+              border-left: 4px solid @border1;
+              margin: 4px 0px;
+              padding: 8px 8px;
+            }
+
             /* System Metrics */
             #cpu,
             #memory,
@@ -764,6 +785,27 @@ in
               padding: 8px 8px;
             }
 
+            /* Network */
+            #network {
+              background: @bg1;
+              color: @text;
+              border-left: 4px solid @border1;
+              border-radius: 12px 0px 0px 12px;
+              margin: 4px 0px;
+              padding: 8px 8px;
+            }
+
+            #network.disconnected {
+              color: @error;
+              border-left: 4px solid @error;
+            }
+
+            #network.disabled {
+              color: @subtext;
+              border-left: 4px solid @subtext;
+            }
+
+            /* LEFT */
             /* Battery */
             #battery {
               background: @bg1;
@@ -804,26 +846,6 @@ in
               border-right: 4px solid @subtext;
             }
 
-            /* Network */
-            #network {
-              background: @bg1;
-              color: @text;
-              border-left: 4px solid @border1;
-              border-radius: 12px 0px 0px 12px;
-              margin: 4px 0px;
-              padding: 8px 8px;
-            }
-
-            #network.disconnected {
-              color: @error;
-              border-left: 4px solid @error;
-            }
-
-            #network.disabled {
-              color: @subtext;
-              border-left: 4px solid @subtext;
-            }
-
             /* Language & Keyboard */
             #language {
               background: @bg1;
@@ -852,27 +874,7 @@ in
               padding: 8px 8px;
             }
 
-            /* Clock */
-            #clock {
-              background: @bg1;
-              color: @subtext;
-              font-weight: bold;
-              border-left: 4px solid @border1;
-              font-size: 15px;
-              margin: 4px 0px 4px 4px;
-              padding: 8px 8px;
-            }
-
             /* Custom Modules */
-            #custom-exit,
-            #custom-notification {
-              background: @bg1;
-              color: @text;
-              border-left: 4px solid @border1;
-              margin: 4px 0px;
-              padding: 8px 8px;
-            }
-
             #custom-startmenu {
               background: @bg1;
               color: @text;
@@ -899,6 +901,7 @@ in
             #clock:hover,
             #battery:hover,
             #cpu:hover,
+            #disk:hover,
             #memory:hover,
             #network:hover,
             #pulseaudio:hover,
