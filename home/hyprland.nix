@@ -755,8 +755,8 @@ in
 
             /* System Metrics */
             #cpu,
-            #disk,
-            #memory {
+            #memory,
+            #disk {
               background: @bg1;
               color: @text;
               border-left: 4px solid @border1;
