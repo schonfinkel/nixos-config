@@ -704,7 +704,7 @@ in
               border-radius: 10px;
               border: 2px solid @border1;
               padding: 4px 4px;
-              margin: 1px;
+              margin: 1px 2px;
             }
 
             #workspaces button {
@@ -806,6 +806,15 @@ in
             }
 
             /* LEFT */
+            /* Custom Modules */
+            #custom-startmenu {
+              background: @bg1;
+              color: @text;
+              border-right: 4px solid @border1;
+              margin: 4px 0px;
+              padding: 8px 8px;
+            }
+
             /* Battery */
             #battery {
               background: @bg1;
@@ -871,15 +880,6 @@ in
             #tray > .needs-attention {
               background-color: @error;
               border-radius: 6px;
-              padding: 8px 8px;
-            }
-
-            /* Custom Modules */
-            #custom-startmenu {
-              background: @bg1;
-              color: @text;
-              border-right: 4px solid @border1;
-              margin: 4px 0px;
               padding: 8px 8px;
             }
 
