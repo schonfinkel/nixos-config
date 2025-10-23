@@ -48,9 +48,10 @@ in
       home.packages = with pkgs; [
         # For Git
         bfg-repo-cleaner
-        gitAndTools.gitflow
-        gitAndTools.git-subrepo
         git-crypt
+        gitflow
+        git-lfs
+        git-subrepo
         meld
 
         # Language Servers
