@@ -220,7 +220,7 @@ in
             "$mainMod SHIFT,Q,killactive,"
             "$mainMod,E,exec,$fileManager"
             "$mainMod,D,exec,$menu"
-            # "$mainMod SHIFT,l,$lock"
+            # "$mainMod SHIFT,L,$lock"
 
             # Window management
             "$mainMod,P,pseudo,"
@@ -493,7 +493,7 @@ in
 
             "memory" = {
               interval = 5;
-              format = "  {}%";
+              format = " {percentage}%";
               tooltip = true;
               tooltip-format = "  {used:0.1f}G/{total:0.1f}G";
               # on-click = "neohtop";
@@ -501,13 +501,13 @@ in
 
             "cpu" = {
               interval = 5;
-              format = "  {usage:2}%";
+              format = " {usage:2}%";
               tooltip = true;
               # on-click = "neohtop";
             };
 
             "disk" = {
-              format = "  {percentage_used:2}%";
+              format = " {percentage_used:2}%";
               path = "/nix";
               tooltip = true;
               tooltip-format = "{used} / {total} on {path}";
@@ -517,7 +517,7 @@ in
             "hyprland/language" = {
               format = "{}";
               format-en = "🇺🇸";
-              format-br = "🇧🇷";
+              format-pt= "🇧🇷";
               on-click = "hyprctl switchxkblayout at-translated-set-2-keyboard next";
             };
 
@@ -701,16 +701,18 @@ in
             /* Workspaces */
             #workspaces {
               background: @bg1;
-              border-radius: 12px;
+              border-radius: 10px;
               border: 2px solid @border1;
+              padding: 4px 4px;
+              margin: 1px;
             }
 
             #workspaces button {
-              padding: 6px 10px;
-              margin: 2px;
+              padding: 2px 4px;
+              margin: 1px;
               background: @bg1;
               color: @text;
-              border-radius: 8px;
+              border-radius: 10px;
               font-weight: bold;
               opacity: 0.8;
             }
@@ -809,7 +811,6 @@ in
               border-left: 4px solid @border1;
               border-radius: 12px 0px 0px 12px;
               margin: 4px 0px;
-              margin: 4px 0 4px 4px;
               padding: 8px 8px;
             }
 
@@ -848,7 +849,7 @@ in
             #tray > .needs-attention {
               background-color: @error;
               border-radius: 6px;
-              color: @text-alt;
+              padding: 8px 8px;
             }
 
             /* Clock */
@@ -884,13 +885,12 @@ in
             #idle_inhibitor {
               background: @bg1;
               color: @text;
-              border-right: 4px solid @border1;
               margin: 4px 0px;
               padding: 8px 8px;
             }
 
             #idle_inhibitor.activated {
-              background: @bg2;
+              background: @bg-alt;
               border-right: 4px solid @border2;
               color: @subtext;
             }
