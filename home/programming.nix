@@ -48,9 +48,10 @@ in
       home.packages = with pkgs; [
         # For Git
         bfg-repo-cleaner
-        gitAndTools.gitflow
-        gitAndTools.git-subrepo
         git-crypt
+        gitflow
+        git-lfs
+        git-subrepo
         meld
 
         # Language Servers
@@ -58,6 +59,8 @@ in
         nil
         # Tools
         hoppscotch
+        glab
+        gnumake
         shellcheck
       ];
 
@@ -74,11 +77,13 @@ in
 
     # Git configuration
     (mkIf cfg.git.enable {
+      programs.delta = {
+        enable = true;
+        enableGitIntegration = true;
+      };
+
       programs.git = {
         enable = true;
-
-        userEmail = cfg.git.defaultUser.main.email;
-        userName = cfg.git.defaultUser.main.name;
 
         ignores = [
           # nix
@@ -90,59 +95,63 @@ in
           ".pre-commit-config.yaml"
         ];
 
-        aliases = {
-          # Aliases
-          commit = "commit -S";
-          a = "add";
-          ap = "add -p";
-          c = "clone";
-          ca = "commit --amend";
-          can = "commit --amend --no-edit";
-          cam = "commit --amend -m";
-          cm = "commit -m";
-          ds = "diff --staged";
-          dc = "diff --name-only --diff-filter=U";
-          fixup = "!git log --oneline --decorate @{u}.. | fzy | awk '{ print $1 }' | xargs -I{} git commit --fixup={}";
-          fo = "fetch origin";
-          lo = "log --oneline";
-          ls = "log -S";
-          po = "push origin";
-          pof = "push -f origin";
-          pro = "pull --rebase origin";
-          ra = "rebase --abort";
-          rc = "rebase --continue";
-          ri = "rebase -i";
-          # Pretty
-          branches = "branch --sort=-committerdate --format='%(HEAD)%(color:yellow) %(refname:short) | %(color:bold red)%(committername) | %(color:bold green)%(committerdate:relative) | %(color:blue)%(subject)%(color:reset)' --color=always";
-        };
+        settings = {
+          alias = {
+            # Aliases
+            commit = "commit -S";
+            a = "add";
+            ap = "add -p";
+            c = "clone";
+            ca = "commit --amend";
+            can = "commit --amend --no-edit";
+            cam = "commit --amend -m";
+            cm = "commit -m";
+            ds = "diff --staged";
+            dc = "diff --name-only --diff-filter=U";
+            fixup = "!git log --oneline --decorate @{u}.. | fzy | awk '{ print $1 }' | xargs -I{} git commit --fixup={}";
+            fo = "fetch origin";
+            lo = "log --oneline";
+            ls = "log -S";
+            po = "push origin";
+            pof = "push -f origin";
+            pro = "pull --rebase origin";
+            ra = "rebase --abort";
+            rc = "rebase --continue";
+            ri = "rebase -i";
+            # Pretty
+            branches = "branch --sort=-committerdate --format='%(HEAD)%(color:yellow) %(refname:short) | %(color:bold red)%(committername) | %(color:bold green)%(committerdate:relative) | %(color:blue)%(subject)%(color:reset)' --color=always";
+          };
 
-        delta = {
-          enable = true;
-        };
-
-        lfs = {
-          enable = true;
-        };
-
-        extraConfig = {
           core = {
             editor = cfg.git.defaultEditor;
             commentChar = ";";
           };
 
-          push.autoSetupRemote = true;
-
           init = {
             defaultBranch = "main";
+          };
+
+          merge = {
+            tool = "meld";
+          };
+
+          lfs = {
+            enable = true;
+          };
+
+          push = {
+            autoSetupRemote = true;
           };
 
           safe = {
             directory = "~/Code/NixOS";
           };
 
-          merge = {
-            tool = "meld";
+          user = {
+            email = cfg.git.defaultUser.main.email;
+            name = cfg.git.defaultUser.main.name;
           };
+
         };
 
         includes = [

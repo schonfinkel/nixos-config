@@ -28,7 +28,7 @@
         ".config/BraveSoftware"
         ".config/discord"
         ".config/gh"
-        ".config/ngrok"
+        ".config/glab-cli"
         ".config/Signal"
         ".config/Slack"
         # Age keys for local development
