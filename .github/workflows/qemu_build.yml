@@ -1,0 +1,56 @@
+name: "[QEMU] Image Build"
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - .github/workflows/**
+      - modules/**
+      - "*.nix"
+      - flake.lock
+  pull_request:
+    branches: [ "master" ]
+    paths:
+      - .github/workflows/**
+      - modules/**
+      - "*.nix"
+      - flake.lock
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: "[QEMU] Build Image"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          lfs: true
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          # Mostly to avoid GitHub rate limiting
+          extra_nix_config: |
+            access-tokens = github.com=${{ github.token }}
+
+      - name: Install Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      # To leverage devenv inside Github Actions
+      - uses: cachix/cachix-action@v16
+        with:
+          name: devenv
+
+      - name: Install devenv.sh
+        run: nix profile install nixpkgs#devenv
+
+      # Actual Pipelines
+      - name: "[QEMU] Build"
+        run: |
+          nix develop .#ci --impure -c just bq
+
+

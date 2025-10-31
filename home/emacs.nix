@@ -7,6 +7,7 @@
 
 let
   cfg = config.homeModules.emacs;
+  epkgs = pkgs.emacs.pkgs;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -14,7 +15,7 @@ let
     mkOption
     ;
 
-  programming = with pkgs.emacsPackages; [
+  programming = with epkgs; [
     dockerfile-mode
     elpy
     eshell-syntax-highlighting
@@ -31,12 +32,12 @@ let
     terraform-mode
     yaml-mode
   ];
-  evilEtAl = with pkgs.emacsPackages; [
+  evilEtAl = with epkgs; [
     evil
     evil-collection
     treemacs-evil
   ];
-  orgmode = with pkgs.emacsPackages; [
+  orgmode = with epkgs; [
     citeproc
     helm-org-rifle
     org-appear
@@ -53,7 +54,7 @@ let
     htmlize
     ox-rss
   ];
-  treemacsEtAl = with pkgs.emacsPackages; [
+  treemacsEtAl = with epkgs; [
     treemacs
     treemacs-projectile
     treemacs-all-the-icons
