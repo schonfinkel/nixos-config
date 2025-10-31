@@ -38,6 +38,8 @@ local on_attach = function(client, bufnr)
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local bufopts = { noremap = true, silent = true, buffer = bufnr }
 
+    vim.api.nvim_set_option_value('omnifunc', 'v:lua.vim.lsp.omnifunc', { buf = bufnr })
+
     -- Displays hover information about the symbol under the cursor
     vim.keymap.set({ "n", "v" }, "K", vim.lsp.buf.hover, bufopts)
 
@@ -67,8 +69,18 @@ local on_attach = function(client, bufnr)
 
     -- Run conform as the code's formatter
     vim.keymap.set("n", "<space>cf", function()
+        -- vim.lsp.buf.formatting
         require("conform").format({ async = true, lsp_fallback = true })
     end, bufopts)
+
+    -- GOTOs
+    vim.keymap.set("n", "<space>gp", "vim.lsp.diagnostic.goto_prev", bufopts)
+    vim.keymap.set("n", "<space>gn", "vim.lsp.diagnostic.goto_next", bufopts)
+
+    -- Workspace Commands
+    vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, bufopts)
+    vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
+    vim.keymap.set("n", "<space>wl", vim.lsp.buf.list_workspace_folders, bufopts)
 end
 
 -- Code Formatters
@@ -137,7 +149,7 @@ vim.lsp.config["elp"] = {
     }
 }
 
-vim.lsp.enable("erlang")
+vim.lsp.enable("elp")
 
 -- F#
 require("ionide").setup {

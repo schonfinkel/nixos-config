@@ -301,17 +301,18 @@ in
           ];
 
           # Window rules
-          windowrulev2 = [
-            "suppressevent maximize,class:.*"
-            "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+          windowrule = [
+            "match:class .*, suppress_event maximize"
+            "match:class ^$, match:title ^$, match:xwayland true, match:float true, match:fullscreen false, match:pin false, no_focus 1"
+
+            # NetworkManager applet
+            "match:class ^(nm-connection-editor)$, float true, size $floatingSize, move center center"
+
+            # Special Workspaces
+            # "match:class ^(discord)$, workspace special:discord"
 
             # XWayland video bridge fixes
-            "opacity 0.0 override,class:^(xwaylandvideobridge)$"
-            "noanim,class:^(xwaylandvideobridge)$"
-            "noinitialfocus,class:^(xwaylandvideobridge)$"
-            "maxsize 1 1,class:^(xwaylandvideobridge)$"
-            "noblur,class:^(xwaylandvideobridge)$"
-            "nofocus,class:^(xwaylandvideobridge)$"
+            "match:class ^(xwaylandvideobridge)$, opacity 0.0 override, no_anim 1, no_initial_focus 1, max_size 1 1, no_blur 1, no_focus 1"
           ];
         };
       };
