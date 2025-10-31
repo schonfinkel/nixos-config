@@ -29,6 +29,7 @@
         ".config/discord"
         ".config/gh"
         ".config/glab-cli"
+        ".config/mgc"
         ".config/Signal"
         ".config/Slack"
         # Age keys for local development
