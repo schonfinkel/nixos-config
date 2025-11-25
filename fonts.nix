@@ -25,6 +25,7 @@
     nerd-fonts.monoid
     nerd-fonts.symbols-only
     nerd-fonts.space-mono
+    noto-fonts-cjk-sans
     powerline-fonts
     profont
     recursive
