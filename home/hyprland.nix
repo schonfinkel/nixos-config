@@ -78,8 +78,10 @@ in
         settings = {
           # Monitors
           monitor = [
-            "HDMI-A-1,highres,0x0,2"
+            # "HDMI-A-1,highres,0x0,2"
             "eDP-1,highres,1920x0,1"
+            # "HDMI-A-1,preferred,auto,1,mirror,eDP-1"
+            ",preferred,auto,2,mirror,eDP-1"
           ];
 
           # Programs
@@ -518,7 +520,7 @@ in
             "hyprland/language" = {
               format = "{}";
               format-en = "🇺🇸";
-              format-pt= "🇧🇷";
+              format-pt = "🇧🇷";
               on-click = "hyprctl switchxkblayout at-translated-set-2-keyboard next";
             };
 

@@ -1,35 +1,7 @@
 { target }:
 let
-
-  targetOptions = {
-    euclid = {
-      device = "nvme0n1";
-      swap = {
-        size = "16G";
-      };
-    };
-
-    peano = {
-      device = "vda";
-      swap = {
-        size = "4G";
-      };
-    };
-
-    tarski = {
-      device = "nvme0n1";
-      swap = {
-        size = "16G";
-      };
-    };
-
-  }
-
-  device = targetOptions.${target}.device;
-  swapSize = targetOptions.${target}.swap.size;
-
   # Only the VM needs an image size
-  extraAttrs = if target == "peano" then { imageSize = "40G"; } else { };
+  extraAttrs = if target.hostname == "peano" then { imageSize = "40G"; } else { };
 
   defaultMountOptions = [
     "defaults"
@@ -39,7 +11,7 @@ in
 {
   devices = {
     disk.main = extraAttrs // {
-      device = "/dev/${device}";
+      device = "/dev/${target.device}";
       type = "disk";
       content = {
         type = "gpt";
@@ -59,7 +31,7 @@ in
           };
           swap = {
             name = "swap";
-            size = swapSize;
+            size = target.swap.size;
             content.type = "swap";
           };
           root = {

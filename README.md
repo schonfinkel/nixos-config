@@ -2,6 +2,8 @@
 
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
+[![[QEMU] Image Build](https://github.com/schonfinkel/nixos-config/actions/workflows/qemu_build.yml/badge.svg)](https://github.com/schonfinkel/nixos-config/actions/workflows/qemu_build.yml)
+
 My NixOS configuration files, used in my personal systems and work machines.
 
 ## TODO List
