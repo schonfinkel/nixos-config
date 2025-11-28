@@ -38,7 +38,10 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
-    stylix.url = "github:danth/stylix";
+    stylix = {
+      url = "github:danth/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
   };
