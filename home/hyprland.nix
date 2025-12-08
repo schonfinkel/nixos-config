@@ -80,22 +80,20 @@ in
           monitor = [
             "HDMI-A-1,highres,0x0,2"
             "eDP-1,highres,1920x0,1"
-            # "HDMI-A-1,preferred,auto,1,mirror,eDP-1"
-            # ",preferred,auto,2,mirror,eDP-1"
-            # "HDMI-A-1,preferred,auto,2"
           ];
 
           # Programs
-          "$terminal" = "kitty";
-          "$fileManager" = "ranger";
+          "$terminal" = "${lib.getExe pkgs.kitty}";
+          "$fileManager" = "${lib.getExe pkgs.ranger}";
           # "$lock" = "hyprlock";
           "$menu" = "wofi --show drun";
           "$mainMod" = "SUPER";
 
           # Autostart
           exec-once = [
-            "nm-applet &"
-            "waybar & hyprpaper"
+            "nm-applet"
+            "waybar"
+            "hyprpaper"
           ];
 
           # Environment variables
