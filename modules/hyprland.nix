@@ -3,6 +3,7 @@
   inputs,
   lib,
   pkgs,
+  system,
   ...
 }:
 
@@ -72,19 +73,12 @@ in
       };
 
       # programs.uwsm = {
-      #   enable = true;
-      #   waylandCompositors = {
-      #     hyprland = {
-      #       prettyName = "Hyprland";
-      #       comment = "Hyprland compositor managed by UWSM";
-      #       binPath = "/run/current-system/sw/bin/start-hyprland";
-      #       extraUWSMArgs = [
-      #         "-e"
-      #         "-D"
-      #         "Hyprland"
-      #       ];
-      #     };
-      #   };
+      #  enable = true;
+      #  waylandCompositors = {
+      #    hyprland = {
+      #      binPath = lib.mkForce "/run/current-system/sw/bin/start-hyprland";
+      #    };
+      #  };
       # };
 
       # programs.hyprlock = {
