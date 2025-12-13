@@ -50,6 +50,7 @@ in
       p.dockerfile
       p.elixir
       p.erlang
+      p.fsharp
       p.gitattributes
       p.gitignore
       p.gleam
@@ -66,7 +67,6 @@ in
       p.nix
       p.ocaml
       p.ocaml_interface
-      #p.ocaml_type
       p.proto
       p.scheme
       p.sql

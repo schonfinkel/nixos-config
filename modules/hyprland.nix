@@ -3,6 +3,7 @@
   inputs,
   lib,
   pkgs,
+  system,
   ...
 }:
 
@@ -70,6 +71,15 @@ in
         portalPackage =
           inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
       };
+
+      # programs.uwsm = {
+      #  enable = true;
+      #  waylandCompositors = {
+      #    hyprland = {
+      #      binPath = lib.mkForce "/run/current-system/sw/bin/start-hyprland";
+      #    };
+      #  };
+      # };
 
       # programs.hyprlock = {
       #   enable = true;

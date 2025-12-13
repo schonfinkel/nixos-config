@@ -71,7 +71,7 @@ in
         ffmpegthumbnailer
         highlight
         mediainfo
-        poppler_utils
+        poppler-utils
         zathura
       ];
     };

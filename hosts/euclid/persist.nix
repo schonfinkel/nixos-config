@@ -8,19 +8,12 @@
       "/var/lib/systemd/coredump"
       "/var/log"
       "/var/secrets"
-      # Age keys for servers, etc
     ];
     files = [
       # machine-id is used by systemd for the journal, if you don't persist this
       # file you won't be able to easily use journalctl to look at journals for
       # previous boots.
       "/etc/machine-id"
-      {
-        file = "/var/hashed_user_pswd";
-        parentDirectory = {
-          mode = "u=rwx,g=,o=";
-        };
-      }
     ];
     users.mbenevides = {
       directories = [
@@ -29,6 +22,7 @@
         ".config/discord"
         ".config/gh"
         ".config/glab-cli"
+        ".config/mgc"
         ".config/Signal"
         ".config/Slack"
         # Age keys for local development

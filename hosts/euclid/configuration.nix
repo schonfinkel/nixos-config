@@ -93,6 +93,8 @@
   fonts.fontconfig.hinting.enable = true;
   fonts.fontconfig.subpixel.rgba = "rgb";
 
+  programs.steam.enable = true;
+
   # Enable CUPS to print documents.
   # services.printing.enable = true;
 
