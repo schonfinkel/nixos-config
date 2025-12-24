@@ -249,3 +249,10 @@ vim.lsp.enable("terraformls")
 
 vim.g.terraform_fmt_on_save = 1
 vim.g.terraform_align = 1
+
+-- DBee Setup
+local dbee = require('dbee')
+dbee.setup()
+
+vim.keymap.set({"n", "v"}, "<leader>do", function() dbee.open() end, { desc = "Open dbee UI" })
+vim.keymap.set({"n", "v"}, "<leader>dc", function() dbee.close() end, { desc = "Close dbee UI" })

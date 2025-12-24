@@ -29,6 +29,7 @@ in
 
         "editor"."fontFamily" = "Jetbrains Mono";
         "editor.formatOnSave" = false;
+        "editor.inlayHints.enabled" = "offUnlessPressed";
         "editor.linkedEditing" = true;
         "editor.rulers" = [
           80
@@ -42,17 +43,20 @@ in
           "**/.devenv" = true;
         };
 
-        "workbench.tree.indent" = 15;
-
         "terminal.integrated.tabs.enabled" = true;
+
+        "workbench.tree.indent" = 15;
 
         "window.titleBarStyle" = "custom";
         "window.zoomLevel" = 0;
 
         # F#
-        "FSharp.inlayHints.enabled" = false;
         "FSharp.inlayHints.typeAnnotations" = false;
         "FSharp.inlayHints.parameterNames" = false;
+        "FSharp.addFsiWatcher" = true;
+        "FSharp.FSIExtraInteractiveParameters" = [ "--readline" ];
+        "FSharp.FSIExtraSharedParameters" = [ "--readline" ];
+        "FSharp.saveOnSendLastSelection" = false;
 
         # HTML
         "[html]" = {
@@ -71,7 +75,7 @@ in
         };
       };
 
-      profiles.default.extensions = with pkgs.vscode-extensions; [
+      profiles.default.extensions = (with pkgs.vscode-extensions; [
         # .NET
         ms-dotnettools.csharp
         ionide.ionide-fsharp
@@ -91,7 +95,10 @@ in
 
         vscodevim.vim
         ms-vsliveshare.vsliveshare
-      ];
+      ]) ++ (with pkgs.open-vsx; [
+        mtxr.sqltools
+        mtxr.sqltools-driver-mssql
+      ]);
     };
 
     home.packages = with pkgs; [ jetbrains-mono ];

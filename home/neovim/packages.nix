@@ -89,8 +89,9 @@ in
   tooling = with plugins; [
     direnv-vim
     gitsigns-nvim
-    neogit
     Ionide-vim
+    neogit
+    nvim-dbee
     vim-just
     vim-nix
     vim-terraform

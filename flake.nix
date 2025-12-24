@@ -38,6 +38,8 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
+    nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
+
     stylix = {
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -59,6 +61,7 @@
       nixpkgs,
       nixos-generators,
       nixos-hardware,
+      nix-vscode-extensions,
       stylix,
       treefmt-nix,
       ...
