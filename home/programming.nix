@@ -46,6 +46,9 @@ in
   config = mkIf cfg.enable (mkMerge [
     {
       home.packages = with pkgs; [
+        # Editors
+        jetbrains.rider
+
         # For Git
         bfg-repo-cleaner
         git-crypt
@@ -59,7 +62,6 @@ in
         nil
         # Tools
         hoppscotch
-        glab
         gnumake
         shellcheck
       ];
@@ -120,6 +122,7 @@ in
             ri = "rebase -i";
             # Pretty
             branches = "branch --sort=-committerdate --format='%(HEAD)%(color:yellow) %(refname:short) | %(color:bold red)%(committername) | %(color:bold green)%(committerdate:relative) | %(color:blue)%(subject)%(color:reset)' --color=always";
+            tree = "log --graph --oneline --decorate --all";
           };
 
           core = {

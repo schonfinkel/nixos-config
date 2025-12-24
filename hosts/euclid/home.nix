@@ -72,4 +72,8 @@
   homeModules.zshell = {
     enable = true;
   };
+
+  homeModules.vscode = {
+    enable = true;
+  };
 }
