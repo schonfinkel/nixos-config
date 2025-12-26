@@ -164,21 +164,26 @@
         in
         {
 
-          nixosConfigurations = {
-            caladan = mkHost "caladan" "schonfinkel" [ ];
-
-            euclid =
-              let
-                extraModules = [
-                  agenix.nixosModules.default
-                  impermanence.nixosModules.impermanence
-                  nixos-hardware.nixosModules.lenovo-thinkpad-l13
-                  stylix.nixosModules.stylix
-                ];
-              in
-              mkHost "euclid" "mbenevides" extraModules;
-          };
-
+          nixosConfigurations = 
+            let
+              extra = [
+                agenix.nixosModules.default
+                impermanence.nixosModules.impermanence
+                stylix.nixosModules.stylix
+              ];
+            in
+            {
+              # Caladan will be deprecated soon
+              caladan = 
+                mkHost "caladan" "leto" extra;
+              euclid =
+                let
+                  particular = [ 
+                    nixos-hardware.nixosModules.lenovo-thinkpad-l13
+                  ];
+                in
+                  mkHost "euclid" "mbenevides" (extra ++ particular);
+            };
         };
     };
 

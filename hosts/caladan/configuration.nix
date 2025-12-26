@@ -108,9 +108,9 @@
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.schonfinkel = {
+  users.users.leto = {
     isNormalUser = true;
-    description = "schonfinkel";
+    description = "leto";
     extraGroups = [
       "audio"
       "dialout"
@@ -124,6 +124,7 @@
     ];
   };
 
+  programs.steam.enable = true;
   programs.noisetorch.enable = true;
 
   # Enable Host modules
@@ -140,14 +141,14 @@
     enable = true;
   };
 
-  hostModules.impermanence = {
-    enable = true;
-    username = "schonfinkel";
-  };
+  # hostModules.impermanence = {
+  #   enable = true;
+  #   username = "leto";
+  # };
 
   hostModules.ssh = {
     enable = true;
-    allowUsers = [ "schonfinkel" ];
+    allowUsers = [ "leto" ];
   };
 
   hostModules.themes = {

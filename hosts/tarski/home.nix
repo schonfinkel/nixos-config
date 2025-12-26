@@ -1,22 +1,19 @@
 {
-  pkgs,
   config,
-  home,
-  inputs,
-  system,
+  lib,
+  pkgs,
   ...
 }:
-
 {
+  home = {
+    username = "schonfinkel";
+    homeDirectory = "/home/schonfinkel";
+  };
+
   imports = [
     # Directories
     ../../home
   ];
-
-  home = {
-    username = "leto";
-    homeDirectory = "/home/leto";
-  };
 
   programs = {
     home-manager.enable = true;
@@ -73,6 +70,10 @@
   };
 
   homeModules.zshell = {
+    enable = true;
+  };
+
+  homeModules.vscode = {
     enable = true;
   };
 }
