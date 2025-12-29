@@ -40,6 +40,9 @@
 
   homeModules.hyprland = {
     enable = true;
+    monitors = [
+      "HDMI-A-1,highres,0x0,2"
+    ];
   };
 
   homeModules.kitty = {
