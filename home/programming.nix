@@ -51,7 +51,7 @@ in
         lens
 
         # Editors
-        jetbrains.rider
+        # jetbrains.rider
 
         # For Git
         bfg-repo-cleaner

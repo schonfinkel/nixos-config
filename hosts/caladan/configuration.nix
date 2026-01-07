@@ -19,6 +19,7 @@
 
     # Virtualisation
     ../../virtualisation/docker.nix
+    ../../virtualisation/waydroid.nix
   ];
 
   # Bootloader.
@@ -26,8 +27,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  #boot.kernelPackages = pkgs.linuxPackages_6_12;
+  # boot.kernelPackages =pkgs.linuxPackages_latest;
 
   # https://github.com/nix-community/nixos-generators?tab=readme-ov-file#cross-compiling
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
@@ -66,7 +66,7 @@
   hardware.nvidia = {
     # Use the NVidia open source kernel module
     # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
-    open = false;
+    open = true;
 
     # Enable the Nvidia settings menu,
     # accessible via `nvidia-settings`.
