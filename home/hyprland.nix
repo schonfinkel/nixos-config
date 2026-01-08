@@ -72,7 +72,8 @@ in
       services.hyprpaper = {
         enable = true;
         settings = {
-          preload = cfg.wallpapers;
+          ipc = "on";
+          splash = false;
         };
       };
 
