@@ -46,8 +46,12 @@ in
   config = mkIf cfg.enable (mkMerge [
     {
       home.packages = with pkgs; [
+        azure-cli
+        kubectl
+        lens
+
         # Editors
-        jetbrains.rider
+        # jetbrains.rider
 
         # For Git
         bfg-repo-cleaner

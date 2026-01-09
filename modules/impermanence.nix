@@ -26,6 +26,7 @@ in
 
     username = mkOption {
       type = lib.types.str;
+      default = "schonfinkel";
     };
   };
 
@@ -35,7 +36,6 @@ in
         hideMounts = true;
         directories = [
           "/etc/NetworkManager/system-connections"
-          "/etc/ssh"
           "/var/lib/nixos"
           "/var/lib/systemd/coredump"
           "/var/log"
@@ -47,12 +47,6 @@ in
           # file you won't be able to easily use journalctl to look at journals for
           # previous boots.
           "/etc/machine-id"
-          {
-            file = "/var/hashed_user_pswd";
-            parentDirectory = {
-              mode = "u=rwx,g=,o=";
-            };
-          }
         ];
         users."${cfg.username}" = {
           directories = [
@@ -60,13 +54,13 @@ in
             ".config/BraveSoftware"
             ".config/discord"
             ".config/gh"
-            ".config/ngrok"
+            ".config/mgc"
             ".config/Signal"
             ".config/Slack"
-            # Age keys for local development
             ".local/share/sddm"
             ".local/share/direnv"
             ".local/share/TelegramDesktop"
+            ".local/state/nvim/dbee"
             ".nuget"
             "Code"
             "Documents"

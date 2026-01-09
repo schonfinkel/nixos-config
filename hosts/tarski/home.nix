@@ -1,22 +1,19 @@
 {
-  pkgs,
   config,
-  home,
-  inputs,
-  system,
+  lib,
+  pkgs,
   ...
 }:
-
 {
+  home = {
+    username = "schonfinkel";
+    homeDirectory = "/home/schonfinkel";
+  };
+
   imports = [
     # Directories
     ../../home
   ];
-
-  home = {
-    username = "leto";
-    homeDirectory = "/home/leto";
-  };
 
   programs = {
     home-manager.enable = true;
@@ -40,9 +37,6 @@
 
   homeModules.hyprland = {
     enable = true;
-    monitors = [
-      "HDMI-A-1,highres,0x0,2"
-    ];
   };
 
   homeModules.kitty = {
@@ -75,11 +69,11 @@
     enable = true;
   };
 
-  homeModules.vscode = {
+  homeModules.zshell = {
     enable = true;
   };
 
-  homeModules.zshell = {
+  homeModules.vscode = {
     enable = true;
   };
 }

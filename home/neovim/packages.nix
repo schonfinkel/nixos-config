@@ -47,12 +47,17 @@ in
       p.cmake
       p.cpp
       p.css
+      p.csv
+      p.c_sharp
       p.dockerfile
       p.elixir
       p.erlang
       p.fsharp
       p.gitattributes
+      p.gitcommit
       p.gitignore
+      p.git_config
+      p.git_rebase
       p.gleam
       p.haskell
       p.hcl
@@ -60,18 +65,24 @@ in
       p.idris
       p.json
       p.just
+      p.kitty
       p.latex
       p.lua
       p.make
       p.markdown
       p.nix
+      p.nginx
       p.ocaml
       p.ocaml_interface
+      p.pem
       p.proto
       p.scheme
       p.sql
+      p.ssh_config
       p.terraform
+      p.unison
       p.yaml
+      p.zig
     ]))
     # Snippets
     luasnip

@@ -32,6 +32,13 @@ in
   options.homeModules.hyprland = {
     enable = mkEnableOption "Home manager settings for 'Hyprland'";
 
+    monitors = mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "HDMI-A-1,highres,0x0,1.5"
+      ];
+    };
+
     hyprlock = {
       enable = mkEnableOption "Enable a custom 'hyprlock' configuration" // {
         default = true;
@@ -65,7 +72,8 @@ in
       services.hyprpaper = {
         enable = true;
         settings = {
-          preload = cfg.wallpapers;
+          ipc = "on";
+          splash = false;
         };
       };
 
@@ -77,10 +85,7 @@ in
 
         settings = {
           # Monitors
-          monitor = [
-            "HDMI-A-1,highres,0x0,2"
-            "eDP-1,highres,1920x0,1"
-          ];
+          monitor = cfg.monitors;
 
           # Programs
           "$terminal" = "${lib.getExe pkgs.kitty}";
