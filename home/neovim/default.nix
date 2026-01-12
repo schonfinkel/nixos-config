@@ -14,7 +14,6 @@ let
     mkOption
     ;
 
-  dotfiles = f: "${builtins.toString ../../dotfiles/nvim}/${f}.lua";
   vimPlugins = import ./packages.nix { inherit pkgs config lib; };
 in
 {
@@ -30,23 +29,29 @@ in
       vimdiffAlias = true;
       withPython3 = true;
 
-      # https://github.com/nix-community/home-manager/issues/1907#issuecomment-934316296
-      extraConfig = builtins.concatStringsSep "\n" [
-        ''
-          luafile ${dotfiles "settings"}
-          luafile ${dotfiles "line"}
-          luafile ${dotfiles "lsp"}
-          luafile ${dotfiles "cmp"}
-          luafile ${dotfiles "tabs"}
-          luafile ${dotfiles "git"}
-          luafile ${dotfiles "files"}
-          luafile ${dotfiles "treesitter"}
-        ''
-      ];
+      extraConfig = ''
+        lua << EOF
+          -- Add the XDG config path to the Lua package path
+          package.path = package.path .. ";${config.xdg.configHome}/nvim/?.lua"
+          
+          -- Load modular settings
+          require("settings")
+          require("line")
+          require("lsp")
+          require("cmp")
+          require("tabs")
+          require("git")
+          require("files")
+          require("treesitter")
+        EOF
+      '';
 
       extraPackages = with pkgs; [
         bash-language-server
         clang
+        # Adding ripgrep and fd, for Telescope
+        fd
+        ripgrep
         tree-sitter
       ];
 

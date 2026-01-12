@@ -1,22 +1,35 @@
--- Fallback for the absolute latest version if configs.setup is dead
+-- We use an autocmd to start highlighting because the old 'setup' is gone.
 vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("TreesitterSetup", { clear = true }),
   callback = function(args)
     local bufnr = args.buf
+    -- Check if we have a parser for this filetype
     local ft = vim.bo[bufnr].filetype
-    
-    -- To exclude certain parses, just to this
-    -- if ft == "just" then return end
-
-    -- Start highlighting if a parser exists
     local lang = vim.treesitter.language.get_lang(ft)
+    
     if lang then
+      -- Attempt to start highlighting. Using pcall prevents 
+      -- startup errors if a specific parser is missing.
       pcall(vim.treesitter.start, bufnr, lang)
     end
   end,
 })
 
--- Enable Treesitter-based folding
+-- Indentation
+vim.api.nvim_create_autocmd("FileType", {
+  group = ts_group,
+  callback = function(args)
+    local ft = vim.bo[args.buf].filetype
+    -- Check if nvim-treesitter has an indentation module for this language
+    local has_indent = pcall(require, "nvim-treesitter.indent")
+    
+    if has_indent and vim.treesitter.language.get_lang(ft) then
+      vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+    end
+  end,
+})
+
+-- Folding logic
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
--- Don't fold by default when opening
-vim.opt.foldenable = false
+vim.opt.foldenable = true
