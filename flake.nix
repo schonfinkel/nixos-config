@@ -9,6 +9,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     emacs = {
       url = "github:nix-community/emacs-overlay/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -53,6 +58,7 @@
       self,
       agenix,
       devenv,
+      disko,
       flake-parts,
       impermanence,
       home,
@@ -73,12 +79,21 @@
         "aarch64-darwin"
         "x86_64-darwin"
       ];
+
       perSystem =
         { pkgs, system, ... }:
         let
           lib = nixpkgs.lib;
 
           system = "x86_64-linux";
+
+          # Port Fowarding (HOST -> VM)
+          # - SSH: 2222 -> 22
+          qemu_options = {
+            net = "hostfwd=tcp:127.0.0.1:2222-:22";
+          };
+
+          settings = import ./profiles/settings.nix;
 
           treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
         in
@@ -91,10 +106,45 @@
 
           # nix build
           packages = {
+            # QEMU
+            # nix build .#qemu
+            qemu = nixos-generators.nixosGenerate {
+              system = "x86_64-linux";
+              modules = [
+                agenix.nixosModules.default
+                disko.nixosModules.disko
+                impermanence.nixosModules.impermanence
+                ./hosts/peano/configuration.nix
+                (import ./overlays)
+              ];
+              specialArgs = {
+                hostId = "3244f94e";
+                profile = "ext4";
+                target = settings.peano;
+              };
+              format = "qcow";
+            };
           };
 
           # nix run
           apps = {
+            # https://github.com/nix-community/disko/blob/a5c4f2ab72e3d1ab43e3e65aa421c6f2bd2e12a1/docs/disko-images.md#test-the-image-inside-a-vm
+            # nix run .#qemu
+            qemu = {
+              type = "app";
+
+              program = "${pkgs.writeShellScript "run-vm.sh" ''
+                set -e
+                echo "Building VM with Disko..."
+                ${pkgs.nix}/bin/nix build ".#nixosConfigurations.bootstrap_vm.config.system.build.vmWithDisko" "$@"
+
+                export QEMU_KERNEL_PARAMS="console=ttyS0"
+                export QEMU_NET_OPTS=${qemu_options.net}
+
+                echo "Running VM..."
+                ${pkgs.nix}/bin/nix run -L ".#nixosConfigurations.bootstrap_vm.config.system.build.vmWithDisko"
+              ''}";
+            };
           };
 
           # nix develop
@@ -113,8 +163,7 @@
                     ];
 
                     enterShell = ''
-                      Adding mg_cli to $PATH
-                      export PATH="$(pwd)/mg_cli:$PATH"
+                      Entering dev shell
                     '';
                   }
                 )
@@ -163,7 +212,6 @@
             };
         in
         {
-
           nixosConfigurations = 
             let
               extra = [

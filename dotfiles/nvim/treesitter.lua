@@ -1,29 +1,22 @@
-require 'nvim-treesitter.configs'.setup {
-  -- Install parsers synchronously (only applied to `ensure_installed`)
-  sync_install = false,
+-- Fallback for the absolute latest version if configs.setup is dead
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function(args)
+    local bufnr = args.buf
+    local ft = vim.bo[bufnr].filetype
+    
+    -- To exclude certain parses, just to this
+    -- if ft == "just" then return end
 
-  -- Automatically install missing parsers when entering buffer
-  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-  auto_install = false,
-  indent = { enable = true },
+    -- Start highlighting if a parser exists
+    local lang = vim.treesitter.language.get_lang(ft)
+    if lang then
+      pcall(vim.treesitter.start, bufnr, lang)
+    end
+  end,
+})
 
-  -- List of parsers to ignore installing (for "all")
-  ignore_install = {},
-  ensure_installed = {},
-  modules = {},
-
-  ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
-  -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
-
-  highlight = {
-    -- `false` will disable the whole extension
-    enable = true,
-    disable = { "just" },
-
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = false,
-  },
-}
+-- Enable Treesitter-based folding
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- Don't fold by default when opening
+vim.opt.foldenable = false
