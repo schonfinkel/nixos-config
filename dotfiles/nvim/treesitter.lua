@@ -32,4 +32,11 @@ vim.api.nvim_create_autocmd("FileType", {
 -- Folding logic
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldcolumn = "0"
+vim.opt.foldtext = ""
+-- Start with all folds open
+vim.opt.foldlevel = 99
+-- Close all folds when opening a file
+vim.opt.foldlevelstart = 1
+vim.opt.foldnestmax = 4
 vim.opt.foldenable = true

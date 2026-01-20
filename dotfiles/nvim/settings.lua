@@ -58,9 +58,12 @@ opt.viminfo = ""
 opt.viminfofile = "NONE"
 
 -- Miscellaneous quality of life
+opt.hlsearch = true
 opt.ignorecase = true
 opt.incsearch = true
 opt.ttimeoutlen = 5
+opt.smartcase = true
+
 opt.compatible = false
 opt.hidden = true
 opt.shortmess = "atI"
