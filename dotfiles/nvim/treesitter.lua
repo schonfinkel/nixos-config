@@ -1,29 +1,42 @@
-require 'nvim-treesitter.configs'.setup {
-  -- Install parsers synchronously (only applied to `ensure_installed`)
-  sync_install = false,
+-- We use an autocmd to start highlighting because the old 'setup' is gone.
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("TreesitterSetup", { clear = true }),
+  callback = function(args)
+    local bufnr = args.buf
+    -- Check if we have a parser for this filetype
+    local ft = vim.bo[bufnr].filetype
+    local lang = vim.treesitter.language.get_lang(ft)
+    
+    if lang then
+      -- Attempt to start highlighting. Using pcall prevents 
+      -- startup errors if a specific parser is missing.
+      pcall(vim.treesitter.start, bufnr, lang)
+    end
+  end,
+})
 
-  -- Automatically install missing parsers when entering buffer
-  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-  auto_install = false,
-  indent = { enable = true },
+-- Indentation
+vim.api.nvim_create_autocmd("FileType", {
+  group = ts_group,
+  callback = function(args)
+    local ft = vim.bo[args.buf].filetype
+    -- Check if nvim-treesitter has an indentation module for this language
+    local has_indent = pcall(require, "nvim-treesitter.indent")
+    
+    if has_indent and vim.treesitter.language.get_lang(ft) then
+      vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+    end
+  end,
+})
 
-  -- List of parsers to ignore installing (for "all")
-  ignore_install = {},
-  ensure_installed = {},
-  modules = {},
-
-  ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
-  -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
-
-  highlight = {
-    -- `false` will disable the whole extension
-    enable = true,
-    disable = { "just" },
-
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = false,
-  },
-}
+-- Folding logic
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldcolumn = "0"
+vim.opt.foldtext = ""
+-- Start with all folds open
+vim.opt.foldlevel = 99
+-- Close all folds when opening a file
+vim.opt.foldlevelstart = 1
+vim.opt.foldnestmax = 4
+vim.opt.foldenable = true

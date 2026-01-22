@@ -36,11 +36,15 @@ in
         hideMounts = true;
         directories = [
           "/etc/NetworkManager/system-connections"
+          # This is the directory where we'll dump a private key
+          # that will need to be used for "stage 2", when agenix
+          # is enabled and requires a key to unlock the secrets.
+          "/var/lib/agenix"
           "/var/lib/nixos"
+          "/var/lib/postgresql"
+          "/var/lib/tailscale"
           "/var/lib/systemd/coredump"
           "/var/log"
-          # Age keys for servers, etc
-          "/var/secrets"
         ];
         files = [
           # machine-id is used by systemd for the journal, if you don't persist this

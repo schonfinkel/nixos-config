@@ -47,6 +47,7 @@ in
     {
       home.packages = with pkgs; [
         azure-cli
+        azure-functions-core-tools
         kubectl
         lens
 

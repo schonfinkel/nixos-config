@@ -9,8 +9,6 @@ vim.cmd [[
     set noswapfile
 ]]
 
---vim.cmd.colorscheme("tokyonight-night")
-
 -------
 -- Maps
 -------
@@ -32,7 +30,6 @@ vim.keymap.set("n", "<ESC>", ":nohlsearch<Bar>:echo<CR>")
 -- Performance
 opt.lazyredraw = true;
 opt.shell = "zsh"
-opt.shadafile = "NONE"
 
 -- Colors
 opt.termguicolors = true
@@ -61,9 +58,12 @@ opt.viminfo = ""
 opt.viminfofile = "NONE"
 
 -- Miscellaneous quality of life
+opt.hlsearch = true
 opt.ignorecase = true
 opt.incsearch = true
 opt.ttimeoutlen = 5
+opt.smartcase = true
+
 opt.compatible = false
 opt.hidden = true
 opt.shortmess = "atI"
@@ -72,7 +72,7 @@ opt.shortmess = "atI"
 require("autoclose").setup()
 
 -- Comment
-require("Comment").setup()
+require('Comment').setup({})
 
 -- Telescope
 local builtin = require('telescope.builtin')
