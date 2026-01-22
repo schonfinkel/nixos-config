@@ -96,6 +96,7 @@ in
         vscodevim.vim
         ms-vsliveshare.vsliveshare
       ]) ++ (with pkgs.open-vsx; [
+        ms-azuretools.vscode-azurefunctions
         mtxr.sqltools
         mtxr.sqltools-driver-mssql
       ]);
