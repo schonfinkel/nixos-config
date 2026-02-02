@@ -76,6 +76,9 @@ in
       };
 
       profiles.default.extensions = (with pkgs.vscode-extensions; [
+        # Work
+        # anthropic.claude-code
+
         # .NET
         ms-dotnettools.csharp
         ionide.ionide-fsharp

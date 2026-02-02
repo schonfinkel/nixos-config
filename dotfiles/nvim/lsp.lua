@@ -152,6 +152,7 @@ vim.lsp.config["elp"] = {
 vim.lsp.enable("elp")
 
 -- F#
+local fs_autocomplete_path = os.getenv("FS_AUTOCOMPLETE_PATH")
 require("ionide").setup {
     autostart = true,
     on_attach = on_attach,
@@ -170,6 +171,7 @@ vim.g["fsharp#unused_opens_analyzer"] = 1
 vim.g["fsharp#unused_declarations_analyzer"] = 1
 vim.g["fsharp#show_signature_on_cursor_move"] = 1
 vim.g["fsharp#fsi_focus_on_send"] = 1
+vim.g["fsharp#fsautocomplete_command"] = { fs_autocomplete_path }
 
 -- Gleam
 vim.lsp.config["gleam"] = {

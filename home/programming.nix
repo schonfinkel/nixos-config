@@ -59,6 +59,7 @@ in
         git-crypt
         gitflow
         git-lfs
+        git-secrets
         git-subrepo
         meld
 
