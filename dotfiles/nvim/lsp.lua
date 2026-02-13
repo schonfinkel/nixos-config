@@ -152,26 +152,63 @@ vim.lsp.config["elp"] = {
 vim.lsp.enable("elp")
 
 -- F#
-local fs_autocomplete_path = os.getenv("FS_AUTOCOMPLETE_PATH")
-require("ionide").setup {
-    autostart = true,
-    on_attach = on_attach,
-    capabilities = capabilities,
-}
+require("ionide").setup({
+	on_attach = on_attach,
+	capabilities = capabilities,
+	settings = {
+	    FSharp = {
+            enableMSBuildProjectGraph = true,
+            inlayHints = {
+                enabled = true,
+                typeAnnotations = false,
+                disableLongTooltip = false,
+                parameterNames = false,
+            },
+			Linter = true,
+		},
+        IonideNvimSettings = {
+            ShowSignatureOnCursorMove = false,
+            FsiStdOutFileName = "./FsiOutput.txt",
+            FsautocompleteCommand = { "fsautocomplete", "--project-graph-enabled", "--adaptive-lsp-server-enabled", "--use-fcs-transparent-compiler" },
+            UseRecommendedServerConfig = false,
+            AutomaticWorkspaceInit = false,
+            AutomaticReloadWorkspace = false,
+            AutomaticCodeLensRefresh = false,
+            FsiCommand = "dotnet fsi",
+            -- FsiKeymap = "vscode",
+            FsiWindowCommand = "botright 10new",
+            FsiFocusOnSend = false,
+            EnableFsiStdOutTeeToFile = false,
+            LspAutoSetup = false,
+            LspRecommendedColorScheme = false,
+            FsiVscodeKeymaps = true,
+            StatusLine = "Ionide",
+            FsiKeymapSend = "<M-cr>",
+            FsiKeymapToggle = "<M-@>",
+        },
+    },
+})
+
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+	pattern = "*.fs,*.fsx,*.fsi",
+	command = [[set filetype=fsharp]],
+})
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+	pattern = "*.fsproj,*.csproj,*.vbproj,*.cproj,*.proj",
+	command = [[set filetype=xml]],
+})
 
 -- https://github.com/ionide/Ionide-vim?tab=readme-ov-file#settings
-vim.api.nvim_command('autocmd BufNewFile,BufRead *.fs,*.fsx,*.fsi,*.fsl,*.fsy set filetype=fsharp')
-vim.api.nvim_command('autocmd BufNewFile,BufRead *.fsproj,*.csproj,*.vbproj,*.cproj,*.proj set filetype=xml')
-
-vim.g["fsharp#lsp_auto_setup"] = 1
-vim.g["fsharp#lsp_recommended_colorscheme"] = 1
-vim.g["fsharp#automatic_workspace_init"] = 1
-vim.g["fsharp#linter"] = 1
-vim.g["fsharp#unused_opens_analyzer"] = 1
-vim.g["fsharp#unused_declarations_analyzer"] = 1
-vim.g["fsharp#show_signature_on_cursor_move"] = 1
-vim.g["fsharp#fsi_focus_on_send"] = 1
-vim.g["fsharp#fsautocomplete_command"] = { fs_autocomplete_path }
+-- vim.api.nvim_command('autocmd BufNewFile,BufRead *.fs,*.fsx,*.fsi,*.fsl,*.fsy set filetype=fsharp')
+-- vim.g["fsharp#lsp_auto_setup"] = 1
+-- vim.g["fsharp#lsp_recommended_colorscheme"] = 1
+-- vim.g["fsharp#automatic_workspace_init"] = 1
+-- vim.g["fsharp#linter"] = 1
+-- vim.g["fsharp#unused_opens_analyzer"] = 1
+-- vim.g["fsharp#unused_declarations_analyzer"] = 1
+-- vim.g["fsharp#show_signature_on_cursor_move"] = 1
+-- vim.g["fsharp#fsi_focus_on_send"] = 1
+-- vim.g["fsharp#fsautocomplete_command"] = { fs_autocomplete_path }
 
 -- Gleam
 vim.lsp.config["gleam"] = {
