@@ -53,7 +53,7 @@ in
 
       # Networking
       networking.hostName = cfg.hostName;
-      # networking.nameservers = [ "1.1.1.1" "8.8.8.8" ];
+      networking.nameservers = [ "1.1.1.1" "8.8.8.8" ];
 
       # Pick only one of the below networking options.
       # Enables wireless support via wpa_supplicant.
