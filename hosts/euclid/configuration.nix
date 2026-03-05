@@ -26,7 +26,16 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  #boot.kernelPackages = pkgs.linuxPackages_6_1;
+  boot.kernelParams = [
+    "systemd.log_level=debug"
+    "systemd.log_target=kmsg"
+    "rd.systemd.log_level=debug"
+  ];
+
+  #services.power-profiles-daemon.enable = false;
+  #services.tlp.enable = true;
+  #systemd.services.systemd-udev-settle.enable = false;
 
   boot.kernel.sysctl = {
     "kernel.sysrq" = 128;
@@ -85,7 +94,7 @@
   services.xserver = {
     xkb.layout = "br(thinkpad),us";
     xkb.options = "ctrl:nocaps,";
-    videoDrivers = [ "intel" ];
+    videoDrivers = [ "modesetting" ];
   };
 
   hardware.graphics.enable = true;
