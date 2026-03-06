@@ -18,12 +18,14 @@
     users.mbenevides = {
       directories = [
         ".aws"
+        ".azure"
         ".config/BraveSoftware"
         ".config/discord"
         ".config/gh"
         ".config/mgc"
         ".config/Signal"
         ".config/Slack"
+        ".kube"
         ".local/share/sddm"
         ".local/share/direnv"
         ".local/share/TelegramDesktop"

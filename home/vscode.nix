@@ -76,9 +76,6 @@ in
       };
 
       profiles.default.extensions = (with pkgs.vscode-extensions; [
-        # Work
-        # anthropic.claude-code
-
         # .NET
         ms-dotnettools.csharp
         ionide.ionide-fsharp
@@ -99,6 +96,13 @@ in
         vscodevim.vim
         ms-vsliveshare.vsliveshare
       ]) ++ (with pkgs.open-vsx; [
+        # Work
+        anthropic.claude-code
+        # ms-mssql.mssql
+
+        # mkloubert.vscode-http-client
+        humao.rest-client
+
         ms-azuretools.vscode-azurefunctions
         mtxr.sqltools
         mtxr.sqltools-driver-mssql
