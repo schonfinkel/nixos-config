@@ -40,6 +40,7 @@ in
           # that will need to be used for "stage 2", when agenix
           # is enabled and requires a key to unlock the secrets.
           "/var/lib/agenix"
+          "/var/lib/docker/"
           "/var/lib/nixos"
           "/var/lib/postgresql"
           "/var/lib/tailscale"
@@ -54,13 +55,16 @@ in
         ];
         users."${cfg.username}" = {
           directories = [
+            ".android"
             ".aws"
+            ".azure"
             ".config/BraveSoftware"
             ".config/discord"
             ".config/gh"
             ".config/mgc"
             ".config/Signal"
             ".config/Slack"
+            ".kube"
             ".local/share/sddm"
             ".local/share/direnv"
             ".local/share/TelegramDesktop"
