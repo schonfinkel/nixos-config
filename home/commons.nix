@@ -31,16 +31,19 @@ in
       flameshot
       graphviz
       htop
+      # whois, ping, ping6, etc
+      inetutils
       jq
       lsof
       nix-prefetch-git
       parallel
       pavucontrol
       pinentry-curses
-      # For lspci, ...
+      # lspci, ...
       pciutils
-      # For pkill, killall, pstree, fuser, ...
+      # pkill, killall, pstree, fuser, ...
       psmisc
+      rdap
       ripgrep
       sshfs
       smartmontools
@@ -49,7 +52,7 @@ in
       tree-sitter
       unar
       unzip
-      # For lsusb, etc
+      # lsusb, etc
       usbutils
       wget
       zip
