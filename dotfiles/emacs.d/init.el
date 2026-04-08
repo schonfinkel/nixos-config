@@ -33,6 +33,19 @@
       delete-old-versions t ;; Don't ask to delete excess backup versions.
       backup-by-copying t)  ;; Copy all files, don't rename them.
 
+;; Stolen from here 
+;; https://emacsredux.com/blog/2026/04/07/stealing-from-the-best-emacs-configs/
+(setq-default bidi-display-reordering 'left-to-right
+              bidi-paragraph-direction 'left-to-right)
+(setq bidi-inhibit-bpa t)
+
+(setq redisplay-skip-fontification-on-input t)
+
+(setq read-process-output-max (* 4 1024 1024)) ; 4MB
+
+(setq-default cursor-in-non-selected-windows nil)
+(setq highlight-nonselected-windows nil)
+
 ;; Extra settings
 (load-file "~/.emacs.d/edit.el")
 (load-file "~/.emacs.d/evil.el")
