@@ -64,7 +64,8 @@ in
 
         # Language Servers
         lua-language-server
-        nil
+        nixd
+        terraform-ls
 
         # Tools
         devenv

@@ -20,6 +20,7 @@ let
     elpy
     eshell-syntax-highlighting
     fsharp-mode
+    gleam-ts-mode
     # Diagrams
     graphviz-dot-mode
     plantuml-mode

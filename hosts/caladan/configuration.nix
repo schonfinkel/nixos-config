@@ -77,10 +77,6 @@
 
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
     package = config.boot.kernelPackages.nvidiaPackages.stable;
-
-    # package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-    #   version = "550.144.03";
-    # };
     # package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
 

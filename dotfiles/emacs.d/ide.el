@@ -183,6 +183,11 @@
  'org-babel-load-languages
  '((python . t)))
 
+;;; Gleam
+(use-package gleam-mode
+  :mode "\\.gleam\\'"
+  :hook (gleam-mode . lsp))
+
 ;;; Terraform/HCL
 (require 'terraform-mode)
 (add-to-list 'auto-mode-alist '("\\.tf\\'" . terraform-mode))
