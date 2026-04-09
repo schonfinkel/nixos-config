@@ -49,7 +49,6 @@ in
         azure-cli
         azure-functions-core-tools
         kubectl
-        lens
 
         # Editors
         # jetbrains.rider
@@ -65,8 +64,11 @@ in
 
         # Language Servers
         lua-language-server
-        nil
+        nixd
+        terraform-ls
+
         # Tools
+        devenv
         hoppscotch
         gnumake
         shellcheck

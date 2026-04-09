@@ -37,7 +37,7 @@ in
     barbar-nvim
   ];
   lsp = with plugins // private; [
-    nvim-cmp
+    blink-cmp
     nvim-lspconfig
     (nvim-treesitter.withPlugins (p: [
       p.agda
@@ -84,15 +84,6 @@ in
       p.yaml
       p.zig
     ]))
-    # Snippets
-    luasnip
-    cmp-git
-    # CMP Plugins
-    cmp-cmdline
-    cmp_luasnip
-    cmp-nvim-lsp
-    cmp-path
-    cmp-treesitter
     # Formatting
     conform-nvim
   ];

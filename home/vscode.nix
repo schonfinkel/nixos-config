@@ -97,7 +97,7 @@ in
         ms-vsliveshare.vsliveshare
       ]) ++ (with pkgs.open-vsx; [
         # Work
-        anthropic.claude-code
+        # anthropic.claude-code
         # ms-mssql.mssql
 
         # mkloubert.vscode-http-client

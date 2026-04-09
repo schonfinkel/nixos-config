@@ -1,6 +1,7 @@
 -- We use an autocmd to start highlighting because the old 'setup' is gone.
+local ts_group = vim.api.nvim_create_augroup("TreesitterSetup", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
-  group = vim.api.nvim_create_augroup("TreesitterSetup", { clear = true }),
+  group = ts_group,
   callback = function(args)
     local bufnr = args.buf
     -- Check if we have a parser for this filetype

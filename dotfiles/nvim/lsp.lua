@@ -1,27 +1,10 @@
--- Languages
-vim.o.completeopt = "menu,menuone,noselect"
-
 -----------------------
 -- Language Servers ---
 
--- Set tab to accept the autocompletion
-local t = function(str)
-    return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-_G.tab_complete = function()
-    if vim.fn.pumvisible() == 1 then
-        return t "<C-n>"
-    else
-        return t "<S-Tab>"
-    end
-end
-
-vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", { expr = true })
-vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", { expr = true })
 vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename)
 
 -- Setup
-local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require('blink.cmp').get_lsp_capabilities()
 
 -- On Attach customizations
 local opts = { noremap = true, silent = true }
@@ -117,18 +100,18 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 vim.lsp.config["bashls"] = {
     on_attach = on_attach,
     capabilities = capabilities,
+    filetypes = { "sh" },
+    root_markers = { ".git" },
 }
 vim.lsp.enable("bashls")
 
 -- Elixir
--- Every Elixir devenv needs to have this envar defined
-local elixir_ls_path = os.getenv("ELIXIR_LS_PATH")
 vim.lsp.config["elixirls"] = {
     on_attach = on_attach,
     capabilities = capabilities,
-    cmd = { elixir_ls_path },
-    -- filetypes = { "ex", "elixir", "eelixir", "heex", "surface" },
-    -- root_dir = root_pattern("mix.exs", ".git") or vim.loop.os_homedir(),
+    cmd = { "elixir-ls" },
+    filetypes = { "elixir", "eelixir", "heex", "surface" },
+    root_markers = { "mix.exs", ".git" },
 }
 vim.lsp.enable("elixirls")
 
@@ -136,6 +119,8 @@ vim.lsp.enable("elixirls")
 vim.lsp.config["elp"] = {
     on_attach = on_attach,
     capabilities = capabilities,
+    filetypes = { "erlang" },
+    root_markers = { "rebar.config", "erlang.mk", ".git" },
     settings = {
         elp = {
             diagnostics = {
@@ -152,51 +137,52 @@ vim.lsp.config["elp"] = {
 vim.lsp.enable("elp")
 
 -- F#
-require("ionide").setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
-	settings = {
-	    FSharp = {
-            enableMSBuildProjectGraph = true,
-            inlayHints = {
-                enabled = true,
-                typeAnnotations = false,
-                disableLongTooltip = false,
-                parameterNames = false,
-            },
-			Linter = true,
-		},
-        IonideNvimSettings = {
-            ShowSignatureOnCursorMove = false,
-            FsiStdOutFileName = "./FsiOutput.txt",
-            FsautocompleteCommand = { "fsautocomplete", "--project-graph-enabled", "--adaptive-lsp-server-enabled", "--use-fcs-transparent-compiler" },
-            UseRecommendedServerConfig = false,
-            AutomaticWorkspaceInit = false,
-            AutomaticReloadWorkspace = false,
-            AutomaticCodeLensRefresh = false,
-            FsiCommand = "dotnet fsi",
-            -- FsiKeymap = "vscode",
-            FsiWindowCommand = "botright 10new",
-            FsiFocusOnSend = false,
-            EnableFsiStdOutTeeToFile = false,
-            LspAutoSetup = false,
-            LspRecommendedColorScheme = false,
-            FsiVscodeKeymaps = true,
-            StatusLine = "Ionide",
-            FsiKeymapSend = "<M-cr>",
-            FsiKeymapToggle = "<M-@>",
-        },
-    },
-})
+vim.lsp.enable('fsautocomplete')
+-- require("ionide").setup({
+-- 	on_attach = on_attach,
+-- 	capabilities = capabilities,
+-- 	settings = {
+-- 	    FSharp = {
+--             enableMSBuildProjectGraph = true,
+--             inlayHints = {
+--                 enabled = true,
+--                 typeAnnotations = false,
+--                 disableLongTooltip = false,
+--                 parameterNames = false,
+--             },
+-- 			Linter = true,
+-- 		},
+--         IonideNvimSettings = {
+--             ShowSignatureOnCursorMove = false,
+--             FsiStdOutFileName = "./FsiOutput.txt",
+--             FsautocompleteCommand = { "fsautocomplete", "--project-graph-enabled", "--adaptive-lsp-server-enabled", "--use-fcs-transparent-compiler" },
+--             UseRecommendedServerConfig = false,
+--             AutomaticWorkspaceInit = false,
+--             AutomaticReloadWorkspace = false,
+--             AutomaticCodeLensRefresh = false,
+--             FsiCommand = "dotnet fsi",
+--             -- FsiKeymap = "vscode",
+--             FsiWindowCommand = "botright 10new",
+--             FsiFocusOnSend = false,
+--             EnableFsiStdOutTeeToFile = false,
+--             LspAutoSetup = false,
+--             LspRecommendedColorScheme = false,
+--             FsiVscodeKeymaps = true,
+--             StatusLine = "Ionide",
+--             FsiKeymapSend = "<M-cr>",
+--             FsiKeymapToggle = "<M-@>",
+--         },
+--     },
+-- })
 
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-	pattern = "*.fs,*.fsx,*.fsi",
-	command = [[set filetype=fsharp]],
-})
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-	pattern = "*.fsproj,*.csproj,*.vbproj,*.cproj,*.proj",
-	command = [[set filetype=xml]],
-})
+-- vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+-- 	pattern = "*.fs,*.fsx,*.fsi",
+-- 	command = [[set filetype=fsharp]],
+-- })
+-- vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+-- 	pattern = "*.fsproj,*.csproj,*.vbproj,*.cproj,*.proj",
+-- 	command = [[set filetype=xml]],
+-- })
 
 -- https://github.com/ionide/Ionide-vim?tab=readme-ov-file#settings
 -- vim.api.nvim_command('autocmd BufNewFile,BufRead *.fs,*.fsx,*.fsi,*.fsl,*.fsy set filetype=fsharp')
@@ -215,6 +201,8 @@ vim.lsp.config["gleam"] = {
     on_attach = on_attach,
     capabilities = capabilities,
     cmd = { "gleam", "lsp" },
+    filetypes = { "gleam" },
+    root_markers = { "gleam.toml" },
 }
 vim.lsp.enable("gleam")
 
@@ -222,6 +210,8 @@ vim.lsp.enable("gleam")
 vim.lsp.config["lua_ls"] = {
     on_attach = on_attach,
     capabilities = capabilities,
+    filetypes = { "lua" },
+    root_markers = { ".luarc.json", ".luarc.jsonc", ".git" },
     settings = {
         Lua = {
             runtime = {
@@ -246,52 +236,26 @@ vim.lsp.config["lua_ls"] = {
 vim.lsp.enable("lua_ls")
 
 -- Nix
-vim.lsp.config["nil"] = {
-    on_attach = on_attach,
-    capabilities = capabilities,
-    settings = {
-        ['nil'] = {
-            formatting = {
-                command = { "nix fmt" },
-            },
-        },
-    },
-}
-vim.lsp.enable("nil")
+vim.lsp.enable('nixd')
 
 -- Ocaml
 vim.lsp.config["ocamlsp"] = {
     on_attach = on_attach,
     capabilities = capabilities,
     cmd = { "ocamllsp", "--fallback-read-dot-merlin" },
-    filetypes = {
-        "dune",
-        "ml",
-        "mli",
-        "menhir",
-        "ocaml",
-        "ocaml.menhir",
-        "ocaml.interface",
-        "ocamlinterface",
-        "ocaml.ocamllex",
-        "reason"
-    }
+    root_markers = { "dune-project", "dune-workspace", ".git" },
+    filetypes = { "ocaml", "ocaml.interface", "dune" }
 }
 vim.lsp.enable("ocamlsp")
 
 -- Terraform
 vim.lsp.config["terraformls"] = {
     on_attach = on_attach,
-    capabilities = capabilities
+    capabilities = capabilities,
+    filetypes = { "terraform" },
+    root_markers = { ".terraform", ".git" },
 }
 vim.lsp.enable("terraformls")
 
 vim.g.terraform_fmt_on_save = 1
 vim.g.terraform_align = 1
-
--- DBee Setup
-local dbee = require('dbee')
-dbee.setup()
-
-vim.keymap.set({"n", "v"}, "<leader>do", function() dbee.open() end, { desc = "Open dbee UI" })
-vim.keymap.set({"n", "v"}, "<leader>dc", function() dbee.close() end, { desc = "Close dbee UI" })
