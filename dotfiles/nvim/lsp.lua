@@ -80,6 +80,7 @@ require("conform").setup({
     formatters_by_ft = {
         erlang = { "erlfmt" },
         elixir = { "elixir-ls" },
+        gleam = { "gleam" },
         ocaml = { "ocamlformat" },
         rust = { "rustfmt" },
         zig = { "zigfmt" },

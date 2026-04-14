@@ -1,8 +1,6 @@
 {
   lib,
   config,
-  modulesPath,
-  pkgs,
   ...
 }:
 
@@ -14,36 +12,36 @@ let
   disko_settings = import disko_profile_path { target = target; };
   inherit (lib)
     mkEnableOption
-    mkIf
     mkForce
+    mkIf
     mkMerge
     mkOption
     ;
 in
 {
-  options.modules.disko = {
+  options.hostModules.disko = {
     enable = mkEnableOption "Disko module";
 
     profile = mkOption {
       type = lib.types.str;
-      description = "The target to use for the disko module. Only 'ext4' is supported right now.";
+      description = "The disko layout profile to use. Only 'ext4' is supported right now.";
     };
 
     target = mkOption {
       type = lib.types.str;
-      description = "The profile to use for the disko module. Can be either 'aws', 'mgc' or 'vm'.";
+      description = "The host target name (e.g. 'peano', 'euclid', 'tarski').";
     };
   };
 
   config = mkIf cfg.enable (mkMerge [
-    ({
+    {
       disko.devices = disko_settings.devices;
-    })
+    }
 
     (mkIf (cfg.target == "aws") {
       boot.loader.grub = {
         enable = true;
-        devices = lib.mkForce [ "/dev/${target.device}" ];
+        devices = mkForce [ "/dev/${target.device}" ];
       };
     })
 
@@ -56,11 +54,11 @@ in
         kernelModules = [ "kvm-intel" ];
       };
 
-      boot.loader.grub.devices = lib.mkForce [ "/dev/vda" ];
+      boot.loader.grub.devices = mkForce [ "/dev/vda" ];
     })
 
-    (mkIf (cfg.target == "vm") {
-      boot.loader.grub.devices = lib.mkForce [ "/dev/vda" ];
+    (mkIf (target.hostname == "peano") {
+      boot.loader.grub.devices = mkForce [ "/dev/vda" ];
       boot.initrd.availableKernelModules = [
         "ahci"
         "xhci_pci"
@@ -75,9 +73,6 @@ in
         virtualisation.diskSize = 40960;
         # 4GB in Mb
         virtualisation.memorySize = 4096;
-        # TODO: Check it layer how we can make this usable on MacOS
-        # For running VM on macos: https://www.tweag.io/blog/2023-02-09-nixos-vm-on-macos/
-        # virtualisation.host.pkgs = inputs.nixpkgs.legacyPackages.aarch64-darwin;
       };
     })
   ]);

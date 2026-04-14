@@ -88,8 +88,6 @@ in
           monitor = cfg.monitors;
 
           # Programs
-          "$terminal" = "${lib.getExe pkgs.kitty}";
-          "$fileManager" = "${lib.getExe pkgs.ranger}";
           # "$lock" = "hyprlock";
           "$menu" = "wofi --show drun";
           "$mainMod" = "SUPER";
@@ -222,9 +220,10 @@ in
           # Keybindings
           bind = [
             # Applications
-            "$mainMod,Return,exec,$terminal"
+            "$mainMod,Return,exec,ghostty +new-window"
+
             "$mainMod SHIFT,Q,killactive,"
-            "$mainMod,E,exec,$fileManager"
+            "$mainMod,E,exec,ghostty --class=yazi-float -e yazi"
             "$mainMod,D,exec,$menu"
             # "$mainMod SHIFT,L,$lock"
 

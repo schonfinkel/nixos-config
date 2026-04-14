@@ -4,9 +4,6 @@ compinit -u
 
 bindkey "''${key[Up]}" up-line-or-search
 
-# Completion for kitty
-# kitty + complete setup zsh | source /dev/stdin
-
 # Direnv Hook
 eval "$(direnv hook zsh)"
 

@@ -12,6 +12,7 @@ in
 {
   base = with plugins; [
     autoclose-nvim
+    floaterm
     comment-nvim
     hologram-nvim
     toggleterm-nvim
@@ -65,7 +66,6 @@ in
       p.idris
       p.json
       p.just
-      p.kitty
       p.latex
       p.lua
       p.make

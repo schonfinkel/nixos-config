@@ -28,6 +28,7 @@ in
       vimAlias = true;
       vimdiffAlias = true;
       withPython3 = true;
+      withRuby = false;
 
       extraConfig = ''
         lua << EOF
@@ -42,6 +43,7 @@ in
           require("tabs")
           require("git")
           require("files")
+          require("terminal")
           require("treesitter")
         EOF
       '';
