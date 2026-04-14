@@ -136,19 +136,28 @@
               program = "${pkgs.writeShellScript "run-vm.sh" ''
                 set -e
                 echo "Building VM with Disko..."
-                ${pkgs.nix}/bin/nix build ".#nixosConfigurations.bootstrap_vm.config.system.build.vmWithDisko" "$@"
+                ${pkgs.nix}/bin/nix build ".#nixosConfigurations.peano.config.system.build.vmWithDisko" "$@"
 
                 export QEMU_KERNEL_PARAMS="console=ttyS0"
                 export QEMU_NET_OPTS=${qemu_options.net}
 
                 echo "Running VM..."
-                ${pkgs.nix}/bin/nix run -L ".#nixosConfigurations.bootstrap_vm.config.system.build.vmWithDisko"
+                ${pkgs.nix}/bin/nix run -L ".#nixosConfigurations.peano.config.system.build.vmWithDisko"
               ''}";
             };
           };
 
           # nix develop
           devShells = {
+            # `nix develop .#ci`
+            # reduce the number of packages to the bare minimum needed for CI
+            ci = pkgs.mkShell {
+              buildInputs = with pkgs; [
+                age
+                just
+              ];
+            };
+
             # nix develop --impure
             default = devenv.lib.mkShell {
               inherit inputs pkgs;
@@ -180,6 +189,8 @@
           lib = nixpkgs.lib;
 
           system = "x86_64-linux";
+
+          settings = import ./profiles/settings.nix;
 
           mkHost =
             host: user: extraModules:
@@ -222,15 +233,32 @@
             in
             {
               # Caladan will be deprecated soon
-              caladan = 
+              caladan =
                 mkHost "caladan" "leto" extra;
               euclid =
                 let
-                  particular = [ 
+                  particular = [
                     nixos-hardware.nixosModules.lenovo-thinkpad-l13
                   ];
                 in
                   mkHost "euclid" "mbenevides" (extra ++ particular);
+
+              peano = lib.nixosSystem {
+                inherit system;
+                modules = [
+                  agenix.nixosModules.default
+                  disko.nixosModules.disko
+                  impermanence.nixosModules.impermanence
+                  stylix.nixosModules.stylix
+                  ./hosts/peano/configuration.nix
+                ];
+                specialArgs = {
+                  inherit inputs system;
+                  hostId = "3244f94e";
+                  profile = "ext4";
+                  target = settings.peano;
+                };
+              };
             };
         };
     };

@@ -39,7 +39,7 @@
     enable = true;
   };
 
-  homeModules.kitty = {
+  homeModules.ghostty = {
     enable = true;
   };
 

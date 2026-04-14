@@ -14,9 +14,9 @@
   # };
 
   fonts.packages = with pkgs; [
-    # Other
-    font-awesome_5
-    iosevka
+    # Bitmap Fonts
+    terminus_font
+    terminus_font_ttf
     # Nerdfonts
     nerd-fonts.droid-sans-mono
     nerd-fonts.fira-code
@@ -32,5 +32,8 @@
     roboto
     roboto-mono
     roboto-slab
+    # Other
+    font-awesome_5
+    iosevka
   ];
 }

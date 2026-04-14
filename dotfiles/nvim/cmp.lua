@@ -17,11 +17,13 @@ require('blink.cmp').setup({
         nerd_font_variant = 'mono',
     },
     sources = {
-        default = { 'snippets', 'lsp', 'path', 'buffer' },
+        default = { 'lsp', 'snippets', 'path', 'buffer' },
         per_filetype = {
             -- For prose where LSP doesn't apply, buffer completions are useful
             markdown  = { 'buffer', 'path' },
             gitcommit = { 'buffer', 'path' },
+            gleam = { 'lsp', 'snippets', 'path' },
+            erlang = { 'lsp', 'snippets', 'path' },
             elixir = { inherit_defaults = true, 'hex' },
             -- sh benefits from buffer for variable names alongside LSP
             sh = { inherit_defaults = true, 'buffer' },
@@ -42,5 +44,6 @@ require('blink.cmp').setup({
         },
         ghost_text = { enabled = true },
     },
+    fuzzy = { implementation = "prefer_rust_with_warning" },
     signature = { enabled = true },
 })

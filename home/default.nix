@@ -7,8 +7,8 @@
     ./chats.nix
     ./commons.nix
     ./emacs.nix
+    ./ghostty.nix
     ./hyprland.nix
-    ./kitty.nix
     ./media.nix
     ./neovim
     ./programming.nix

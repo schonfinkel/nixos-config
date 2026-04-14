@@ -48,11 +48,9 @@ in
         psf = "pass find";
         psc = "pass --clip";
         poc = "pass otp --clip";
-        r = "ranger";
         rsync = "rsync -chavzP --stats";
         vi = "nvim";
         vim = "nvim";
-        sshk = "kitty +kitten ssh";
         ytdl = "nix run nixpkgs#yt-dlp --";
       };
       history = {

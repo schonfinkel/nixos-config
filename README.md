@@ -17,7 +17,7 @@ My NixOS configuration files, used in my personal systems and work machines.
      - [agenix](https://github.com/ryantm/agenix) 
      - [sops-nix](https://github.com/Mic92/sops-nix)
    - [X] Modurize configuration with `nix` modules
-   - [ ] Add this entire config into CI
+   - [X] Add QEMU-based builds for CI
    - [ ] Declarative disk partitions with [disko](https://github.com/nix-community/disko) 
 
 ## Development Shell

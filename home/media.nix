@@ -24,56 +24,28 @@ in
       mpv
       ncmpcpp
       graphviz
+
+      # atool
+      # ffmpeg
+      # ffmpegthumbnailer
+      # highlight
+      # mediainfo
+      # poppler-utils
+      # zathura
     ];
 
-    programs.ranger = {
+    programs.yazi = {
       enable = true;
-      aliases = {
-        e = "edit";
-        q = "quit";
-        qa = "quitall";
-        "q!" = "quit!";
-        f = "console fzf_filter%space";
-      };
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+      shellWrapperName = "y";
+
       settings = {
-        preview_images = true;
-        preview_images_method = "kitty";
-        preview_files = true;
-        preview_directories = true;
-        vcs_aware = true;
-        viewmode = "miller";
-        draw_borders = "both";
-        mouse_enabled = true;
-        update_title = true;
-        padding_right = false;
+        mgr = {
+          show_hidden = false;
+          show_symlink = true;
+        };
       };
-      rifle = [
-        {
-          condition = "mime ^image";
-          command = ''${pkgs.nsxiv}/bin/nsxiv -- "$@"'';
-        }
-        {
-          condition = "mime ^text, has nvim";
-          command = ''nvim -nw -- "$@"'';
-        }
-        {
-          condition = "ext pdf|djvu|epub, has zathura";
-          command = ''zathura -- "$@"'';
-        }
-        {
-          condition = "mime ^video|^audio, has mpv, X, flag f";
-          command = ''${pkgs.mpv}/bin/mpv -- "$@"'';
-        }
-      ];
-      extraPackages = with pkgs; [
-        atool
-        ffmpeg
-        ffmpegthumbnailer
-        highlight
-        mediainfo
-        poppler-utils
-        zathura
-      ];
     };
 
     programs.newsboat = {

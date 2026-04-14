@@ -25,7 +25,7 @@ in
 
     stylix.targets = {
       hyprland.enable = true;
-      kitty.enable = true;
+      ghostty.enable = true;
       neovim.enable = true;
       mako.enable = true;
       waybar.enable = true;
