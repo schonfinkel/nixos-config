@@ -21,35 +21,56 @@ in
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
+      imv
       mpv
       ncmpcpp
       graphviz
+      feedr
 
-      # atool
-      # ffmpeg
-      # ffmpegthumbnailer
-      # highlight
-      # mediainfo
-      # poppler-utils
-      # zathura
+      # For reading pdfs
+      sioyek
+      libnotify
     ];
 
     programs.yazi = {
       enable = true;
       enableBashIntegration = true;
       enableZshIntegration = true;
-      shellWrapperName = "y";
 
       settings = {
         mgr = {
           show_hidden = false;
           show_symlink = true;
         };
-      };
-    };
 
-    programs.newsboat = {
-      enable = true;
+        opener = {
+          # Define the custom openers
+          pdf_reader = [
+            { 
+              run = ''sioyek "$@"''; 
+              block = false; 
+              detach = true; 
+              desc = "Sioyek"; 
+            }
+          ];
+          image_viewer = [
+            { run = ''imv "$@"''; detach = true; desc = "imv"; }
+          ];
+          video_player = [
+            { run = ''mpv "$@"''; detach = true; desc = "mpv"; }
+          ];
+        };
+
+        open = {
+          rules = [
+            # Link file patterns to the openers defined above
+            { mime = "application/pdf"; use = "pdf_reader"; }
+            { name = "*.pdf"; use = "pdf_reader"; }
+            { mime = "image/*"; use = "image_viewer"; }
+            { mime = "video/*"; use = "video_player"; }
+          ];
+        };
+      };
     };
 
     xdg.configFile = {

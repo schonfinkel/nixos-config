@@ -51,6 +51,7 @@ in
         rsync = "rsync -chavzP --stats";
         vi = "nvim";
         vim = "nvim";
+        y = "yazi";
         ytdl = "nix run nixpkgs#yt-dlp --";
       };
       history = {
