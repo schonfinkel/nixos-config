@@ -77,7 +77,7 @@ in
 
       profiles.default.extensions = (with pkgs.vscode-extensions; [
         # .NET
-        ms-dotnettools.csharp
+        # ms-dotnettools.csharp
         ionide.ionide-fsharp
 
         # Nix

@@ -5,7 +5,8 @@ let
 in
 {
   vim-taskjuggler = plugin {
-    name = "vim-taskjuggler";
+    pname = "vim-taskjuggler";
+    version = "2024-01-01";
     src = pkgs.fetchFromGitHub {
       owner = "kalafut";
       repo = "vim-taskjuggler";

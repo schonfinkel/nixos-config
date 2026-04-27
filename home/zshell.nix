@@ -48,9 +48,11 @@ in
         psf = "pass find";
         psc = "pass --clip";
         poc = "pass otp --clip";
+        repair-store = "nix-store --verify --check-contents --repair";
         rsync = "rsync -chavzP --stats";
         vi = "nvim";
         vim = "nvim";
+        y = "yazi";
         ytdl = "nix run nixpkgs#yt-dlp --";
       };
       history = {
