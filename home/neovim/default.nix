@@ -55,6 +55,8 @@ in
         fd
         ripgrep
         tree-sitter
+        # AI shit
+        opencode
       ];
 
       plugins = builtins.concatLists [

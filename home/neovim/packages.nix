@@ -12,12 +12,12 @@ in
 {
   base = with plugins; [
     autoclose-nvim
-    floaterm
     comment-nvim
     hologram-nvim
-    toggleterm-nvim
     vim-which-key
     vim-visual-multi
+    snacks-nvim
+    opencode-nvim
   ];
   eyecandy = with plugins; [
     kanagawa-nvim

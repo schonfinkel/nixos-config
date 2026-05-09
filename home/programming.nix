@@ -46,6 +46,10 @@ in
   config = mkIf cfg.enable (mkMerge [
     {
       home.packages = with pkgs; [
+        # AI
+        opencode
+
+        # Cloud
         azure-cli
         azure-functions-core-tools
         kubectl

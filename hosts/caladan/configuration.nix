@@ -32,8 +32,21 @@
   # https://github.com/nix-community/nixos-generators?tab=readme-ov-file#cross-compiling
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
-  # This seems to be breaking my nvidia driver
-  boot.blacklistedKernelModules = [ "ucsi_ccg" ];
+  boot.blacklistedKernelModules = [ 
+    # This seems to be breaking my nvidia driver
+    "ucsi_ccg" 
+
+    # dirty frag
+    "esp4"
+    "esp6"
+    "rxrpc"
+  ];
+
+  boot.extraModprobeConfig = ''
+    install esp4 ${pkgs.coreutils}/bin/false
+    install esp6 ${pkgs.coreutils}/bin/false
+    install rxrpc ${pkgs.coreutils}/bin/false
+  '';
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
