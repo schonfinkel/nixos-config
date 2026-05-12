@@ -114,6 +114,7 @@ require("snacks").setup({
 -- Open Code
 ---@type opencode.Opts
 vim.g.opencode_opts = {}
+opencode = require("opencode")
 
 vim.keymap.set("n", "<leader>oa", function() require("opencode").ask() end,
     { desc = "Opencode: ask" })
