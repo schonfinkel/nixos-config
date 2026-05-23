@@ -181,7 +181,7 @@ in
 
           # Dwindle layout
           dwindle = {
-            pseudotile = true;
+            # pseudo_tile = true;
             preserve_split = true;
           };
 
@@ -226,7 +226,7 @@ in
 
             # Window management
             "$mainMod,P,pseudo,"
-            "$mainMod,J,togglesplit,"
+            # "$mainMod,J,togglesplit,"
             "$mainMod,F,togglefloating,"
             "$mainMod SHIFT,F,fullscreen"
 
@@ -308,7 +308,7 @@ in
             "match:class ^$, match:title ^$, match:xwayland true, match:float true, match:fullscreen false, match:pin false, no_focus 1"
 
             # NetworkManager applet
-            "match:class ^(nm-connection-editor)$, float true, size $floatingSize, move center center"
+            "match:class ^(nm-connection-editor)$, float true, move center center"
 
             # Special Workspaces
             # "match:class ^(discord)$, workspace special:discord"

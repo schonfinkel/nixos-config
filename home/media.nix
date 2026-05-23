@@ -78,7 +78,6 @@ in
           rules = [
             # Link file patterns to the openers defined above
             { mime = "application/pdf"; use = "pdf_reader"; }
-            { name = "*.pdf"; use = "pdf_reader"; }
             { mime = "image/*"; use = "image_viewer"; }
             { mime = "video/*"; use = "video_player"; }
           ];
