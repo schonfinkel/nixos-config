@@ -104,3 +104,31 @@ require 'nvim-web-devicons'.setup {
     -- will get overriden by `get_icons` option
     default = true,
 }
+
+-- Snacks (required by opencode.nvim for the prompt UI)
+require("snacks").setup({
+    input = { enabled = true },
+    picker = { enabled = true },
+})
+
+-- Open Code
+---@type opencode.Opts
+vim.g.opencode_opts = {}
+opencode = require("opencode")
+
+vim.keymap.set("n", "<leader>oa", function() require("opencode").ask() end,
+    { desc = "Opencode: ask" })
+vim.keymap.set("n", "<leader>oA", function() require("opencode").ask("@cursor: ") end,
+    { desc = "Opencode: ask about this" })
+vim.keymap.set("v", "<leader>oa", function() require("opencode").ask("@selection: ") end,
+    { desc = "Opencode: ask about selection" })
+vim.keymap.set("n", "<leader>ot", function() require("opencode").toggle() end,
+    { desc = "Opencode: toggle embedded" })
+vim.keymap.set("n", "<leader>on", function() require("opencode").command("session_new") end,
+    { desc = "Opencode: new session" })
+vim.keymap.set("n", "<leader>oy", function() require("opencode").command("messages_copy") end,
+    { desc = "Opencode: copy last message" })
+vim.keymap.set("n", "<leader>op", function() require("opencode").select_prompt() end,
+    { desc = "Opencode: select prompt" })
+vim.keymap.set({ "n", "v" }, "<leader>oe", function() require("opencode").prompt("Explain @cursor and its context") end,
+    { desc = "Opencode: explain code" })

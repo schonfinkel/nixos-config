@@ -104,11 +104,8 @@ in
             "XCURSOR_SIZE,24"
             "HYPRCURSOR_SIZE,24"
             "WLR_NO_HARDWARE_CURSORS,1"
-            "QT_AUTO_SCREEN_SCALE_FACTOR,2"
             "QT_QPA_PLATFORM,wayland;xcb"
             "QT_QPA_PLATFORMTHEME,q6ct"
-            "QT_SCALE_FACTOR,2"
-            "GDK_SCALE,2"
             "XDG_SESSION_DESKTOP,Hyprland"
             "XDG_SESSION_TYPE,wayland"
             "XDG_CURRENT_DESKTOP,Hyprland"
@@ -184,7 +181,7 @@ in
 
           # Dwindle layout
           dwindle = {
-            pseudotile = true;
+            # pseudo_tile = true;
             preserve_split = true;
           };
 
@@ -229,7 +226,7 @@ in
 
             # Window management
             "$mainMod,P,pseudo,"
-            "$mainMod,J,togglesplit,"
+            # "$mainMod,J,togglesplit,"
             "$mainMod,F,togglefloating,"
             "$mainMod SHIFT,F,fullscreen"
 
@@ -311,7 +308,7 @@ in
             "match:class ^$, match:title ^$, match:xwayland true, match:float true, match:fullscreen false, match:pin false, no_focus 1"
 
             # NetworkManager applet
-            "match:class ^(nm-connection-editor)$, float true, size $floatingSize, move center center"
+            "match:class ^(nm-connection-editor)$, float true, move center center"
 
             # Special Workspaces
             # "match:class ^(discord)$, workspace special:discord"
