@@ -68,5 +68,16 @@ in
       };
       sshKeys = cfg.gpg.sshKeys;
     };
+
+    # Work around a systemd ordering cycle introduced by home-manager's
+    # misc/ssh-auth-sock.nix module. It defines set-SSH_AUTH_SOCK.service with
+    # `Before = gpg-agent-ssh.socket`; as an ordinary service it also gets an
+    # implicit `After = basic.target`, and basic.target -> sockets.target ->
+    # gpg-agent-ssh.socket (the socket is WantedBy sockets.target). systemd
+    # breaks the resulting loop by dropping a random job in it, which on some
+    # boots is the ssh socket itself, leaving S.gpg-agent.ssh unserved and
+    # `ssh-add` unable to connect. Dropping the default deps from this oneshot
+    # removes the basic.target ordering and breaks the cycle.
+    systemd.user.services.set-SSH_AUTH_SOCK.Unit.DefaultDependencies = false;
   };
 }
