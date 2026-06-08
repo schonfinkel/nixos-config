@@ -138,65 +138,38 @@ vim.lsp.config["elp"] = {
 vim.lsp.enable("elp")
 
 -- F#
---vim.lsp.enable('fsautocomplete')
--- require("ionide").setup({
--- 	on_attach = on_attach,
--- 	capabilities = capabilities,
--- 	settings = {
--- 	    FSharp = {
---             enableMSBuildProjectGraph = true,
---             inlayHints = {
---                 enabled = true,
---                 typeAnnotations = false,
---                 disableLongTooltip = false,
---                 parameterNames = false,
---             },
--- 			Linter = true,
--- 		},
---         IonideNvimSettings = {
---             ShowSignatureOnCursorMove = false,
---             FsiStdOutFileName = "./FsiOutput.txt",
---             FsautocompleteCommand = { "fsautocomplete", "--project-graph-enabled", "--adaptive-lsp-server-enabled", "--use-fcs-transparent-compiler" },
---             UseRecommendedServerConfig = false,
---             AutomaticWorkspaceInit = false,
---             AutomaticReloadWorkspace = false,
---             AutomaticCodeLensRefresh = false,
---             FsiCommand = "dotnet fsi",
---             -- FsiKeymap = "vscode",
---             FsiWindowCommand = "botright 10new",
---             FsiFocusOnSend = false,
---             EnableFsiStdOutTeeToFile = false,
---             LspAutoSetup = false,
---             LspRecommendedColorScheme = false,
---             FsiVscodeKeymaps = true,
---             StatusLine = "Ionide",
---             FsiKeymapSend = "<M-cr>",
---             FsiKeymapToggle = "<M-@>",
---         },
---     },
--- })
-
--- vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
--- 	pattern = "*.fs,*.fsx,*.fsi",
--- 	command = [[set filetype=fsharp]],
--- })
--- vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
--- 	pattern = "*.fsproj,*.csproj,*.vbproj,*.cproj,*.proj",
--- 	command = [[set filetype=xml]],
--- })
-
--- https://github.com/ionide/Ionide-vim?tab=readme-ov-file#settings
--- vim.api.nvim_command('autocmd BufNewFile,BufRead *.fs,*.fsx,*.fsi,*.fsl,*.fsy set filetype=fsharp')
--- vim.g["fsharp#lsp_auto_setup"] = 1
--- vim.g["fsharp#lsp_recommended_colorscheme"] = 1
--- vim.g["fsharp#automatic_workspace_init"] = 1
--- vim.g["fsharp#linter"] = 1
--- vim.g["fsharp#unused_opens_analyzer"] = 1
--- vim.g["fsharp#unused_declarations_analyzer"] = 1
--- vim.g["fsharp#show_signature_on_cursor_move"] = 1
--- vim.g["fsharp#fsi_focus_on_send"] = 1
--- vim.g["fsharp#fsautocomplete_command"] = { fs_autocomplete_path }
+-- Ionide-vim ships ftdetect/syntax/indent for *.fs,*.fsi,*.fsx and an
+-- lsp/ionide.lua base config (returns ionide.config.make_config()). It also
+-- auto-enables the LSP on load via lsp_auto_setup. make_config() reads the
+-- g:fsharp#* globals below at startup, so set them before the client starts.
+vim.g["fsharp#backend"] = "nvim"
 vim.g["fsharp#fsi_window_command"] = "vnew"
+vim.g["fsharp#automatic_workspace_init"] = 1
+-- Disable CodeLens. Its CursorHold/InsertLeave auto-refresh autocmd drives
+-- FsAutoComplete into a CodeLensResolve error-loop on projects that don't
+-- fully typecheck, flooding lsp.log (GBs) until Neovim hangs/OOMs.
+vim.g["fsharp#lsp_codelens"] = 0
+
+-- Merge our keymaps (on_attach), blink completion capabilities and inlay
+-- hints over Ionide's base config. require('ionide').setup{} is deprecated in
+-- favour of vim.lsp.config()/vim.lsp.enable(); this override is merged with
+-- lsp/ionide.lua, so Ionide's cmd/root_dir/handlers/on_init (FSI init) stay.
+vim.lsp.config["ionide"] = {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    settings = {
+        FSharp = {
+            enableReferenceCodeLens = false,
+            enableMSBuildProjectGraph = true,
+            inlayHints = {
+                enabled = true,
+                typeAnnotations = true,
+                parameterNames = true,
+            },
+        },
+    },
+}
+vim.lsp.enable("ionide")
 
 -- Gleam
 vim.lsp.config["gleam"] = {
