@@ -14,6 +14,16 @@ vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer.
 local on_attach = function(client, bufnr)
+    -- F#/FsAutoComplete: on a project that hasn't fully loaded/typechecked,
+    -- FSAC answers semanticTokens and inlayHint requests with
+    -- -32603 "No check results found", and Neovim's main thread spins
+    -- synchronously at ~100% CPU (RPC-dead, UI hangs) processing them.
+    -- Strip both providers for ionide so they're never requested.
+    if client.name == "ionide" then
+        client.server_capabilities.semanticTokensProvider = nil
+        client.server_capabilities.inlayHintProvider = nil
+    end
+
     if client.server_capabilities.inlayHintProvider then
         vim.lsp.inlay_hint.enable()
     end
@@ -162,7 +172,7 @@ vim.lsp.config["ionide"] = {
             enableReferenceCodeLens = false,
             enableMSBuildProjectGraph = true,
             inlayHints = {
-                enabled = true,
+                enabled = false,
                 typeAnnotations = true,
                 parameterNames = true,
             },
