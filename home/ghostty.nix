@@ -49,7 +49,7 @@ in
 
         scrollback-limit = 10000;
         # https://ghostty.org/docs/features/shell-integration#ssh-integration
-        shell-integration-features = "ssh-env,ssh-terminfo";
+        shell-integration-features = "ssh-terminfo,ssh-env";
       };
 
       systemd = {

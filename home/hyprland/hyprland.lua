@@ -73,7 +73,7 @@ hl.config({
     master = { new_status = "master" },
 
     xwayland = {
-        force_zero_scaling = true,
+        force_zero_scaling = false,
         use_nearest_neighbor = true,
     },
 

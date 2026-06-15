@@ -188,6 +188,10 @@
   :mode "\\.gleam\\'"
   :hook (gleam-mode . lsp))
 
+;;; Guile Scheme
+(use-package geiser-guile
+  :ensure t)
+
 ;;; Terraform/HCL
 (require 'terraform-mode)
 (add-to-list 'auto-mode-alist '("\\.tf\\'" . terraform-mode))
