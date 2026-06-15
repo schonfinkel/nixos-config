@@ -40,7 +40,7 @@ jobs:
         with:
           lfs: true
 
-      - uses: wimpysworld/nothing-but-nix@10
+      - uses: wimpysworld/nothing-but-nix@main
         with:
           hatchet-protocol: 'rampage'
 
