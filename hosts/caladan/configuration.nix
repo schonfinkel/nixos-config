@@ -27,6 +27,9 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
+
+  boot.tmp.cleanOnBoot = true;
+
   # boot.kernelPackages =pkgs.linuxPackages_latest;
 
   # https://github.com/nix-community/nixos-generators?tab=readme-ov-file#cross-compiling
