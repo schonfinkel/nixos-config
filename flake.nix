@@ -251,6 +251,17 @@
                   impermanence.nixosModules.impermanence
                   stylix.nixosModules.stylix
                   ./hosts/peano/configuration.nix
+                  ({ nixpkgs, ... }: {
+                    nixpkgs.overlays = [
+                      (final: prev: {
+                        aggregateModules = modules:
+                          let result = prev.aggregateModules modules; in
+                          result // {
+                            target = (builtins.head modules).target or "bzImage";
+                          };
+                      })
+                    ];
+                  })
                 ];
                 specialArgs = {
                   inherit inputs system;
