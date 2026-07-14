@@ -48,6 +48,7 @@ in
       home.packages = with pkgs; [
         # AI
         opencode
+        claude-code
 
         # Cloud
         azure-cli

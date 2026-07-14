@@ -24,7 +24,7 @@ require('blink.cmp').setup({
             gitcommit = { 'buffer', 'path' },
             gleam = { 'lsp', 'snippets', 'path' },
             erlang = { 'lsp', 'snippets', 'path' },
-            elixir = { inherit_defaults = true, 'hex' },
+            elixir = { 'lsp', 'snippets', 'path', 'buffer' },
             -- sh benefits from buffer for variable names alongside LSP
             sh = { inherit_defaults = true, 'buffer' },
         },
