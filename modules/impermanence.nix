@@ -14,6 +14,59 @@ let
     mkMerge
     mkOption
     ;
+
+  # Home-relative directories persisted for cfg.username. Entries are either a
+  # plain string or an attrset carrying a mode.
+  userDirectories = [
+    ".android"
+    ".aws"
+    ".azure"
+    ".config/BraveSoftware"
+    ".config/discord"
+    ".config/gh"
+    ".config/mgc"
+    ".config/Signal"
+    ".config/Slack"
+    ".claude"
+    ".kube"
+    ".local/share/sddm"
+    ".local/share/direnv"
+    ".local/share/TelegramDesktop"
+    ".local/state/nvim/dbee"
+    ".microsoft/usersecrets"
+    ".nuget"
+    ".oci"
+    "Code"
+    "Documents"
+    "Downloads"
+    "Music"
+    "Pictures"
+    "Videos"
+    {
+      directory = ".gnupg";
+      mode = "0700";
+    }
+    {
+      directory = ".local/share/keyrings";
+      mode = "0700";
+    }
+    {
+      directory = ".password-store";
+      mode = "0700";
+    }
+    {
+      directory = ".ssh";
+      mode = "0700";
+    }
+  ];
+
+  directoryName = d: if lib.isString d then d else d.directory;
+
+  # Anything handed to the data disk is dropped here, so a directory is never
+  # claimed by two persistence roots at once.
+  mainUserDirectories = builtins.filter (
+    d: !(builtins.elem (directoryName d) cfg.dataUserDirectories)
+  ) userDirectories;
 in
 {
   options.hostModules.impermanence = {
@@ -26,7 +79,30 @@ in
 
     username = mkOption {
       type = lib.types.str;
-      default = "schonfinkel";
+      default = "mbenevides";
+    };
+
+    dataDirectory = mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = ''
+        Optional second persistence root, for hosts that keep bulk user data on
+        a separate disk. Nothing extra is declared while this is null.
+      '';
+      example = "/persist/data";
+    };
+
+    dataUserDirectories = mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = ''
+        Home-relative directories to persist under `dataDirectory` rather than
+        `persistDirectory`. Names listed here are removed from the default set.
+      '';
+      example = [
+        "Music"
+        "Videos"
+      ];
     };
   };
 
@@ -54,47 +130,7 @@ in
           "/etc/machine-id"
         ];
         users."${cfg.username}" = {
-          directories = [
-            ".android"
-            ".aws"
-            ".azure"
-            ".config/BraveSoftware"
-            ".config/discord"
-            ".config/gh"
-            ".config/mgc"
-            ".config/Signal"
-            ".config/Slack"
-            ".kube"
-            ".local/share/sddm"
-            ".local/share/direnv"
-            ".local/share/TelegramDesktop"
-            ".local/state/nvim/dbee"
-            ".microsoft/usersecrets"
-            ".nuget"
-            ".oci"
-            "Code"
-            "Documents"
-            "Downloads"
-            "Music"
-            "Pictures"
-            "Videos"
-            {
-              directory = ".gnupg";
-              mode = "0700";
-            }
-            {
-              directory = ".local/share/keyrings";
-              mode = "0700";
-            }
-            {
-              directory = ".password-store";
-              mode = "0700";
-            }
-            {
-              directory = ".ssh";
-              mode = "0700";
-            }
-          ];
+          directories = mainUserDirectories;
           files = [
             ".bash_history"
             ".config/systemsettingsrc"
@@ -104,6 +140,16 @@ in
         };
       };
 
+    })
+
+    # Bulk user data living on a separate (usually slower) disk.
+    (mkIf (cfg.dataDirectory != null) {
+      environment.persistence."${cfg.dataDirectory}" = {
+        hideMounts = true;
+        users."${cfg.username}" = {
+          directories = cfg.dataUserDirectories;
+        };
+      };
     })
   ]);
 }

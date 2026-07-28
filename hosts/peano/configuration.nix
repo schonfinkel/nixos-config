@@ -42,7 +42,7 @@ in
 
   hostModules.ssh = {
     enable = true;
-    allowUsers = [ "schonfinkel" ];
+    allowUsers = [ "mbenevides" ];
   };
 
   # This is required by ZFS
@@ -54,7 +54,7 @@ in
 
   users.mutableUsers = false;
   users.users.root.initialPassword = "nixos";
-  users.users.schonfinkel = {
+  users.users.mbenevides = {
     uid = 1000;
     isNormalUser = true;
     initialPassword = "nixos";

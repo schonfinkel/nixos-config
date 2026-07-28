@@ -3,10 +3,9 @@ let
   # Only the VM needs an image size
   extraAttrs = if target.hostname == "peano" then { imageSize = "40G"; } else { };
 
-  defaultMountOptions = [
-    "defaults"
-    "noatime"
-  ];
+  # Hardening options and the reasoning behind them, including why `noexec` is
+  # absent, live in ./mount-options.nix.
+  mountOpts = import ./mount-options.nix;
 in
 {
   devices = {
@@ -27,6 +26,7 @@ in
               type = "filesystem";
               format = "vfat";
               mountpoint = "/boot";
+              mountOptions = mountOpts.esp;
             };
           };
           swap = {
@@ -56,7 +56,7 @@ in
               type = "filesystem";
               format = "ext4";
               mountpoint = "/";
-              mountOptions = defaultMountOptions;
+              mountOptions = mountOpts.default;
             };
           };
 
@@ -66,7 +66,7 @@ in
               type = "filesystem";
               format = "ext4";
               mountpoint = "/nix";
-              mountOptions = defaultMountOptions;
+              mountOptions = mountOpts.default;
             };
           };
 
@@ -76,7 +76,7 @@ in
               type = "filesystem";
               format = "ext4";
               mountpoint = "/persist";
-              mountOptions = defaultMountOptions;
+              mountOptions = mountOpts.default;
             };
           };
         };

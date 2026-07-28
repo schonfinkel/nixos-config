@@ -9,7 +9,7 @@
   users.mutableUsers = false;
   users.users = {
     root.hashedPasswordFile = config.age.secrets.hashed_password.path;
-    schonfinkel = {
+    mbenevides = {
       uid = 1000;
       isNormalUser = true;
       hashedPasswordFile = config.age.secrets.hashed_password.path;
