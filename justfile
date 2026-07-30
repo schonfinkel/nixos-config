@@ -8,6 +8,7 @@ modules_dir := justfile_directory() + "/modules"
 overlay_dir := justfile_directory() + "/overlays"
 secrets_dir := justfile_directory() + "/secrets"
 target_flake := env_var_or_default("TARGET_FLAKE", "peano")
+key_path := env_var_or_default("AGE_KEY_PATH", "$HOME/.ssh/default_ed25519")
 
 # For lazy people
 
@@ -55,4 +56,4 @@ repl:
 # Resets the agenix file
 [group('age')]
 rekey:
-    cd {{ secrets_dir }} && nix run github:ryantm/agenix -- -r
+    cd {{ secrets_dir }} && nix run github:ryantm/agenix -- -r --identity "{{ key_path }}"

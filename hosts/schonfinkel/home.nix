@@ -1,9 +1,7 @@
 {
-  pkgs,
   config,
-  home,
-  inputs,
-  system,
+  lib,
+  pkgs,
   ...
 }:
 
@@ -14,8 +12,8 @@
   ];
 
   home = {
-    username = "leto";
-    homeDirectory = "/home/leto";
+    username = "mbenevides";
+    homeDirectory = "/home/mbenevides";
   };
 
   programs = {
@@ -40,6 +38,7 @@
 
   homeModules.hyprland = {
     enable = true;
+    # TODO: adjust once the real outputs are known (`hyprctl monitors`).
     monitors = [
       "HDMI-A-1,highres,0x0,2"
     ];

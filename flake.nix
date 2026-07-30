@@ -223,7 +223,7 @@
             };
         in
         {
-          nixosConfigurations = 
+          nixosConfigurations =
             let
               extra = [
                 agenix.nixosModules.default
@@ -232,16 +232,25 @@
               ];
             in
             {
-              # Caladan will be deprecated soon
-              caladan =
-                mkHost "caladan" "leto" extra;
-              euclid =
+              # Quick-install host for new machines. Everything except agenix:
+              # stylix is not optional here, since home/hyprland.nix is built on
+              # its colour scheme.
+              tarski = mkHost "tarski" "mbenevides" [
+                disko.nixosModules.disko
+                impermanence.nixosModules.impermanence
+                stylix.nixosModules.stylix
+              ];
+
+              # Disks are declared in profiles/disko/ext4_ephemeral.nix and wired up
+              # through hostModules.disko, so no extra specialArgs are needed
+              # here -- modules/disko.nix reads profiles/settings.nix itself.
+              schonfinkel =
                 let
                   particular = [
-                    nixos-hardware.nixosModules.lenovo-thinkpad-l13
+                    disko.nixosModules.disko
                   ];
                 in
-                  mkHost "euclid" "mbenevides" (extra ++ particular);
+                mkHost "schonfinkel" "mbenevides" (extra ++ particular);
 
               peano = lib.nixosSystem {
                 inherit system;
@@ -254,9 +263,13 @@
                   ({ nixpkgs, ... }: {
                     nixpkgs.overlays = [
                       (final: prev: {
-                        aggregateModules = modules:
-                          let result = prev.aggregateModules modules; in
-                          result // {
+                        aggregateModules =
+                          modules:
+                          let
+                            result = prev.aggregateModules modules;
+                          in
+                          result
+                          // {
                             target = (builtins.head modules).target or "bzImage";
                           };
                       })
