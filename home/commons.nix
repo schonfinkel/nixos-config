@@ -18,6 +18,8 @@ in
   };
 
   config = mkIf cfg.enable {
+    home.pointerCursor.enable = true;
+
     home.packages = with pkgs; [
       brave
       curl
@@ -66,6 +68,6 @@ in
     };
 
     # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-    home.stateVersion = "23.05";
+    home.stateVersion = "26.05";
   };
 }
