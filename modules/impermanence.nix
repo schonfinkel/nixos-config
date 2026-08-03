@@ -25,14 +25,17 @@ let
     ".config/discord"
     ".config/gh"
     ".config/mgc"
+    ".config/opencode"
     ".config/Signal"
     ".config/Slack"
     ".claude"
     ".kube"
+    ".local/share/opencode"
     ".local/share/sddm"
     ".local/share/direnv"
     ".local/share/TelegramDesktop"
     ".local/state/nvim/dbee"
+    ".local/state/opencode"
     ".microsoft/usersecrets"
     ".nuget"
     ".oci"
@@ -107,7 +110,7 @@ in
   };
 
   config = mkIf cfg.enable (mkMerge [
-    ({
+    {
       environment.persistence."${cfg.persistDirectory}" = {
         hideMounts = true;
         directories = [
@@ -140,7 +143,7 @@ in
         };
       };
 
-    })
+    }
 
     # Bulk user data living on a separate (usually slower) disk.
     (mkIf (cfg.dataDirectory != null) {

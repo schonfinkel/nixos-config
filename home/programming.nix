@@ -100,6 +100,10 @@ in
       programs.git = {
         enable = true;
 
+        lfs = {
+          enable = true;
+        };
+
         ignores = [
           # nix
           "result"
@@ -149,10 +153,6 @@ in
 
           merge = {
             tool = "meld";
-          };
-
-          lfs = {
-            enable = true;
           };
 
           push = {
