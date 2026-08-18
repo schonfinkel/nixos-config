@@ -40,6 +40,7 @@ in
           require("line")
           require("lsp")
           require("cmp")
+          require("debugging")
           require("tabs")
           require("git")
           require("files")
@@ -53,6 +54,10 @@ in
         clang
         # Adding ripgrep and fd, for Telescope
         fd
+        # lldb ships lldb-dap, used by nvim-dap
+        lldb
+        # Odin language server + odinfmt formatter
+        ols
         ripgrep
         tree-sitter
         # AI shit
@@ -61,6 +66,7 @@ in
 
       plugins = builtins.concatLists [
         vimPlugins.base
+        vimPlugins.debug
         vimPlugins.eyecandy
         vimPlugins.lsp
         vimPlugins.prv

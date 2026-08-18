@@ -49,6 +49,7 @@ in
         # AI
         opencode
         claude-code
+        codex
 
         # Cloud
         azure-cli
