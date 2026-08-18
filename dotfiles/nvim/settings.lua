@@ -57,6 +57,10 @@ opt.number = true
 opt.viminfo = ""
 opt.viminfofile = "NONE"
 
+-- Load per-project .nvim.lua files (used e.g. for DAP/build overrides).
+-- Only open trusted repositories: this executes project-local Lua.
+opt.exrc = true
+
 -- Miscellaneous quality of life
 opt.hlsearch = true
 opt.ignorecase = true

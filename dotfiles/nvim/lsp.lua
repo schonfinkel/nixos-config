@@ -92,6 +92,7 @@ require("conform").setup({
         elixir = { "elixir-ls" },
         gleam = { "gleam" },
         ocaml = { "ocamlformat" },
+        odin = { "odinfmt" },
         rust = { "rustfmt" },
         zig = { "zigfmt" },
     },
@@ -232,6 +233,16 @@ vim.lsp.config["ocamlsp"] = {
     filetypes = { "ocaml", "ocaml.interface", "dune" }
 }
 vim.lsp.enable("ocamlsp")
+
+-- Odin
+vim.lsp.config["ols"] = {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    cmd = { "ols" },
+    filetypes = { "odin" },
+    root_markers = { "ols.json", ".git" },
+}
+vim.lsp.enable("ols")
 
 -- Terraform
 vim.lsp.config["terraformls"] = {

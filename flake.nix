@@ -232,6 +232,15 @@
               ];
             in
             {
+              # Thinkpad
+              euclid =
+                let
+                  particular = [
+                    nixos-hardware.nixosModules.lenovo-thinkpad-l13
+                  ];
+                in
+                  mkHost "euclid" "mbenevides" (extra ++ particular);
+
               # Quick-install host for new machines. Everything except agenix:
               # stylix is not optional here, since home/hyprland.nix is built on
               # its colour scheme.

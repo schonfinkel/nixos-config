@@ -74,6 +74,7 @@ in
       p.nginx
       p.ocaml
       p.ocaml_interface
+      p.odin
       p.pem
       p.proto
       p.scheme
@@ -86,6 +87,11 @@ in
     ]))
     # Formatting
     conform-nvim
+  ];
+  debug = with plugins; [
+    nvim-dap
+    nvim-dap-ui
+    nvim-nio
   ];
   prv = with private; [ vim-taskjuggler ];
   tooling = with plugins; [
