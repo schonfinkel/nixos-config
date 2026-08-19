@@ -41,7 +41,7 @@ let
     let
       f = lib.splitString "," m;
     in
-    ''    { output = "${lib.elemAt f 0}", mode = "${lib.elemAt f 1}", position = "${lib.elemAt f 2}", scale = "${lib.elemAt f 3}" }''
+    ''{ output = "${lib.elemAt f 0}", mode = "${lib.elemAt f 1}", position = "${lib.elemAt f 2}", scale = "${lib.elemAt f 3}" }''
   ) cfg.monitors;
 
   # Generated Lua data module required by hyprland.lua as `require("nix")`.
