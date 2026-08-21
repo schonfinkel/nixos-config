@@ -1,5 +1,5 @@
-set dotenv-load := true
-set export := true
+set dotenv-load
+set export
 
 dotfiles_dir := justfile_directory() + "/dotfiles"
 home_dir := justfile_directory() + "/home"

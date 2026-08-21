@@ -75,38 +75,40 @@ in
         };
       };
 
-      profiles.default.extensions = (with pkgs.vscode-extensions; [
-        # .NET
-        # ms-dotnettools.csharp
-        ionide.ionide-fsharp
+      profiles.default.extensions =
+        (with pkgs.vscode-extensions; [
+          # .NET
+          # ms-dotnettools.csharp
+          ionide.ionide-fsharp
 
-        # Nix
-        jnoortheen.nix-ide
+          # Nix
+          jnoortheen.nix-ide
 
-        # Markdown
-        yzhang.markdown-all-in-one
+          # Markdown
+          yzhang.markdown-all-in-one
 
-        # Misc
-        eamodio.gitlens
-        editorconfig.editorconfig
-        esbenp.prettier-vscode
-        gruntfuggly.todo-tree
-        mkhl.direnv
+          # Misc
+          eamodio.gitlens
+          editorconfig.editorconfig
+          esbenp.prettier-vscode
+          gruntfuggly.todo-tree
+          mkhl.direnv
 
-        vscodevim.vim
-        ms-vsliveshare.vsliveshare
-      ]) ++ (with pkgs.open-vsx; [
-        # Work
-        # anthropic.claude-code
-        # ms-mssql.mssql
+          vscodevim.vim
+          ms-vsliveshare.vsliveshare
+        ])
+        ++ (with pkgs.open-vsx; [
+          # Work
+          # anthropic.claude-code
+          # ms-mssql.mssql
 
-        # mkloubert.vscode-http-client
-        humao.rest-client
+          # mkloubert.vscode-http-client
+          humao.rest-client
 
-        ms-azuretools.vscode-azurefunctions
-        mtxr.sqltools
-        mtxr.sqltools-driver-mssql
-      ]);
+          ms-azuretools.vscode-azurefunctions
+          mtxr.sqltools
+          mtxr.sqltools-driver-mssql
+        ]);
     };
 
     home.packages = with pkgs; [ jetbrains-mono ];
