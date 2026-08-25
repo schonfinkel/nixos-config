@@ -49,6 +49,8 @@ in
       ripgrep
       sshfs
       smartmontools
+      # sar, iostat, pidstat, ...
+      sysstat
       transmission_4-qt
       tree
       tree-sitter
