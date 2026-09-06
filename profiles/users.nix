@@ -18,6 +18,7 @@
         "disk"
         "docker"
         "input"
+        "libvirt"
         "networkmanager"
         "tty"
         "video"

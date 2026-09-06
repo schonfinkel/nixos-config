@@ -44,9 +44,13 @@ in
       # Set your time zone.
       time.timeZone = cfg.timeZone;
 
-      services.journald.extraConfig = ''
-        MaxRetentionSec=14day
-      '';
+      services.journald = {
+        settings.Journal = { 
+          MaxRetentionSec = "7d";
+          SystemMaxUse = "1G";
+          SystemMinFree = "128M";
+        };
+      };
 
       # For udiskie
       services.udisks2.enable = true;
