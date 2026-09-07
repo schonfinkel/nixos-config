@@ -1,8 +1,9 @@
 -- Hyprland config (Lua format, Hyprland 0.55+).
 -- This is a real Lua file: edit it directly, with full syntax/LSP support.
 --
--- Per-host and theme-dependent values (monitors, stylix border colors) are
--- injected by Nix into the generated `nix` module, which we require below.
+-- Per-host and theme-dependent values (monitors, keyboard layout, stylix
+-- border colors) are injected by Nix into the generated `nix` module, which
+-- we require below.
 -- Everything else lives here as plain Lua.
 local nix = require("nix")
 
@@ -78,8 +79,9 @@ hl.config({
     },
 
     input = {
-        kb_layout = "us,br(thinkpad)",
-        kb_options = "grp:win_space_toggle",
+        kb_layout = nix.kb.layout,
+        kb_variant = nix.kb.variant,
+        kb_options = nix.kb.options,
         follow_mouse = 1,
         sensitivity = 0,
         touchpad = { natural_scroll = false },

@@ -41,6 +41,7 @@
       "HDMI-A-1,highres,0x0,2"
       "eDP-1,highres,1920x0,1"
     ];
+    # Keyboard layout is inherited from services.xserver.xkb in ./configuration.nix.
   };
 
   homeModules.ghostty = {
