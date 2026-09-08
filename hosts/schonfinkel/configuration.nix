@@ -136,12 +136,17 @@ in
     };
   };
 
+  # Single source of truth for the keyboard: SDDM and console.useXkbConfig read
+  # this directly, and homeModules.hyprland.xkb defaults to it (Hyprland has its
+  # own input block). Two layouts here, cycled with SUPER+space, since this
+  # machine gets typed on in both us and br (abnt2).
   services.xserver = {
     videoDrivers = [ "nvidia" ];
     dpi = 180;
     xkb = {
-      layout = "us";
+      layout = "us,br";
       variant = "";
+      options = "grp:win_space_toggle";
     };
   };
 

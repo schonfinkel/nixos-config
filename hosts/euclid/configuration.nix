@@ -87,9 +87,40 @@
     };
   };
 
+  # On the Brazilian ThinkPad keyboard the `/ ?` key sits where right-Ctrl is on
+  # other layouts, and the kernel reports it as KEY_RIGHTCTRL (keycode 97, as
+  # `showkey` confirms). The br(thinkpad) XKB variant papers over that by giving
+  # <RCTL> the slash/question symbols, which is enough for anything that goes
+  # through the keymap -- but not for anything that looks at the physical key.
+  # Ghostty sees `control_right`, concludes Ctrl is held, and encodes Shift+key
+  # as Ctrl+? (DEL) instead of typing `?`. No Ghostty keybind can undo that: the
+  # variant also drops <RCTL> from the Control modmap, so there is no Ctrl
+  # modifier for a `ctrl+...` trigger to match.
+  #
+  # So fix it at the source: report the key as KEY_RO, which is where ABNT2 puts
+  # `/ ?` anyway (<AB11>), and every layer above agrees. Scancode 0x9d is
+  # right-Ctrl as atkbd reports it -- set 1's e0 prefix is folded into the high
+  # bit, so 0x1d|0x80, not the 0xe01d you would write for a USB keyboard. The
+  # DMI match keeps this to the built-in keyboard, so an external one is
+  # untouched and keeps a working right-Ctrl.
+  services.udev.extraHwdb = ''
+    evdev:atkbd:dmi:bvn*:bvr*:bd*:svnLENOVO:pn*:pvrThinkPadL13Gen1*
+     KEYBOARD_KEY_9d=ro
+  '';
+
+  # Single source of truth for the keyboard: SDDM and console.useXkbConfig read
+  # this directly, and homeModules.hyprland.xkb defaults to it (Hyprland has its
+  # own input block). This machine only ever types on its own keyboard, so there
+  # is no second layout and no grp:* toggle here.
+  #
+  # The thinkpad variant stays as a belt-and-braces fallback: with the remap
+  # above the key already arrives as <AB11>, which plain `br` maps to
+  # slash/question. Drop the variant -- and get right-Ctrl back on external
+  # keyboards -- once the remap has been confirmed on real hardware.
   services.xserver = {
-    xkb.layout = "br(thinkpad),us";
-    xkb.options = "ctrl:nocaps,";
+    xkb.layout = "br";
+    xkb.variant = "thinkpad";
+    xkb.options = "ctrl:nocaps";
     videoDrivers = [ "modesetting" ];
   };
 

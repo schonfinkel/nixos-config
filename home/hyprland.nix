@@ -2,11 +2,15 @@
   config,
   lib,
   pkgs,
+  # Provided by home-manager when it runs as a NixOS module (which is how every
+  # host in this flake wires it up); `{ }` keeps the module usable standalone.
+  osConfig ? { },
   ...
 }:
 
 let
   cfg = config.homeModules.hyprland;
+  hostXkb = osConfig.services.xserver.xkb or { };
   stylix_theme = config.stylix.base16Scheme;
   stylix_colors = config.lib.stylix.colors.withHashtag;
   inherit (lib)
@@ -55,6 +59,11 @@ let
         active_border = "rgb(${stylix_theme.base0E})",
         inactive_border = "rgb(${stylix_theme.base03})",
       },
+      kb = {
+        layout = "${cfg.xkb.layout}",
+        variant = "${cfg.xkb.variant}",
+        options = "${cfg.xkb.options}",
+      },
     }
   '';
 in
@@ -67,6 +76,32 @@ in
       default = [
         "HDMI-A-1,highres,0x0,1.5"
       ];
+    };
+
+    # Hyprland does not read `services.xserver.xkb.*` -- it has its own `input`
+    # block -- while SDDM and `console.useXkbConfig` read nothing else. So the
+    # host's XKB settings are the single source of truth and these default to
+    # them; set them only when Hyprland genuinely has to differ from the host.
+    #
+    # A comma-separated `layout` is what makes layouts switchable: pair it with
+    # a `grp:*` toggle in `options` (e.g. layout "us,br" plus
+    # "grp:win_space_toggle") to cycle between them, as schonfinkel does. Hosts
+    # with a single layout (euclid, br(thinkpad)) just leave the toggle out.
+    xkb = {
+      layout = mkOption {
+        type = lib.types.str;
+        default = hostXkb.layout or "us";
+      };
+
+      variant = mkOption {
+        type = lib.types.str;
+        default = hostXkb.variant or "";
+      };
+
+      options = mkOption {
+        type = lib.types.str;
+        default = hostXkb.options or "";
+      };
     };
 
     hyprlock = {
