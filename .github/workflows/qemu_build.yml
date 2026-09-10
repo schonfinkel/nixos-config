@@ -59,12 +59,6 @@ jobs:
         with:
           name: devenv
 
-      - name: Install devenv.sh
-        run: nix profile install nixpkgs#devenv
-
       # Actual Pipelines
       - name: "[QEMU] Build"
-        run: |
-          nix develop .#ci --impure -c just bq
-
-
+        run: nix build .#qemu
