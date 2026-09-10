@@ -73,6 +73,7 @@ in
       };
 
       image.repart = {
+        enable = true;
         name = "peano";
         partitions = {
           esp = {
