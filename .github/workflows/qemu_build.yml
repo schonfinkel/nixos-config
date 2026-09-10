@@ -59,12 +59,12 @@ jobs:
         with:
           name: devenv
 
-      - name: Install devenv.sh
-        run: nix profile install nixpkgs#devenv
+      # Ubuntu 24.04 runners restrict unprivileged user namespaces via
+      # AppArmor, which breaks the `unshare --map-root-user` step inside
+      # systemd-repart's image build. Relax it for the duration of the job.
+      - name: Allow unprivileged user namespaces
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 
       # Actual Pipelines
       - name: "[QEMU] Build"
-        run: |
-          nix develop .#ci --impure -c just bq
-
-
+        run: nix build .#qemu

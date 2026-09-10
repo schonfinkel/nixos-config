@@ -12,7 +12,7 @@ key_path := env_var_or_default("AGE_KEY_PATH", "$HOME/.ssh/default_ed25519")
 
 # For lazy people
 
-alias bi := build-iso
+alias bi := build-image
 alias bq := build-qemu
 alias rq := run-qemu
 
@@ -29,19 +29,18 @@ default:
 build:
     nix build ".#nixosConfigurations.{{ target_flake }}.config.system.build.toplevel"
 
-# Builds a custom ISO with the "peano" configuration
+# Builds a repart-based QEMU image with the "peano" configuration
 [group('nix')]
-build-iso:
-    nix build ".#peano"
+build-image:
+    nixos-rebuild build-image --flake .#peano --image-variant qemu-repart
 
-# Builds the QEMU VM
+# CI-compatible alias for build-image
 [group('nix')]
-build-qemu:
-    nix build ".#nixosConfigurations.{{ target_flake }}.config.system.build.vmWithDisko"
+build-qemu: build-image
 
-# Boot a QEMU VM, pointing to target_flake
+# Boots the Disko test VM
 [group('nix')]
-run-qemu: build-qemu
+run-qemu:
     nix run -L ".#nixosConfigurations.{{ target_flake }}.config.system.build.vmWithDisko"
 
 # Loads the current Flake into a REPL

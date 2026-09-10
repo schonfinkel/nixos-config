@@ -34,12 +34,7 @@
 
     impermanence.url = "github:nix-community/impermanence";
 
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
@@ -65,7 +60,6 @@
       hosts,
       hyprland,
       nixpkgs,
-      nixos-generators,
       nixos-hardware,
       nix-vscode-extensions,
       stylix,
@@ -83,8 +77,6 @@
       perSystem =
         { pkgs, system, ... }:
         let
-          lib = nixpkgs.lib;
-
           system = "x86_64-linux";
 
           # Port Fowarding (HOST -> VM)
@@ -92,8 +84,6 @@
           qemu_options = {
             net = "hostfwd=tcp:127.0.0.1:2222-:22";
           };
-
-          settings = import ./profiles/settings.nix;
 
           treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
         in
@@ -108,22 +98,7 @@
           packages = {
             # QEMU
             # nix build .#qemu
-            qemu = nixos-generators.nixosGenerate {
-              system = "x86_64-linux";
-              modules = [
-                agenix.nixosModules.default
-                disko.nixosModules.disko
-                impermanence.nixosModules.impermanence
-                ./hosts/peano/configuration.nix
-                (import ./overlays)
-              ];
-              specialArgs = {
-                hostId = "3244f94e";
-                profile = "ext4";
-                target = settings.peano;
-              };
-              format = "qcow";
-            };
+            qemu = self.nixosConfigurations.peano.config.system.build.images.qemu-repart;
           };
 
           # nix run
@@ -155,6 +130,7 @@
               buildInputs = with pkgs; [
                 age
                 just
+                nixos-rebuild
               ];
             };
 
