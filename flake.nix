@@ -1,6 +1,16 @@
 {
   description = "NixOS Configuration";
 
+  # Prebuilt Noctalia binaries come from its Cachix cache. Kept at flake level
+  # so anyone building this flake (not just the deployed hosts) can fetch them
+  # instead of compiling Noctalia from source.
+  nixConfig = {
+    extra-substituters = [ "https://noctalia.cachix.org" ];
+    extra-trusted-public-keys = [
+      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+    ];
+  };
+
   inputs = {
     agenix.url = "github:ryantm/agenix";
 
@@ -39,6 +49,8 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
+
+    noctalia.url = "github:noctalia-dev/noctalia/cachix";
 
     stylix = {
       url = "github:danth/stylix";
@@ -190,6 +202,7 @@
                   home-manager.useGlobalPkgs = true;
                   home-manager.useUserPackages = true;
                   home-manager.backupFileExtension = "bkp";
+                  home-manager.extraSpecialArgs = { inherit inputs; };
                   home-manager.users."${user}" = import ./hosts/${host}/home.nix;
                 }
               ]

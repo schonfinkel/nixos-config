@@ -11,6 +11,7 @@
     ./hyprland.nix
     ./media.nix
     ./neovim
+    ./noctalia.nix
     ./programming.nix
     ./security.nix
     ./themes.nix
