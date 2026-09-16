@@ -130,13 +130,7 @@ in
     NVD_BACKEND = "direct";
   };
 
-  services.displayManager = {
-    sddm = {
-      enable = true;
-    };
-  };
-
-  # Single source of truth for the keyboard: SDDM and console.useXkbConfig read
+  # Single source of truth for the keyboard: the greeter and console.useXkbConfig read
   # this directly, and homeModules.hyprland.xkb defaults to it (Hyprland has its
   # own input block). Two layouts here, cycled with SUPER+space, since this
   # machine gets typed on in both us and br (abnt2).
@@ -212,6 +206,10 @@ in
   };
 
   hostModules.hyprland = {
+    enable = true;
+  };
+
+  hostModules.noctalia = {
     enable = true;
   };
 

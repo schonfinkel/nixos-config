@@ -45,7 +45,7 @@ in
       time.timeZone = cfg.timeZone;
 
       services.journald = {
-        settings.Journal = { 
+        settings.Journal = {
           MaxRetentionSec = "7d";
           SystemMaxUse = "1G";
           SystemMinFree = "128M";

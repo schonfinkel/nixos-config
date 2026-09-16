@@ -18,8 +18,8 @@
 #                   initialPassword instead.
 #
 # Present although it is not "minimal": stylix. home/hyprland.nix reads
-# config.stylix.base16Scheme and config.lib.stylix.colors to colour Hyprland,
-# waybar and hyprlock, so the WM simply does not evaluate without it.
+# config.stylix.base16Scheme and config.lib.stylix.colors to colour Hyprland
+# and hyprlock, so the WM simply does not evaluate without it.
 {
   config,
   inputs,
@@ -44,6 +44,7 @@
     ../../modules/disko.nix
     ../../modules/hyprland.nix
     ../../modules/impermanence.nix
+    ../../modules/noctalia.nix
     ../../modules/ssh.nix
     ../../modules/themes.nix
   ];
@@ -91,8 +92,6 @@
       variant = "";
     };
   };
-
-  services.displayManager.sddm.enable = true;
 
   nixpkgs.config.allowUnfree = true;
 
@@ -157,6 +156,10 @@
   };
 
   hostModules.hyprland = {
+    enable = true;
+  };
+
+  hostModules.noctalia = {
     enable = true;
   };
 

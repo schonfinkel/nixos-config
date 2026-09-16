@@ -81,12 +81,6 @@
   #services.xserver.desktopManager.gnome.enable = true;
   services.libinput.enable = true;
 
-  services.displayManager = {
-    sddm = {
-      enable = true;
-    };
-  };
-
   # On the Brazilian ThinkPad keyboard the `/ ?` key sits where right-Ctrl is on
   # other layouts, and the kernel reports it as KEY_RIGHTCTRL (keycode 97, as
   # `showkey` confirms). The br(thinkpad) XKB variant papers over that by giving
@@ -108,10 +102,10 @@
      KEYBOARD_KEY_9d=ro
   '';
 
-  # Single source of truth for the keyboard: SDDM and console.useXkbConfig read
-  # this directly, and homeModules.hyprland.xkb defaults to it (Hyprland has its
-  # own input block). This machine only ever types on its own keyboard, so there
-  # is no second layout and no grp:* toggle here.
+  # Single source of truth for the keyboard: the greeter and console.useXkbConfig
+  # read this directly, and homeModules.hyprland.xkb defaults to it (Hyprland has
+  # its own input block). This machine only ever types on its own keyboard, so
+  # there is no second layout and no grp:* toggle here.
   #
   # The thinkpad variant stays as a belt-and-braces fallback: with the remap
   # above the key already arrives as <AB11>, which plain `br` maps to
@@ -175,6 +169,10 @@
   };
 
   hostModules.hyprland = {
+    enable = true;
+  };
+
+  hostModules.noctalia = {
     enable = true;
   };
 

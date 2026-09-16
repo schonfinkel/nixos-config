@@ -44,6 +44,10 @@
     ];
   };
 
+  homeModules.noctalia = {
+    enable = true;
+  };
+
   homeModules.ghostty = {
     enable = true;
   };

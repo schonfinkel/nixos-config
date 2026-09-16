@@ -32,10 +32,11 @@ let
     ".claude"
     ".kube"
     ".local/share/opencode"
-    ".local/share/sddm"
+    ".local/share/noctalia"
     ".local/share/direnv"
     ".local/share/TelegramDesktop"
     ".local/state/nvim/dbee"
+    ".local/state/noctalia"
     ".local/state/opencode"
     ".microsoft/usersecrets"
     ".nuget"
@@ -122,6 +123,9 @@ in
           "/var/lib/agenix"
           "/var/lib/docker/"
           "/var/lib/nixos"
+          # The greeter's remembered session/scheme (sync.toml) and synced
+          # wallpapers. greeter.toml is materialised from the store each boot.
+          "/var/lib/noctalia-greeter"
           "/var/lib/postgresql"
           "/var/lib/tailscale"
           "/var/lib/systemd/coredump"

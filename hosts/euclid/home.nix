@@ -44,6 +44,10 @@
     # Keyboard layout is inherited from services.xserver.xkb in ./configuration.nix.
   };
 
+  homeModules.noctalia = {
+    enable = true;
+  };
+
   homeModules.ghostty = {
     enable = true;
   };

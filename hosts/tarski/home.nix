@@ -47,6 +47,10 @@
     # override here if the output name differs.
   };
 
+  homeModules.noctalia = {
+    enable = true;
+  };
+
   homeModules.neovim = {
     enable = true;
   };

@@ -8,7 +8,7 @@
 local nix = require("nix")
 
 local mainMod = "SUPER"
-local menu = "wofi --show drun"
+local menu = "noctalia msg panel-toggle launcher"
 
 ------------------
 ---- MONITORS ----
@@ -221,13 +221,38 @@ hl.window_rule({
     no_focus = true,
 })
 
--------------------
----- AUTOSTART ----
--------------------
+------------------
+---- NOCTALIA ----
+------------------
 
--- hyprpaper is started by its own systemd user service (services.hyprpaper),
--- so it is intentionally not launched here.
+-- Blur Noctalia's bar/panel/dock/notification surfaces and disable Hyprland's
+-- built-in layer animations so they do not fight Noctalia's own animations.
+hl.layer_rule({
+    name = "noctalia",
+    match = {
+        namespace = "^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd|window-switcher)$",
+    },
+    no_anim = true,
+    ignore_alpha = 0.5,
+    blur = true,
+    blur_popups = true,
+})
+
+-- Float the Noctalia Settings window.
+hl.window_rule({
+    name = "noctalia-settings",
+    match = { class = "dev.noctalia.Noctalia" },
+    float = true,
+    size = { 1080, 920 },
+})
+
+------------------
+---- AUTOSTART ----
+------------------
+
+-- Noctalia is started by its own systemd user service
+-- (homeModules.noctalia, WantedBy graphical-session.target), so it is
+-- intentionally not launched here.
 hl.on("hyprland.start", function()
     hl.exec_cmd("nm-applet")
-    hl.exec_cmd("waybar")
 end)

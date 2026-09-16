@@ -27,20 +27,14 @@ in
         # Screenshot functionality
         hyprshot
 
-        # Notification daemon
-        mako
-
         pyprland
         hyprpicker
         hyprcursor
         hyprlock
         hypridle
-        hyprpaper
 
         xwayland
-        waybar
         wayland
-        wofi
 
         # wl-copy and wl-paste for copy/paste
         # from stdin / stdout
@@ -49,9 +43,6 @@ in
         # Screensharing
         wireplumber
         xdg-desktop-portal-hyprland
-
-        # Logout
-        wlogout
       ];
 
       services.displayManager = {
