@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (use-package org-roam
   :ensure t
   :init

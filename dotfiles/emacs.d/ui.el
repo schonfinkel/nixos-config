@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;; ========================== General emacs settings ==========================
 ;; Maximize the emacs window on startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
