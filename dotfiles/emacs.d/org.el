@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;;; Package -- org.el
 ;;; Commentary:
 ;;;    Any org related settings

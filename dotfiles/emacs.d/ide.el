@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 ;; direnv
 (use-package direnv
   :config

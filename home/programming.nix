@@ -6,6 +6,17 @@
 }:
 
 let
+  # https://github.com/NixOS/nixpkgs/issues/563241#issuecomment-5728169843
+  # opencode_patch = pkgs.opencode.overrideAttrs (
+  #   final: prev: {
+  #     postPatch = prev.postPatch + ''
+  #       # fix for bun 1.4.x
+  #       substituteInPlace packages/opencode/script/build.ts \
+  #         --replace-fail 'splitting: true,' 'splitting: false,'
+  #     '';
+  #   }
+  # );
+
   cfg = config.homeModules.programming;
   inherit (lib)
     mkEnableOption
@@ -47,6 +58,7 @@ in
     {
       home.packages = with pkgs; [
         # AI
+        # opencode_patch
         opencode
         claude-code
         codex

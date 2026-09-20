@@ -21,6 +21,7 @@ let
     ".android"
     ".aws"
     ".azure"
+    ".cache/opencode"
     ".codex"
     ".config/BraveSoftware"
     ".config/discord"
