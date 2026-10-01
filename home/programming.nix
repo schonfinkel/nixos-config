@@ -68,6 +68,9 @@ in
         azure-functions-core-tools
         kubectl
 
+        # Diagrams
+        d2
+
         # Editors
         # jetbrains.rider
 
@@ -83,11 +86,9 @@ in
         # Language Servers
         lua-language-server
         nixd
-        terraform-ls
 
         # Tools
         devenv
-        hoppscotch
         gnumake
         shellcheck
       ];
