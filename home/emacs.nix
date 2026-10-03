@@ -21,7 +21,10 @@ let
     eshell-syntax-highlighting
     fsharp-mode
     # Diagrams
+    ## For d2
+    ob-d2
     d2-mode
+    ## For graphviz
     graphviz-dot-mode
     # haskell-mode
     # Latex
