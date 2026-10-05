@@ -20,10 +20,12 @@ let
     elpy
     eshell-syntax-highlighting
     fsharp-mode
-    gleam-ts-mode
     # Diagrams
+    ## For d2
+    ob-d2
+    d2-mode
+    ## For graphviz
     graphviz-dot-mode
-    plantuml-mode
     # haskell-mode
     # Latex
     org-fragtog
@@ -109,6 +111,7 @@ in
             magit
             # Email
             #notmuch
+
             # Extra
             auto-dim-other-buffers
             atom-one-dark-theme
@@ -123,6 +126,7 @@ in
             vimrc-mode
             web-mode
             which-key
+
             # Notifications
             alert
           ]
