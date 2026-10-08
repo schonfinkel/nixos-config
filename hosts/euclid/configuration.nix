@@ -118,12 +118,9 @@
     videoDrivers = [ "modesetting" ];
   };
 
-  hardware.graphics.enable = true;
   fonts.fontconfig.antialias = true;
   fonts.fontconfig.hinting.enable = true;
   fonts.fontconfig.subpixel.rgba = "rgb";
-
-  programs.steam.enable = true;
 
   # Enable CUPS to print documents.
   # services.printing.enable = true;
@@ -166,6 +163,10 @@
   hostModules.commons = {
     enable = true;
     hostName = "euclid";
+  };
+
+  hostModules.gaming = {
+    enable = true;
   };
 
   hostModules.hyprland = {

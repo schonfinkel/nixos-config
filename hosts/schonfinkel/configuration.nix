@@ -109,15 +109,11 @@ in
 
   # Hardware
   hardware.enableRedistributableFirmware = true;
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  # GPU config, same shape as caladan.
+  # GPU config
   hardware.nvidia = {
     open = true;
     nvidiaSettings = true;
@@ -148,7 +144,6 @@ in
   fonts.fontconfig.hinting.enable = true;
   fonts.fontconfig.subpixel.rgba = "rgb";
 
-  programs.steam.enable = true;
   programs.noisetorch.enable = true;
 
   users.mutableUsers = false;
@@ -203,6 +198,10 @@ in
     enable = true;
     profile = "ext4_ephemeral";
     target = "schonfinkel";
+  };
+
+  hostModules.gaming = {
+    enable = true;
   };
 
   hostModules.hyprland = {
