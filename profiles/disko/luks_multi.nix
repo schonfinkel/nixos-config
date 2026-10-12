@@ -11,7 +11,7 @@
 # available before stage 2 starts.
 #
 # The data disk additionally gets the agenix-managed key from
-# secrets/luks_data.age enrolled as a second key slot, so it can be reopened
+# luks_data.age (nix-secrets input) enrolled as a second key slot, so it can be reopened
 # without the passphrase for recovery or unattended remounts.
 { target }:
 let

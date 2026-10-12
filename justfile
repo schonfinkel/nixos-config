@@ -6,7 +6,8 @@ home_dir := justfile_directory() + "/home"
 hosts_dir := justfile_directory() + "/hosts"
 modules_dir := justfile_directory() + "/modules"
 overlay_dir := justfile_directory() + "/overlays"
-secrets_dir := justfile_directory() + "/secrets"
+# Checkout of the private nix-secrets repo (the `nix-secrets` flake input)
+secrets_dir := env_var_or_default("SECRETS_DIR", justfile_directory() + "/../Personal/nix-secrets")
 target_flake := env_var_or_default("TARGET_FLAKE", "peano")
 key_path := env_var_or_default("AGE_KEY_PATH", "$HOME/.ssh/default_ed25519")
 
@@ -56,3 +57,8 @@ repl:
 [group('age')]
 rekey:
     cd {{ secrets_dir }} && nix run github:ryantm/agenix -- -r --identity "{{ key_path }}"
+
+# Re-pins the nix-secrets input to its latest pushed commit
+[group('age')]
+secrets-update:
+    nix flake update nix-secrets

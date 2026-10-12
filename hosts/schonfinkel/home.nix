@@ -70,6 +70,7 @@
       enable = true;
       sshKeys = [
         "23C94318A1D57DA26574677539EC504CB2A49981"
+        "66B671191FC245EC5A814702D4EFEF49D4E53C9E"
       ];
     };
   };

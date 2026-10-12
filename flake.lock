@@ -891,6 +891,21 @@
         "type": "github"
       }
     },
+    "nix-secrets": {
+      "locked": {
+        "lastModified": 1791818450,
+        "narHash": "sha256-2lfOHefwDDdx0S7RjFI6AALc3h3BKBSNBC5kcWJSHCQ=",
+        "ref": "refs/heads/main",
+        "rev": "26f533dad28b00660cd13334b12f008273d3fefb",
+        "revCount": 1,
+        "type": "git",
+        "url": "ssh://git@github.com/schonfinkel/nix-secrets"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/schonfinkel/nix-secrets"
+      }
+    },
     "nix-vscode-extensions": {
       "inputs": {
         "nixpkgs": "nixpkgs_5"
@@ -1194,6 +1209,7 @@
         "hosts": "hosts",
         "hyprland": "hyprland",
         "impermanence": "impermanence",
+        "nix-secrets": "nix-secrets",
         "nix-vscode-extensions": "nix-vscode-extensions",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_7",

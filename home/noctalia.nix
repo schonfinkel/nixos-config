@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  osConfig ? { },
   ...
 }:
 
@@ -12,6 +13,14 @@ let
     mkIf
     mkOption
     ;
+
+  # One bar button per JumpCloud profile when the host enables
+  # hostModules.jumpcloud. Noctalia's network widget only sees NetworkManager
+  # VPNs, so these toggle the openvpn3 sessions instead; custom_button can't
+  # show live state, so feedback comes as notifications from jumpcloud-vpn.
+  jumpcloud = osConfig.hostModules.jumpcloud or { };
+  vpnProfiles = if jumpcloud.enable or false then jumpcloud.profiles else [ ];
+  vpnWidget = profile: "vpn-${profile}";
 in
 {
   # programs.noctalia comes from Home Manager itself. The noctalia flake's
@@ -83,6 +92,9 @@ in
             end = [
               "notifications"
               "network"
+            ]
+            ++ map vpnWidget vpnProfiles
+            ++ [
               "cpu"
               "ram"
               "disk"
@@ -119,7 +131,20 @@ in
             tooltip_format = "{:%A, %B %d}";
             timezone = cfg.timeZone;
           };
-        };
+        }
+        // lib.listToAttrs (
+          map (profile: {
+            name = vpnWidget profile;
+            value = {
+              type = "custom_button";
+              glyph = "shield-lock";
+              label = profile;
+              tooltip = "JumpCloud ${profile}: click to connect/disconnect";
+              # jumpcloud-vpn comes from hostModules.jumpcloud, i.e. the system profile.
+              actions.left = "exec /run/current-system/sw/bin/jumpcloud-vpn ${profile} toggle";
+            };
+          }) vpnProfiles
+        );
       };
     };
 

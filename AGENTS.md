@@ -29,14 +29,17 @@ just build-iso              # nix build .#peano (custom ISO/qcow via nixos-gener
 just build-qemu              # build a bootable QEMU VM (with disko) for TARGET_FLAKE
 just run-qemu                 # build-qemu, then boot it (SSH forwarded to localhost:2222)
 just repl                       # nix repl on the TARGET_FLAKE's nixosConfiguration
-just rekey                       # cd secrets && re-encrypt agenix secrets for configured keys
+just rekey                       # re-encrypt agenix secrets in the nix-secrets checkout (SECRETS_DIR)
+just secrets-update              # re-pin the nix-secrets input after pushing that repo
 ```
 
-Applying a config to a real machine (destructive on that machine — only do this if explicitly asked):
+Applying a config to a real machine (destructive on that machine — only do this if explicitly asked).
+Use `--sudo` rather than `sudo nixos-rebuild`: the private `nix-secrets` input is fetched over SSH
+during evaluation, and root has no key for it, so evaluate as the user and elevate only to activate:
 
 ```shell
-sudo nixos-rebuild switch --flake .#caladan
-sudo nixos-rebuild switch --flake .#euclid
+nixos-rebuild switch --flake .#schonfinkel --sudo
+nixos-rebuild switch --flake .#euclid --sudo
 ```
 
 Formatting/linting: `nix fmt` runs `treefmt` (`nixfmt` for `*.nix`, `just` formatter for the
@@ -141,13 +144,22 @@ sets user-specific bits). `home/neovim/` is itself a small module (`default.nix`
 config consumed by the Hyprland home-module, mirroring the plain-file dotfiles under `dotfiles/`
 (zsh, emacs, mpv, ncmpcpp, zathura) that are symlinked in rather than templated.
 
-### Secrets (`secrets/`, `modules/agenix.nix`)
+### Secrets (`nix-secrets` input, `modules/agenix.nix`)
 
-Secrets are managed with `agenix`; `secrets/secrets.nix` lists the authorized public keys and maps
-them to `.age` files: `hashed_password.age` (`root`/user login hashes across hosts) and
-`luks_data.age` (the data-disk LUKS key for a `luks_multi` host; no host sets it today). Re-key
-with `just rekey` after changing
-`secrets/secrets.nix` or the key list. Don't hand-edit `.age` files — they're ciphertext.
+Secrets are managed with `agenix` but live in a separate **private** flake,
+`git+ssh://git@github.com/schonfinkel/nix-secrets` (the `nix-secrets` input; this repo is public).
+Its `secrets.nix` lists the authorized public keys and maps them to `.age` files at the repo root:
+`hashed_password.age` (`root`/user login hashes across hosts), `luks_data.age` (the data-disk LUKS
+key for a `luks_multi` host; no host sets it today) and `jumpcloud_<profile>_ovpn.age`
+(`modules/jumpcloud.nix`). Modules reference them as `"${inputs.nix-secrets}/<name>.age"`.
+
+The local checkout defaults to `../Personal/nix-secrets` (override with `SECRETS_DIR`; `install.sh`
+takes `--secrets DIR`). Edit with `agenix -e` from that checkout, re-key with `just rekey` after
+changing `secrets.nix` or the key list, commit + push there, then `just secrets-update` here —
+the lock pins a rev, so nothing changes until it is re-pinned. To test unpushed changes, pass
+`--override-input nix-secrets path:<checkout>`. Don't hand-edit `.age` files — they're ciphertext.
+Inputs are fetched lazily, so hosts that never touch `age.secrets` (peano, i.e. CI) build without
+access to the private repo.
 
 Note the identity chain: `modules/agenix.nix` sets `identityPaths` under `persistDirectory` when
 impermanence is on, so decryption depends on the persisted SSH keys already being in place. Since

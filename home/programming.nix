@@ -64,9 +64,11 @@ in
         codex
 
         # Cloud
-        azure-cli
-        azure-functions-core-tools
+        awscli2
+        # azure-cli
+        # azure-functions-core-tools
         kubectl
+        lens
 
         # Diagrams
         d2

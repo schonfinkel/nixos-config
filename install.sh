@@ -17,7 +17,8 @@
 #   ./install.sh --gen-keys --host schonfinkel [--host-keys DIR]
 #       Generate the SSH host keys a host needs when its credentials come from
 #       agenix. Writes to DIR (default /tmp/<host>-keys) and prints the public
-#       halves to paste into secrets/secrets.nix. No root required.
+#       halves to paste into secrets.nix (in the nix-secrets repo, see
+#       --secrets). No root required.
 #
 #   sudo ./install.sh                      # pick the disk interactively
 #   sudo ./install.sh --disk /dev/nvme0n1  # non-interactive target
@@ -31,6 +32,11 @@
 # booting with every account locked. The script works out whether the chosen
 # host needs them and refuses to start if they are missing.
 #
+# --secrets DIR is a checkout of the private nix-secrets repo (default
+# <flake>/../Personal/nix-secrets). --gen-keys edits, re-encrypts and commits
+# there, and when it exists the install uses it in place of the locked
+# `nix-secrets` input, so root on the live ISO needs no GitHub credentials.
+#
 # THIS ERASES THE TARGET DISK COMPLETELY.
 
 set -euo pipefail
@@ -39,6 +45,7 @@ HOST="tarski"
 FLAKE="."
 DISK=""
 HOST_KEYS=""
+SECRETS_DIR=""
 ASSUME_YES=0
 MODE_SETUP=0
 MODE_GEN_KEYS=0
@@ -60,6 +67,7 @@ while [ $# -gt 0 ]; do
     --host)  HOST="${2:-}"; shift 2 ;;
     --flake) FLAKE="${2:-}"; shift 2 ;;
     --host-keys) HOST_KEYS="${2:-}"; shift 2 ;;
+    --secrets) SECRETS_DIR="${2:-}"; shift 2 ;;
     --setup) MODE_SETUP=1; shift ;;
     --gen-keys) MODE_GEN_KEYS=1; shift ;;
     -y|--yes) ASSUME_YES=1; shift ;;
@@ -114,6 +122,18 @@ if [ "$MODE_SETUP" -eq 0 ]; then
   if [ ! -e "$FLAKE/flake.nix" ] && [ "${FLAKE#*:}" = "$FLAKE" ]; then
     die "no flake.nix at '$FLAKE' -- run this from the repo root or pass --flake"
   fi
+fi
+
+# The private nix-secrets checkout. When present, every evaluation that can
+# reach a secret reads it from here instead of fetching the locked input over
+# SSH -- which root on a live ISO has no key for.
+SECRETS_DIR="${SECRETS_DIR:-$FLAKE/../Personal/nix-secrets}"
+OVERRIDE=()
+if [ -e "$SECRETS_DIR/secrets.nix" ]; then
+  SECRETS_DIR="$(cd "$SECRETS_DIR" && pwd)"
+  OVERRIDE=(--override-input nix-secrets "path:$SECRETS_DIR")
+elif [ "$MODE_SETUP" -eq 0 ]; then
+  printf '\nnote: no nix-secrets checkout at %s; using the locked input.\n' "$SECRETS_DIR"
 fi
 
 # Flakes only see git-tracked files. A freshly cloned repo is fine; a dirty one
@@ -254,7 +274,7 @@ prepare_installer_system() {
 # ---------------------------------------------------------------------------
 
 nix_eval() {
-  nix eval --raw "${FLAKE}#nixosConfigurations.${HOST}.config.$1" --apply "$2" 2>/dev/null
+  nix eval --raw "${OVERRIDE[@]}" "${FLAKE}#nixosConfigurations.${HOST}.config.$1" --apply "$2" 2>/dev/null
 }
 
 MUTABLE_USERS=""
@@ -287,7 +307,7 @@ host_facts() {
 # --gen-keys
 #
 # A fresh pair decrypts nothing on its own: the .age files are ciphertext for a
-# fixed set of recipients, so the public half has to go into secrets/secrets.nix
+# fixed set of recipients, so the public half has to go into secrets.nix (nix-secrets repo)
 # and `just rekey` has to run (on a machine holding a personal identity from
 # userKeys) before these keys are worth anything. Hence the instructions at the
 # end rather than a silent "done".
@@ -349,7 +369,9 @@ gen_keys() {
 }
 
 # ---------------------------------------------------------------------------
-# Put the new public key in secrets/secrets.nix, re-encrypt, commit.
+# Put the new public key in the nix-secrets repo's secrets.nix, re-encrypt,
+# commit there. Pushing it and re-pinning the input (`just secrets-update`) are
+# left to the user; an install from this machine reads the checkout directly.
 #
 # Two separate things, and only the first is editing text: listing a key in
 # hostKeys does not give it anything to read. Every .age file is ciphertext for
@@ -363,7 +385,7 @@ gen_keys() {
 update_secrets() {
   ed_pub="$1"
   outdir="$2"
-  secrets="$FLAKE/secrets/secrets.nix"
+  secrets="$SECRETS_DIR/secrets.nix"
   key="$(cat "$ed_pub")"
   body="$(awk '{ print $2 }' "$ed_pub")"
 
@@ -427,7 +449,7 @@ update_secrets() {
    /root/.ssh/default_ed25519). Either copy one here and re-run this, or
    from a machine that has one:
 
-     just rekey && git commit -am 'nix: add $HOST host key' && git push
+     just rekey   # then commit + push nix-secrets, and: just secrets-update
   ----------------------------------------------------------------
 
 EOF
@@ -435,21 +457,22 @@ EOF
   fi
 
   info "Re-encrypting every secret with $identity"
-  (cd "$FLAKE/secrets" && nix run github:ryantm/agenix -- -r --identity "$identity") ||
+  (cd "$SECRETS_DIR" && nix run github:ryantm/agenix -- -r --identity "$identity") ||
     die "agenix -r failed. $secrets was updated; re-key by hand with:
        just rekey"
 
   # Nix only reads git-tracked files: an uncommitted rekey installs the old
   # ciphertext.
-  if [ -d "$FLAKE/.git" ] && command -v git >/dev/null 2>&1; then
-    git -C "$FLAKE" add secrets
-    if git -C "$FLAKE" diff --cached --quiet -- secrets; then
-      info "Nothing to commit in secrets/"
+  if [ -d "$SECRETS_DIR/.git" ] && command -v git >/dev/null 2>&1; then
+    git -C "$SECRETS_DIR" add -A
+    if git -C "$SECRETS_DIR" diff --cached --quiet; then
+      info "Nothing to commit in $SECRETS_DIR"
     else
-      git -C "$FLAKE" -c user.email=install@localhost -c user.name=install \
-        commit -q -m "nix: add $HOST host key and rekey secrets" ||
-        die "could not commit secrets/ (nix needs it committed)"
-      info "Committed secrets/ -- push it if this repo lives elsewhere too"
+      git -C "$SECRETS_DIR" -c user.email=install@localhost -c user.name=install \
+        commit -q -m "secrets: add $HOST host key and rekey" ||
+        die "could not commit in $SECRETS_DIR (nix needs it committed)"
+      info "Committed in $SECRETS_DIR. Push it, then run \`just secrets-update\`
+    in $FLAKE so other machines pick up the new pin."
     fi
   fi
 
@@ -531,10 +554,10 @@ $(sed 's|.*/|         |' <<<"$IDENTITY_PATHS")"
 
   PLANT=1
 
-  # A key that is not listed in secrets/secrets.nix cannot decrypt anything --
+  # A key that is not listed in nix-secrets/secrets.nix cannot decrypt anything --
   # the .age files are ciphertext for a fixed set of recipients. Cheap to check,
   # and catches "generated a fresh pair and forgot to just rekey".
-  SECRETS="$FLAKE/secrets/secrets.nix"
+  SECRETS="$SECRETS_DIR/secrets.nix"
   if [ -f "$SECRETS" ] && command -v ssh-keygen >/dev/null 2>&1; then
     RECIPIENT=0
     while IFS= read -r identity; do
@@ -550,7 +573,7 @@ $(sed 's|.*/|         |' <<<"$IDENTITY_PATHS")"
       printf 'warning: no key in %s appears in %s.\n' "$HOST_KEYS" "$SECRETS"
       printf 'agenix will not be able to decrypt hashed_password.age with these,\n'
       printf 'and the install will finish with every account locked. Add the public\n'
-      printf 'half to secrets/secrets.nix, run `just rekey`, and commit first.\n'
+      printf 'half to nix-secrets/secrets.nix, run `just rekey`, and commit first.\n'
       if [ "$ASSUME_YES" -eq 0 ]; then
         printf '\nContinue anyway? [y/N]: '
         read -r reply
@@ -727,7 +750,7 @@ mkdir -p /mnt/tmp
 # ---------------------------------------------------------------------------
 
 info "Running nixos-install (this is the slow part)"
-TMPDIR=/mnt/tmp nixos-install --flake "${FLAKE}#${HOST}" --no-root-passwd
+TMPDIR=/mnt/tmp nixos-install --flake "${FLAKE}#${HOST}" "${OVERRIDE[@]}" --no-root-passwd
 
 # ---------------------------------------------------------------------------
 # Did the credentials actually land? On an impermanent host /etc/shadow is on
@@ -754,7 +777,7 @@ if [ "$NEEDS_KEYS" -eq 1 ] && [ -f /mnt/etc/shadow ]; then
        it from here, where /mnt is still mounted:
 
          1. confirm the identities are in place:  ls -l /mnt/persist/etc/ssh
-         2. confirm their public halves are in secrets/secrets.nix (just rekey)
+         2. confirm their public halves are in nix-secrets/secrets.nix (just rekey)
          3. re-run activation:
               nixos-enter --root /mnt -- /run/current-system/bin/switch-to-configuration switch
 
@@ -777,7 +800,7 @@ EOF
 if [ "$NEEDS_KEYS" -eq 1 ]; then
   cat <<EOF
     Log in as 'mbenevides'. The password is the one in
-    secrets/hashed_password.age, decrypted at every activation by the keys
+    hashed_password.age (nix-secrets), decrypted at every activation by the keys
     planted in step above -- 'passwd' will NOT stick, because the root
     filesystem is a tmpfs. Change it in the secret, not on the machine.
 

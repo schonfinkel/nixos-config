@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  inputs,
   pkgs,
   ...
 }:
@@ -47,7 +48,7 @@ in
       age = {
         secrets = {
           hashed_password = {
-            file = ../secrets/hashed_password.age;
+            file = "${inputs.nix-secrets}/hashed_password.age";
             mode = "0440";
           };
         };
@@ -57,7 +58,7 @@ in
     # Key file for a LUKS volume that is opened outside the initrd.
     (mkIf (cfg.luksKeyFile != null) {
       age.secrets.luks_data = {
-        file = ../secrets/luks_data.age;
+        file = "${inputs.nix-secrets}/luks_data.age";
         path = cfg.luksKeyFile;
         # Decrypt straight to `path` instead of symlinking into /run/agenix.
         symlink = false;
