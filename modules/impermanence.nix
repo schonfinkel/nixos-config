@@ -25,6 +25,7 @@ let
     ".cert"
     ".cache/opencode"
     ".codex"
+    ".config/1Password"
     ".config/BraveSoftware"
     ".config/discord"
     ".config/gh"
@@ -34,6 +35,7 @@ let
     ".config/Slack"
     ".claude"
     ".kube"
+    ".k8slens"
     ".local/share/opencode"
     ".local/share/noctalia"
     ".local/share/direnv"
@@ -52,6 +54,10 @@ let
     "Videos"
     {
       directory = ".gnupg";
+      mode = "0700";
+    }
+    {
+      directory = ".config/op";
       mode = "0700";
     }
     {
@@ -146,6 +152,7 @@ in
             ".bash_history"
             ".config/systemsettingsrc"
             ".pgpass"
+            ".saml2aws"
             ".zsh_history"
           ];
         };

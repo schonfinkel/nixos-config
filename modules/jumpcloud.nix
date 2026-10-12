@@ -88,6 +88,59 @@ let
       esac
     '';
   };
+
+  idpSecretName = env: "fora_idp_account_${env}";
+
+  # `jumpcloud-aws [--stag|--prod]`: saml2aws login through JumpCloud, with the
+  # username, password and TOTP read from 1Password. The saml2aws idp-account
+  # names come from agenix secrets.
+  jumpcloudAws = pkgs.writeShellApplication {
+    name = "jumpcloud-aws";
+    runtimeInputs = [ pkgs.saml2aws ];
+    text = ''
+      # The desktop app only talks to the setgid (onepassword-cli) wrapper that
+      # programs._1password installs, not to the bare store binary.
+      op() { ${config.security.wrapperDir}/op "$@"; }
+
+      target_env=""
+
+      set_env() {
+        if [[ -n "$target_env" ]]; then
+          echo "Error: Mutually exclusive flags provided. Choose either --prod or --stag." >&2
+          exit 1
+        fi
+        target_env=$1
+      }
+
+      while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+          --prod) set_env prod ;;
+          --stag) set_env stag ;;
+          *)
+            echo "Error: Unknown option '$1'. Use --stag or --prod." >&2
+            exit 1
+            ;;
+        esac
+        shift
+      done
+
+      # Default to staging if no flag is provided
+      target_env=''${target_env:-stag}
+      case "$target_env" in
+        stag) idp_account=$(< ${config.age.secrets.${idpSecretName "staging"}.path}) ;;
+        prod) idp_account=$(< ${config.age.secrets.${idpSecretName "prod"}.path}) ;;
+      esac
+
+      SAML2AWS_USERNAME=$(op read "op://${cfg.onePassword.vault}/${cfg.onePassword.item}/username")
+      SAML2AWS_PASSWORD=$(op read "op://${cfg.onePassword.vault}/${cfg.onePassword.item}/password")
+      SAML2AWS_MFA_TOKEN=$(op item get "${cfg.onePassword.item}" --vault "${cfg.onePassword.vault}" --otp)
+      export SAML2AWS_USERNAME SAML2AWS_PASSWORD SAML2AWS_MFA_TOKEN
+
+      echo "Connecting with SAML as $SAML2AWS_USERNAME for environment: $target_env"
+
+      saml2aws login --idp-account="$idp_account" --force
+    '';
+  };
 in
 {
   options.hostModules.jumpcloud = {
@@ -109,12 +162,39 @@ in
         `jumpcloud_<profile>_ovpn.age` in the nix-secrets input.
       '';
     };
+
+    onePassword = {
+      vault = mkOption {
+        type = lib.types.str;
+        default = "Employee";
+        description = "1Password vault holding the JumpCloud login used by `jumpcloud-aws`.";
+      };
+
+      item = mkOption {
+        type = lib.types.str;
+        default = "JumpCloud";
+        description = "1Password item (username, password and OTP) used by `jumpcloud-aws`.";
+      };
+    };
   };
 
   config = mkIf cfg.enable {
     # The NetworkManager OpenVPN plugin can't do the web (SAML) login JumpCloud
     # requires (`AUTH_FAILED ... IV_SSO=webauth`); openvpn3 can.
     programs.openvpn3.enable = true;
+
+    networking.networkmanager.plugins = [
+      pkgs.networkmanager-openvpn
+    ];
+
+    # Shouldn't be really here, but no better place to put this yet
+    programs._1password = {
+      enable = true;
+    };
+
+    programs._1password-gui = {
+      enable = true;
+    };
 
     # openvpn3's netcfg service (v27.1) dies on startup without
     # org.freedesktop.resolve1, even with `systemd_resolved = false`. With
@@ -124,12 +204,25 @@ in
 
     # The .ovpn files exported from the VPN portal, as-is (they embed the CA and
     # TLS key). Owned by the user because openvpn3 reads them as the caller.
-    age.secrets = lib.genAttrs (map secretName cfg.profiles) (name: {
-      file = "${inputs.nix-secrets}/${name}.age";
-      owner = cfg.user;
-      mode = "0400";
-    });
+    # The saml2aws idp-account names used by `jumpcloud-aws` are secrets as well.
+    age.secrets =
+      lib.genAttrs
+        (
+          map secretName cfg.profiles
+          ++ map idpSecretName [
+            "staging"
+            "prod"
+          ]
+        )
+        (name: {
+          file = "${inputs.nix-secrets}/${name}.age";
+          owner = cfg.user;
+          mode = "0400";
+        });
 
-    environment.systemPackages = [ jumpcloudVpn ];
+    environment.systemPackages = [
+      jumpcloudVpn
+      jumpcloudAws
+    ];
   };
 }

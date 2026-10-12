@@ -78,12 +78,10 @@ in
         claude-code
         codex
 
-        # Cloud
-        awscli2
         # azure-cli
         # azure-functions-core-tools
         kubectl
-        lens
+        kubectx
 
         # Diagrams
         d2
@@ -237,6 +235,15 @@ in
     })
 
     (mkIf cfg.enableWorkProfile {
+      home.packages = with pkgs; [
+        # Cloud
+        awscli2
+        saml2aws
+
+        # K8s
+        lens
+      ];
+
       # Declaratively write the public "work" key file
       # Run `gpg --export-ssh-key B653691B6E9D5D4A` once to get this string
       home.file.".ssh/work_github.pub".text = ''
