@@ -6,6 +6,15 @@
 }:
 
 let
+  # Work git identities: repo directory -> agenix secret (nix-secrets input)
+  # holding the `[user] email = ...` fragment, so the addresses stay out of this
+  # public repo. modules/agenix.nix decrypts them to /run/agenix for any user
+  # with enableWorkProfile on.
+  workIdentities = {
+    "~/Code/Work/opslogic/" = "mail_ol";
+    "~/Code/Work/foratravel/" = "mail_fat";
+  };
+
   # https://github.com/NixOS/nixpkgs/issues/563241#issuecomment-5728169843
   # opencode_patch = pkgs.opencode.overrideAttrs (
   #   final: prev: {
@@ -28,6 +37,12 @@ in
 {
   options.homeModules.programming = {
     enable = mkEnableOption "Enable a minimal programming environment.";
+
+    enableWorkProfile =
+      mkEnableOption "Enable a separate 'work' profile for companies that require a dedicated work account"
+      // {
+        default = false;
+      };
 
     git = {
       enable = mkEnableOption "Enable Git configuration" // {
@@ -187,6 +202,7 @@ in
         };
 
         includes = [
+          # Personal Projects
           {
             condition = "gitdir:~/Code/";
             contents = {
@@ -206,6 +222,7 @@ in
               };
             };
           }
+
         ];
       };
 
@@ -215,6 +232,52 @@ in
         settings = {
           editor = cfg.git.defaultEditor;
         };
+      };
+
+    })
+
+    (mkIf cfg.enableWorkProfile {
+      # Declaratively write the public "work" key file
+      # Run `gpg --export-ssh-key B653691B6E9D5D4A` once to get this string
+      home.file.".ssh/work_github.pub".text = ''
+        ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIITVJEmPZNwWxuZ/eiqapSzIGUD42KknahJwzhaCJpRL (none)
+      '';
+
+      # Declaratively configure SSH Host alias and force IdentitiesOnly
+      programs.ssh = {
+        enable = true;
+        matchBlocks = {
+          "github.com-work" = {
+            hostname = "github.com";
+            user = "git";
+            identitiesOnly = true;
+            identityFile = "~/.ssh/work_github.pub";
+          };
+        };
+      };
+
+      # Add extra git options. Each work identity is two includes with the same
+      # condition: the non-secret settings, then the decrypted email fragment.
+      programs.git = {
+        includes = lib.concatLists (
+          lib.mapAttrsToList (dir: secret: [
+            {
+              condition = "gitdir:${dir}";
+              contents = {
+                user = {
+                  name = "Marcos Benevides";
+                  signingKey = "B653691B6E9D5D4A";
+                };
+                commit.gpgSign = true;
+                url."git@github.com-work:".insteadOf = "git@github.com:";
+              };
+            }
+            {
+              condition = "gitdir:${dir}";
+              path = "/run/agenix/${secret}";
+            }
+          ]) workIdentities
+        );
       };
 
     })

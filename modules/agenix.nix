@@ -9,6 +9,13 @@
 let
   cfg = config.hostModules.agenix;
   impermanence_module = config.hostModules.impermanence;
+
+  # Home Manager users with homeModules.programming.enableWorkProfile on.
+  # `or` covers hosts without Home Manager (peano).
+  hmUsers = config.home-manager.users or { };
+  workUsers = lib.attrNames (
+    lib.filterAttrs (_: u: u.homeModules.programming.enableWorkProfile or false) hmUsers
+  );
   inherit (lib)
     mkEnableOption
     mkIf
@@ -53,6 +60,16 @@ in
           };
         };
       };
+    })
+
+    # Work git emails for home/programming.nix, declared for whichever Home
+    # Manager user turns on enableWorkProfile, so hosts need no extra config.
+    (mkIf (workUsers != [ ]) {
+      age.secrets = lib.genAttrs [ "mail_ol" "mail_fat" ] (name: {
+        file = "${inputs.nix-secrets}/${name}.age";
+        owner = lib.head workUsers;
+        mode = "0400";
+      });
     })
 
     # Key file for a LUKS volume that is opened outside the initrd.

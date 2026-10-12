@@ -14,13 +14,14 @@ let
     mkOption
     ;
 
-  # One bar button per JumpCloud profile when the host enables
-  # hostModules.jumpcloud. Noctalia's network widget only sees NetworkManager
-  # VPNs, so these toggle the openvpn3 sessions instead; custom_button can't
-  # show live state, so feedback comes as notifications from jumpcloud-vpn.
+  # A single VPN icon on the bar when the host enables hostModules.jumpcloud;
+  # clicking it opens a panel with one toggle per profile. Noctalia's network
+  # widget only sees NetworkManager VPNs, so this comes from the local
+  # mbenevides/vpn plugin (./noctalia-plugins/vpn), which polls and toggles the
+  # openvpn3 sessions.
   jumpcloud = osConfig.hostModules.jumpcloud or { };
   vpnProfiles = if jumpcloud.enable or false then jumpcloud.profiles else [ ];
-  vpnWidget = profile: "vpn-${profile}";
+  vpnEnabled = vpnProfiles != [ ];
 in
 {
   # programs.noctalia comes from Home Manager itself. The noctalia flake's
@@ -93,7 +94,7 @@ in
               "notifications"
               "network"
             ]
-            ++ map vpnWidget vpnProfiles
+            ++ lib.optional vpnEnabled "vpn"
             ++ [
               "cpu"
               "ram"
@@ -132,19 +133,32 @@ in
             timezone = cfg.timeZone;
           };
         }
-        // lib.listToAttrs (
-          map (profile: {
-            name = vpnWidget profile;
-            value = {
-              type = "custom_button";
-              glyph = "shield-lock";
-              label = profile;
-              tooltip = "JumpCloud ${profile}: click to connect/disconnect";
-              # jumpcloud-vpn comes from hostModules.jumpcloud, i.e. the system profile.
-              actions.left = "exec /run/current-system/sw/bin/jumpcloud-vpn ${profile} toggle";
-            };
-          }) vpnProfiles
-        );
+        // lib.optionalAttrs vpnEnabled {
+          vpn.type = "mbenevides/vpn:menu";
+        };
+
+        plugin_settings = mkIf vpnEnabled {
+          "mbenevides/vpn" = {
+            profiles = vpnProfiles;
+            # Drop the panel down from the bar, next to the icon.
+            panel_placement = "attached";
+            panel_open_near_click = true;
+          };
+        };
+
+        # A `path` source is read-only to Noctalia, so the plugin lives in the
+        # store and is updated by rebuilding, not by Noctalia's git updater.
+        plugins = mkIf vpnEnabled {
+          enabled = [ "mbenevides/vpn" ];
+          source = [
+            {
+              name = "local-nix";
+              kind = "path";
+              location = "${./noctalia-plugins}";
+              enabled = true;
+            }
+          ];
+        };
       };
     };
 

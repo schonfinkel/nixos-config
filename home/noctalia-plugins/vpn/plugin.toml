@@ -1,0 +1,43 @@
+# JumpCloud (openvpn3) VPNs behind a single bar icon: a service polls every
+# profile, the bar widget summarises them, and clicking it opens a panel with
+# one toggle per profile. Wired up by home/noctalia.nix, which adds this
+# directory as a read-only `path` plugin source and fills `profiles` from
+# hostModules.jumpcloud.
+
+id = "mbenevides/vpn"
+name = "JumpCloud VPN"
+version = "2.0.0"
+# 24 = direct-argv: runAsync with an argument array.
+plugin_api = 24
+author = "mbenevides"
+license = "MIT"
+icon = "shield-lock"
+description = "Status and toggles for the JumpCloud openvpn3 profiles (jumpcloud-vpn)."
+dependencies = ["jumpcloud-vpn"]
+
+# Shared by the service, widget and panel.
+[[setting]]
+key = "profiles"
+type = "string_list"
+label_key = "settings.profiles.label"
+description_key = "settings.profiles.description"
+default = ["staging", "prod"]
+
+# Polls `jumpcloud-vpn <profile> status` and publishes the result as state.
+[[service]]
+id = "poller"
+entry = "poller.luau"
+
+# The bar icon. Click opens the panel.
+[[widget]]
+id = "menu"
+entry = "menu.luau"
+
+# Pop-up with one toggle per profile.
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 320
+height = 200
+placement = "attached"
+open_near_click = true

@@ -1,0 +1,4 @@
+{
+  "settings.profiles.label": "Profiles",
+  "settings.profiles.description": "jumpcloud-vpn profiles listed in the panel (e.g. staging, prod)."
+}

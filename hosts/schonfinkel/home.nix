@@ -62,6 +62,7 @@
 
   homeModules.programming = {
     enable = true;
+    enableWorkProfile = true;
   };
 
   homeModules.security = {
