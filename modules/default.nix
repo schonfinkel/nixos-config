@@ -8,6 +8,7 @@
     ./gaming.nix
     ./hyprland.nix
     ./impermanence.nix
+    ./jumpcloud.nix
     ./noctalia.nix
     ./themes.nix
     ./ssh.nix

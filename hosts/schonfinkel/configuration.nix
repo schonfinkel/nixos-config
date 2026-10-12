@@ -220,6 +220,11 @@ in
     persistDirectory = "/persist";
   };
 
+  hostModules.jumpcloud = {
+    enable = true;
+    user = "mbenevides";
+  };
+
   hostModules.ssh = {
     enable = true;
     allowUsers = [ "mbenevides" ];

@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  osConfig ? { },
   ...
 }:
 
@@ -12,6 +13,15 @@ let
     mkIf
     mkOption
     ;
+
+  # A single VPN icon on the bar when the host enables hostModules.jumpcloud;
+  # clicking it opens a panel with one toggle per profile. Noctalia's network
+  # widget only sees NetworkManager VPNs, so this comes from the local
+  # mbenevides/vpn plugin (./noctalia-plugins/vpn), which polls and toggles the
+  # openvpn3 sessions.
+  jumpcloud = osConfig.hostModules.jumpcloud or { };
+  vpnProfiles = if jumpcloud.enable or false then jumpcloud.profiles else [ ];
+  vpnEnabled = vpnProfiles != [ ];
 in
 {
   # programs.noctalia comes from Home Manager itself. The noctalia flake's
@@ -83,6 +93,9 @@ in
             end = [
               "notifications"
               "network"
+            ]
+            ++ lib.optional vpnEnabled "vpn"
+            ++ [
               "cpu"
               "ram"
               "disk"
@@ -119,6 +132,32 @@ in
             tooltip_format = "{:%A, %B %d}";
             timezone = cfg.timeZone;
           };
+        }
+        // lib.optionalAttrs vpnEnabled {
+          vpn.type = "mbenevides/vpn:menu";
+        };
+
+        plugin_settings = mkIf vpnEnabled {
+          "mbenevides/vpn" = {
+            profiles = vpnProfiles;
+            # Drop the panel down from the bar, next to the icon.
+            panel_placement = "attached";
+            panel_open_near_click = true;
+          };
+        };
+
+        # A `path` source is read-only to Noctalia, so the plugin lives in the
+        # store and is updated by rebuilding, not by Noctalia's git updater.
+        plugins = mkIf vpnEnabled {
+          enabled = [ "mbenevides/vpn" ];
+          source = [
+            {
+              name = "local-nix";
+              kind = "path";
+              location = "${./noctalia-plugins}";
+              enabled = true;
+            }
+          ];
         };
       };
     };

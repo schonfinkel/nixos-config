@@ -14,6 +14,10 @@
   inputs = {
     agenix.url = "github:ryantm/agenix";
 
+    # Private repo holding secrets.nix and the .age ciphertext. Fetched lazily,
+    # so hosts without agenix (peano, CI) never need access to it.
+    nix-secrets.url = "git+ssh://git@github.com/schonfinkel/nix-secrets";
+
     devenv = {
       url = "github:cachix/devenv";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -21,6 +21,8 @@ let
     ".android"
     ".aws"
     ".azure"
+    # Certs/keys copied out of imported .ovpn profiles (nm-openvpn)
+    ".cert"
     ".cache/opencode"
     ".codex"
     ".config/BraveSoftware"

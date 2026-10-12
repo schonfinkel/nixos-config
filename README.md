@@ -54,16 +54,18 @@ My NixOS configuration files, used in my personal systems and work machines.
     ```
 
     - This step needs one of the personal keys from `userKeys` (`~/.ssh/default_ed25519`, or `AGE_KEY_PATH`) to re-encrypt with, nothing else can read the existing `.age` files. 
-    - Without it the key is still added to `secrets/secrets.nix`, and the script says plainly that `just rekey` has to happen elsewhere before installing. 
+    - Without it the key is still added to `secrets.nix` in the nix-secrets checkout, and the script says plainly that `just rekey` has to happen elsewhere before installing. 
 
 3. (Optional) Only for hosts whose passwords come from agenix (i.e. `schonfinkel`):
     ```shell
     # Generates its SSH host keys, adds the public half to hostKeys in
-    # secrets/secrets.nix, re-encrypts every secret to it, and commits
+    # secrets.nix of the nix-secrets checkout (../Personal/nix-secrets, or
+    # --secrets DIR), re-encrypts every secret to it, and commits there.
+    # Push nix-secrets and run `just secrets-update` to re-pin the input.
     ./install.sh --gen-keys --host schonfinkel
     ```
 
-    - The `%HOST_KEY_TEMPLATE%` marker in `secrets/secrets.nix` is what the rewrite anchors on; an entry that already exists for the host is replaced in place instead.
+    - The `%HOST_KEY_TEMPLATE%` marker in nix-secrets' `secrets.nix` is what the rewrite anchors on; an entry that already exists for the host is replaced in place instead.
     - `--gen-keys` writes to `/tmp/<host>-keys` and step 3 reads it back from there, so neither command needs a path (`--host-keys DIR` overrides). 
     - The keys are copied onto the persisted volume between partitioning and `nixos-install`, to the paths the host's own agenix module declares (`config.age.identityPaths`, `/persist/etc/ssh/...` on the impermanent hosts). 
     - That step is what keeps a `users.mutableUsers = false` host from booting with every account locked: on a freshly formatted disk agenix has no identity, cannot decrypt `hashed_password.age`, and only warns about it. 

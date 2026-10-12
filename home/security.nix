@@ -38,6 +38,11 @@ in
       tomb
       # for pass-otp
       zbar
+
+      # Other
+      _1password-cli
+      _1password-gui
+      openvpn3
     ];
 
     # Setup a Password Manager
