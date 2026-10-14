@@ -77,6 +77,7 @@ in
         opencode
         claude-code
         codex
+        cursor-cli
 
         # azure-cli
         # azure-functions-core-tools

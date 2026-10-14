@@ -7,6 +7,15 @@
 
 let
   cfg = config.homeModules.zshell;
+
+  # Datadog's hosted MCP server, loaded only by the work profile (`ccw`).
+  # Auth is OAuth (run `/mcp` once inside `ccw`), so no secret lives here.
+  datadogMcp = (pkgs.formats.json { }).generate "datadog-mcp.json" {
+    mcpServers.datadog = {
+      type = "http";
+      url = "https://mcp.datadoghq.com/v1/mcp?toolsets=core";
+    };
+  };
   inherit (lib)
     mkEnableOption
     mkIf
@@ -40,6 +49,8 @@ in
       autosuggestion.enable = true;
       enableCompletion = true;
       shellAliases = {
+        ccp = "CLAUDE_CONFIG_DIR=$HOME/.claude/personal claude";
+        ccw = "CLAUDE_CONFIG_DIR=$HOME/.claude/work claude --mcp-config ${datadogMcp}";
         nix-clean = "nix-collect-garbage -d --delete-old && sudo nix-collect-garbage -d --delete-old";
         hstat = "curl -o /dev/null --silent --head --write-out '%{http_code}\n' $1";
         l = "ls -l";
