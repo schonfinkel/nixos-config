@@ -16,6 +16,16 @@ let
       url = "https://mcp.datadoghq.com/v1/mcp?toolsets=core";
     };
   };
+
+  # Claude Code profiles as real commands rather than aliases, so open shells
+  # (and bash, the login shell) pick up changes without being restarted.
+  ccp = pkgs.writeShellScriptBin "ccp" ''
+    CLAUDE_CONFIG_DIR="$HOME/.claude/personal" exec claude "$@"
+  '';
+  ccw = pkgs.writeShellScriptBin "ccw" ''
+    CLAUDE_CONFIG_DIR="$HOME/.claude/work" exec claude --mcp-config ${datadogMcp} "$@"
+  '';
+
   inherit (lib)
     mkEnableOption
     mkIf
@@ -34,7 +44,9 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
+    home.packages = [
+      ccp
+      ccw
     ];
 
     programs.fzf = {
@@ -49,8 +61,6 @@ in
       autosuggestion.enable = true;
       enableCompletion = true;
       shellAliases = {
-        ccp = "CLAUDE_CONFIG_DIR=$HOME/.claude/personal claude";
-        ccw = "CLAUDE_CONFIG_DIR=$HOME/.claude/work claude --mcp-config ${datadogMcp}";
         nix-clean = "nix-collect-garbage -d --delete-old && sudo nix-collect-garbage -d --delete-old";
         hstat = "curl -o /dev/null --silent --head --write-out '%{http_code}\n' $1";
         l = "ls -l";
