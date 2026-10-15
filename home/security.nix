@@ -53,6 +53,11 @@ in
       };
     };
 
+    services.pass-secret-service = {
+      enable = true;
+      storePath = cfg.settings.PASSWORD_STORE_DIR;
+    };
+
     # GPG Settings
     programs.gpg.enable = true;
 

@@ -243,6 +243,9 @@ in
 
         # K8s
         lens
+
+        # Tools
+        jira-cli-go
       ];
 
       # Declaratively write the public "work" key file

@@ -26,6 +26,7 @@ let
     ".cache/opencode"
     ".codex"
     ".cursor"
+    ".config/.jira"
     ".config/1Password"
     ".config/BraveSoftware"
     ".config/Cursor"
