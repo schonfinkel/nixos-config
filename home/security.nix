@@ -7,6 +7,10 @@
 
 let
   cfg = config.homeModules.security;
+  # Single source of truth for the store location. Kept absolute because
+  # services.pass-secret-service passes this as `--path` in a systemd
+  # ExecStart, where an unbraced literal "$HOME/..." is never expanded.
+  passwordStoreDir = "${config.home.homeDirectory}/.password-store";
   inherit (lib)
     mkEnableOption
     mkIf
@@ -48,14 +52,14 @@ in
         exts.pass-otp
       ]);
       settings = {
-        PASSWORD_STORE_DIR = "\$HOME/.password-store";
+        PASSWORD_STORE_DIR = passwordStoreDir;
         PASSWORD_STORE_CLIP_TIME = "60";
       };
     };
 
     services.pass-secret-service = {
       enable = true;
-      storePath = cfg.settings.PASSWORD_STORE_DIR;
+      storePath = passwordStoreDir;
     };
 
     # GPG Settings
