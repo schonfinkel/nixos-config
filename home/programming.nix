@@ -15,17 +15,6 @@ let
     "~/Code/Work/foratravel/" = "mail_fat";
   };
 
-  # https://github.com/NixOS/nixpkgs/issues/563241#issuecomment-5728169843
-  # opencode_patch = pkgs.opencode.overrideAttrs (
-  #   final: prev: {
-  #     postPatch = prev.postPatch + ''
-  #       # fix for bun 1.4.x
-  #       substituteInPlace packages/opencode/script/build.ts \
-  #         --replace-fail 'splitting: true,' 'splitting: false,'
-  #     '';
-  #   }
-  # );
-
   cfg = config.homeModules.programming;
   inherit (lib)
     mkEnableOption
@@ -72,12 +61,7 @@ in
   config = mkIf cfg.enable (mkMerge [
     {
       home.packages = with pkgs; [
-        # AI
-        # opencode_patch
-        opencode
-        claude-code
-        codex
-        cursor-cli
+        # AI agents and their MCP wiring live in home/llms.nix.
 
         # azure-cli
         # azure-functions-core-tools

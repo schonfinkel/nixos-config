@@ -62,14 +62,24 @@ in
       };
     })
 
-    # Work git emails for home/programming.nix, declared for whichever Home
-    # Manager user turns on enableWorkProfile, so hosts need no extra config.
+    # Work secrets for home/programming.nix (git identity fragments) and
+    # home/llms.nix (Jenkins MCP endpoint URL + Basic auth token), declared
+    # for whichever Home Manager user turns on enableWorkProfile, so hosts
+    # need no extra config.
     (mkIf (workUsers != [ ]) {
-      age.secrets = lib.genAttrs [ "mail_ol" "mail_fat" ] (name: {
-        file = "${inputs.nix-secrets}/${name}.age";
-        owner = lib.head workUsers;
-        mode = "0400";
-      });
+      age.secrets =
+        lib.genAttrs
+          [
+            "mail_ol"
+            "mail_fat"
+            "jenkins_staging_url"
+            "jenkins_staging_token"
+          ]
+          (name: {
+            file = "${inputs.nix-secrets}/${name}.age";
+            owner = lib.head workUsers;
+            mode = "0400";
+          });
     })
 
     # Key file for a LUKS volume that is opened outside the initrd.

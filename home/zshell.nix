@@ -8,28 +8,9 @@
 let
   cfg = config.homeModules.zshell;
 
-  # Datadog's hosted MCP server, loaded only by the work profile (`ccw`).
-  # Auth is OAuth (run `/mcp` once inside `ccw`), so no secret lives here.
-  datadogMcp = (pkgs.formats.json { }).generate "datadog-mcp.json" {
-    mcpServers.datadog = {
-      type = "http";
-      url = "https://mcp.datadoghq.com/v1/mcp?toolsets=core";
-    };
-  };
-
-  # Claude Code profiles as real commands rather than aliases, so open shells
-  # (and bash, the login shell) pick up changes without being restarted.
-  ccp = pkgs.writeShellScriptBin "ccp" ''
-    CLAUDE_CONFIG_DIR="$HOME/.claude/personal" exec claude "$@"
-  '';
-  ccw = pkgs.writeShellScriptBin "ccw" ''
-    CLAUDE_CONFIG_DIR="$HOME/.claude/work" exec claude --mcp-config ${datadogMcp} "$@"
-  '';
-
   inherit (lib)
     mkEnableOption
     mkIf
-    mkMerge
     mkOption
     ;
 in
@@ -44,11 +25,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = [
-      ccp
-      ccw
-    ];
-
     programs.fzf = {
       enable = true;
       enableBashIntegration = true;

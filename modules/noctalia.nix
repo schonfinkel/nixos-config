@@ -51,15 +51,9 @@ in
         recommendedServices.enable = true;
       };
 
-      # Prebuilt Noctalia binaries come from the Cachix cache. We deliberately do
-      # NOT follow our nixpkgs input for `noctalia` (see flake.nix), which keeps
-      # the derivation hash stable so the cache hits.
-      nix.settings = {
-        substituters = [ "https://noctalia.cachix.org" ];
-        trusted-public-keys = [
-          "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
-        ];
-      };
+      # We deliberately do NOT follow our nixpkgs input for `noctalia` (see
+      # flake.nix), which keeps its derivation hash stable so its cache hits.
+      # The cache itself is trusted centrally in overlays/default.nix.
     }
 
     # Noctalia Greeter replaces SDDM (which hosts must disable themselves).

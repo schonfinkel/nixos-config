@@ -9,6 +9,7 @@
     ./emacs.nix
     ./ghostty.nix
     ./hyprland.nix
+    ./llms.nix
     ./media.nix
     ./neovim
     ./noctalia.nix

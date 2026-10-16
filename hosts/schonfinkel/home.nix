@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -42,6 +43,32 @@
     monitors = [
       "HDMI-A-1,highres,0x0,2"
     ];
+  };
+
+  # AI coding agents (llm-agents.nix) + declarative MCP servers.
+  homeModules.llms = {
+    enable = true;
+
+    # Work MCPs: loaded by codex/cursor/opencode and by `cc` under the work
+    # profile. Jenkins URL/token come from /run/agenix at runtime.
+    mcpServers = {
+      datadog = {
+        # OAuth: authenticate once per client (`/mcp`, `codex mcp login`, ...).
+        url = "https://mcp.datadoghq.com/v1/mcp?toolsets=core";
+      };
+      "jenkins-mcp" = {
+        urlSecret = "jenkins_staging_url";
+        secretHeaders.Authorization = {
+          secret = "jenkins_staging_token";
+          prefix = "Basic ";
+        };
+      };
+    };
+
+    # Secret-free servers available on every profile and host.
+    personalMcpServers = {
+      nixos.command = "${inputs.mcp-nixos.packages.${pkgs.system}.mcp-nixos}/bin/mcp-nixos";
+    };
   };
 
   homeModules.noctalia = {
