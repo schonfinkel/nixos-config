@@ -161,6 +161,16 @@ re-running the switch. Servers with secrets need `hostModules.agenix` on the hos
 declarations in `modules/agenix.nix` (currently `jenkins_staging_url`/`jenkins_staging_token`,
 enabled with `enableWorkProfile`).
 
+`schonfinkel` also runs the upstream `ai-memory` NixOS module on loopback. `homeModules.llms.aiMemory`
+adds its MCP endpoint to every client while leaving the existing MCP files under Home Manager control;
+an activation step uses ai-memory's version-aware installers only for lifecycle hooks/plugins and routing
+skills. Capture defaults to allowlist mode, so a checkout emits nothing until it contains an
+`.ai-memory.toml` marker. Server state is persisted at `/var/lib/ai-memory`, while the user's hook spool,
+capture policy, and global skills use persisted `~/.local/share/ai-memory` and `~/.agents`. Claude hooks
+and skills are installed separately into both persisted `CLAUDE_CONFIG_DIR` profiles. Do not run
+`ai-memory setup`: the NixOS module already owns the service, and setup would try to start a second user
+service on the same port.
+
 ### Secrets (`nix-secrets` input, `modules/agenix.nix`)
 
 Secrets are managed with `agenix` but live in a separate **private** flake,

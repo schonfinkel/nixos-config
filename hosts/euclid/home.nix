@@ -59,7 +59,9 @@
   homeModules.llms = {
     enable = true;
     personalMcpServers = {
-      nixos.command = "${inputs.mcp-nixos.packages.${pkgs.system}.mcp-nixos}/bin/mcp-nixos";
+      nixos.command = "${
+        inputs.mcp-nixos.packages.${pkgs.stdenv.hostPlatform.system}.mcp-nixos
+      }/bin/mcp-nixos";
     };
   };
 

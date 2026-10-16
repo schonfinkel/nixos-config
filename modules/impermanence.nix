@@ -18,6 +18,7 @@ let
   # Home-relative directories persisted for cfg.username. Entries are either a
   # plain string or an attrset carrying a mode.
   userDirectories = [
+    ".agents"
     ".android"
     ".aws"
     ".azure"
@@ -36,11 +37,12 @@ let
     ".config/opencode"
     ".config/Signal"
     ".config/Slack"
-    # Only the CLAUDE_CONFIG_DIR profiles (ccp/ccw); anything else is scratch.
+    # Only the CLAUDE_CONFIG_DIR profiles used by cc; anything else is scratch.
     ".claude/personal"
     ".claude/work"
     ".kube"
     ".k8slens"
+    ".local/share/ai-memory"
     ".local/share/cursor"
     ".local/share/opencode"
     ".local/share/noctalia"

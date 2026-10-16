@@ -82,11 +82,24 @@ let
     };
   };
 
+  aiMemoryServer = {
+    url = "${lib.removeSuffix "/" cfg.aiMemory.serverUrl}/mcp";
+    urlSecret = null;
+    headers = { };
+    secretHeaders = { };
+    command = null;
+    args = [ ];
+    env = { };
+  };
+
+  personalServers =
+    (lib.optionalAttrs cfg.aiMemory.enable { ai-memory = aiMemoryServer; }) // cfg.personalMcpServers;
+
   isRemote = s: s.url != null || s.urlSecret != null;
   hasSecrets = s: s.urlSecret != null || s.secretHeaders != { };
 
   # Every client but the personal Claude profile sees the union of both sets.
-  allServers = cfg.personalMcpServers // cfg.mcpServers;
+  allServers = personalServers // cfg.mcpServers;
   secretServers = lib.filterAttrs (_: s: hasSecrets s) allServers;
   safeServers = lib.filterAttrs (_: s: !hasSecrets s) allServers;
 
@@ -175,7 +188,9 @@ let
           "."
         else
           lib.concatStringsSep " | " (
-            map (s: "${s.path} = (${builtins.toJSON s.prefix} + $raw${toString s.index})") steps
+            map (
+              s: ''${s.path} = (${builtins.toJSON s.prefix} + ($raw${toString s.index} | sub("[\\r\\n]+$"; "")))''
+            ) steps
           );
       args = lib.concatLists (
         map (s: [
@@ -194,15 +209,13 @@ let
       exec ${pkgs.jq}/bin/jq ${lib.concatStringsSep " " (map lib.escapeShellArg fill.args)} ${lib.escapeShellArg fill.program} ${template}
     '';
 
-  personalTemplate = json.generate "claude-mcp-personal.json" (
-    renderMcpServers cfg.personalMcpServers
-  );
+  personalTemplate = json.generate "claude-mcp-personal.json" (renderMcpServers personalServers);
   workTemplate = json.generate "claude-mcp-work.json" (renderMcpServers allServers);
   cursorTemplate = json.generate "cursor-mcp.json" (renderMcpServers allServers);
   opencodeTemplate = json.generate "opencode-mcp.json" (renderOpencode allServers);
 
   claudePersonalRenderer = mkRenderer "llms-claude-personal" personalTemplate (
-    jqSecretFill "mcpServers" cfg.personalMcpServers
+    jqSecretFill "mcpServers" personalServers
   );
   claudeWorkRenderer = mkRenderer "llms-claude-work" workTemplate (
     jqSecretFill "mcpServers" allServers
@@ -298,7 +311,8 @@ let
               llms_${shellName name}_url="$(cat ${agenixPath s.urlSecret})"
             '')
             ++ (lib.mapAttrsToList (h: sc: ''
-              export ${envName name h}="${sc.prefix}$(cat ${agenixPath sc.secret})"
+              ${envName name h}="${sc.prefix}$(cat ${agenixPath sc.secret})"
+              export ${envName name h}
             '') s.secretHeaders)
           ) secretServers
         )
@@ -331,6 +345,39 @@ let
       rm -f "$tmp"
     }
   '';
+
+  aiMemoryActivation =
+    let
+      aiMemory = lib.getExe cfg.aiMemory.package;
+      path = lib.makeBinPath (
+        [ cfg.aiMemory.package ] ++ lib.optionals cfg.clients.opencode [ agents.opencode ]
+      );
+      hookArgs = lib.concatStringsSep " " [
+        "--apply"
+        "--capture-mode"
+        (lib.escapeShellArg cfg.aiMemory.captureMode)
+        "--project-strategy"
+        "repo-root"
+        "--server-url"
+        (lib.escapeShellArg cfg.aiMemory.serverUrl)
+      ];
+      installHooks = agent: ''
+        $DRY_RUN_CMD ${pkgs.coreutils}/bin/env PATH=${lib.escapeShellArg path} ${aiMemory} install-hooks --agent ${agent} ${hookArgs}
+      '';
+      installClaude = profile: ''
+        $DRY_RUN_CMD ${pkgs.coreutils}/bin/env PATH=${lib.escapeShellArg path} CLAUDE_CONFIG_DIR=${lib.escapeShellArg profile} ${aiMemory} install-hooks --agent claude-code ${hookArgs}
+        $DRY_RUN_CMD ${pkgs.coreutils}/bin/env CLAUDE_CONFIG_DIR=${lib.escapeShellArg profile} ${aiMemory} install-skills --scope global --agent claude-code
+      '';
+    in
+    (lib.optionalString cfg.clients.claude (
+      installClaude cfg.profiles.personal + installClaude cfg.profiles.work
+    ))
+    + (lib.optionalString cfg.clients.codex (installHooks "codex"))
+    + (lib.optionalString cfg.clients.cursor (installHooks "cursor"))
+    + (lib.optionalString cfg.clients.opencode (installHooks "opencode"))
+    + (lib.optionalString (cfg.clients.codex || cfg.clients.cursor || cfg.clients.opencode) ''
+      $DRY_RUN_CMD ${aiMemory} install-skills --scope global --agent agents
+    '');
 in
 {
   options.homeModules.llms = {
@@ -369,6 +416,32 @@ in
         type = types.str;
         default = "${config.home.homeDirectory}/.claude/work";
         description = "CLAUDE_CONFIG_DIR for the work subscription; loads the work MCP set.";
+      };
+    };
+
+    aiMemory = {
+      enable = mkEnableOption "shared, local memory and lifecycle capture for enabled AI clients";
+
+      package = mkOption {
+        type = types.package;
+        default = inputs.ai-memory.packages.${pkgs.stdenv.hostPlatform.system}.default;
+        defaultText = lib.literalExpression "inputs.ai-memory.packages.\${pkgs.system}.default";
+        description = "ai-memory package used by lifecycle hooks and activation installers.";
+      };
+
+      serverUrl = mkOption {
+        type = types.str;
+        default = "http://127.0.0.1:49374";
+        description = "Base URL of the ai-memory server (without the /mcp suffix).";
+      };
+
+      captureMode = mkOption {
+        type = types.enum [
+          "allowlist"
+          "denylist"
+        ];
+        default = "allowlist";
+        description = "Whether repositories require a .ai-memory.toml marker before hooks capture them.";
       };
     };
 
@@ -456,5 +529,9 @@ in
         '')
       );
     }
+
+    (mkIf cfg.aiMemory.enable {
+      home.activation.llmsAiMemory = lib.hm.dag.entryAfter [ "llmsMcpConfigs" ] aiMemoryActivation;
+    })
   ]);
 }

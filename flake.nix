@@ -19,6 +19,8 @@
   inputs = {
     agenix.url = "github:ryantm/agenix";
 
+    ai-memory.url = "github:akitaonrails/ai-memory";
+
     # Private repo holding secrets.nix and the .age ciphertext. Fetched lazily,
     # so hosts without agenix (peano, CI) never need access to it.
     nix-secrets.url = "git+ssh://git@github.com/schonfinkel/nix-secrets";
@@ -270,6 +272,7 @@
               schonfinkel =
                 let
                   particular = [
+                    inputs.ai-memory.nixosModules.default
                     disko.nixosModules.disko
                   ];
                 in

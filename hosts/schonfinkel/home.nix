@@ -48,6 +48,7 @@
   # AI coding agents (llm-agents.nix) + declarative MCP servers.
   homeModules.llms = {
     enable = true;
+    aiMemory.enable = true;
 
     # Work MCPs: loaded by codex/cursor/opencode and by `cc` under the work
     # profile. Jenkins URL/token come from /run/agenix at runtime.
@@ -67,7 +68,9 @@
 
     # Secret-free servers available on every profile and host.
     personalMcpServers = {
-      nixos.command = "${inputs.mcp-nixos.packages.${pkgs.system}.mcp-nixos}/bin/mcp-nixos";
+      nixos.command = "${
+        inputs.mcp-nixos.packages.${pkgs.stdenv.hostPlatform.system}.mcp-nixos
+      }/bin/mcp-nixos";
     };
   };
 
