@@ -44,6 +44,7 @@ in
           require("tabs")
           require("git")
           require("files")
+          require("preview")
           require("terminal")
           require("treesitter")
         EOF
