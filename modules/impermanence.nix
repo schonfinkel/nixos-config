@@ -42,12 +42,14 @@ let
     ".claude/work"
     ".kube"
     ".k8slens"
+    # .local/share/
     ".local/share/ai-memory"
     ".local/share/cursor"
-    ".local/share/opencode"
+    ".local/share/nix"
     ".local/share/noctalia"
-    ".local/share/direnv"
+    ".local/share/opencode"
     ".local/share/TelegramDesktop"
+    # .local/state/
     ".local/state/nvim/dbee"
     ".local/state/noctalia"
     ".local/state/opencode"
