@@ -224,6 +224,17 @@ vim.lsp.enable("lua_ls")
 -- Nix
 vim.lsp.enable('nixd')
 
+-- Python
+vim.lsp.config('pyrefly', {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  cmd = { 'uv', 'run', 'pyrefly', 'lsp' },
+  filetypes = { 'python' },
+  root_markers = { 'pyproject.toml', 'setup.py', '.git' },
+})
+
+vim.lsp.enable('pyrefly')
+
 -- Ocaml
 vim.lsp.config["ocamlsp"] = {
     on_attach = on_attach,

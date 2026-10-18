@@ -98,6 +98,7 @@ in
     direnv-vim
     gitsigns-nvim
     Ionide-vim
+    live-preview-nvim
     neogit
     nvim-dbee
     vim-just

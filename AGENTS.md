@@ -137,12 +137,39 @@ two roots. Both default to no-ops, so hosts that don't set them are unaffected.
 ### Home Manager (`home/*.nix`, `home/neovim/`, `home/hyprland/`)
 
 `home/default.nix` is the top-level import list for all Home Manager modules (chats, commons,
-emacs, ghostty, hyprland, media, neovim, programming, security, themes, vscode, zshell). Each
+emacs, ghostty, hyprland, llms, media, neovim, programming, security, themes, vscode, zshell). Each
 `hosts/<host>/home.nix` is the per-host/per-user Home Manager entrypoint (imports `../../home` and
 sets user-specific bits). `home/neovim/` is itself a small module (`default.nix` +
 `packages.nix` + `private.nix`) rather than a flat file, and `home/hyprland/hyprland.lua` is Lua
 config consumed by the Hyprland home-module, mirroring the plain-file dotfiles under `dotfiles/`
 (zsh, emacs, mpv, ncmpcpp, zathura) that are symlinked in rather than templated.
+
+### LLM agents and MCP servers (`home/llms.nix`, `overlays/default.nix`)
+
+AI coding agents (claude-code, codex, cursor-agent, opencode) come from the `llm-agents` input via
+its `shared-nixpkgs` overlay, which adds a `pkgs.llm-agents.<name>` scope without shadowing
+nixpkgs. `home/llms.nix` installs them and renders MCP servers declared once in
+`homeModules.llms.{personalMcpServers,mcpServers}` into each client's native config: Claude Code
+via the profile-aware `ccp` wrapper (`--mcp-config`, rendered per launch), Codex via a declarative
+`~/.codex/config.toml` plus the `codexw` wrapper, and Cursor/OpenCode via real files materialised
+by a Home Manager activation script (Cursor cannot follow symlinks). Claude Code subscriptions are
+split per project with direnv: a `claude_profile personal|work` helper (in `direnvrc`) exports
+`CLAUDE_CONFIG_DIR` into the persisted `~/.claude/{personal,work}` profile dirs. Secrets
+(`urlSecret`/`secretHeaders` referencing agenix names) are only ever read from `/run/agenix` at
+runtime or activation time — secret values never enter the Nix store; rotating one requires
+re-running the switch. Servers with secrets need `hostModules.agenix` on the host and the matching
+declarations in `modules/agenix.nix` (currently `jenkins_staging_url`/`jenkins_staging_token`,
+enabled with `enableWorkProfile`).
+
+`schonfinkel` also runs the upstream `ai-memory` NixOS module on loopback. `homeModules.llms.aiMemory`
+adds its MCP endpoint to every client while leaving the existing MCP files under Home Manager control;
+an activation step uses ai-memory's version-aware installers only for lifecycle hooks/plugins and routing
+skills. Capture defaults to allowlist mode, so a checkout emits nothing until it contains an
+`.ai-memory.toml` marker. Server state is persisted at `/var/lib/ai-memory`, while the user's hook spool,
+capture policy, and global skills use persisted `~/.local/share/ai-memory` and `~/.agents`. Claude hooks
+and skills are installed separately into both persisted `CLAUDE_CONFIG_DIR` profiles. Do not run
+`ai-memory setup`: the NixOS module already owns the service, and setup would try to start a second user
+service on the same port.
 
 ### Secrets (`nix-secrets` input, `modules/agenix.nix`)
 
@@ -150,8 +177,11 @@ Secrets are managed with `agenix` but live in a separate **private** flake,
 `git+ssh://git@github.com/schonfinkel/nix-secrets` (the `nix-secrets` input; this repo is public).
 Its `secrets.nix` lists the authorized public keys and maps them to `.age` files at the repo root:
 `hashed_password.age` (`root`/user login hashes across hosts), `luks_data.age` (the data-disk LUKS
-key for a `luks_multi` host; no host sets it today) and `jumpcloud_<profile>_ovpn.age`
-(`modules/jumpcloud.nix`). Modules reference them as `"${inputs.nix-secrets}/<name>.age"`.
+key for a `luks_multi` host; no host sets it today), `jumpcloud_<profile>_ovpn.age`
+(`modules/jumpcloud.nix`), `mail_{ol,fat}.age` + `jenkins_staging_{url,token}.age` (work git
+identities and the Jenkins MCP, enabled via `homeModules.programming.enableWorkProfile` /
+`homeModules.llms` in `modules/agenix.nix`). Modules reference them as
+`"${inputs.nix-secrets}/<name>.age"`.
 
 The local checkout defaults to `../Personal/nix-secrets` (override with `SECRETS_DIR`; `install.sh`
 takes `--secrets DIR`). Edit with `agenix -e` from that checkout, re-key with `just rekey` after

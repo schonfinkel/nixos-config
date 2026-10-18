@@ -74,7 +74,6 @@ in
 
       # Easiest to use and most distros use this by default.
       networking.networkmanager.enable = true;
-      networking.networkmanager.plugins = mkIf cfg.openvpn.enable [ pkgs.networkmanager-openvpn ];
 
     })
   ]);

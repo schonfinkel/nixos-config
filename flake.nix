@@ -1,18 +1,25 @@
 {
   description = "NixOS Configuration";
 
-  # Prebuilt Noctalia binaries come from its Cachix cache. Kept at flake level
-  # so anyone building this flake (not just the deployed hosts) can fetch them
-  # instead of compiling Noctalia from source.
+  # Prebuilt Noctalia binaries come from its Cachix cache, and llm-agents.nix
+  # binaries from numtide's cache. Kept at flake level so anyone building this
+  # flake (not just the deployed hosts) can fetch them instead of compiling
+  # from source.
   nixConfig = {
-    extra-substituters = [ "https://noctalia.cachix.org" ];
+    extra-substituters = [
+      "https://noctalia.cachix.org"
+      "https://cache.numtide.com"
+    ];
     extra-trusted-public-keys = [
       "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
     ];
   };
 
   inputs = {
     agenix.url = "github:ryantm/agenix";
+
+    ai-memory.url = "github:akitaonrails/ai-memory";
 
     # Private repo holding secrets.nix and the .age ciphertext. Fetched lazily,
     # so hosts without agenix (peano, CI) never need access to it.
@@ -47,6 +54,22 @@
     hyprland.url = "github:hyprwm/Hyprland";
 
     impermanence.url = "github:nix-community/impermanence";
+
+    # Daily-updated packages for AI coding agents. Consumed through the
+    # `shared-nixpkgs` overlay (see overlays/default.nix), which adds a
+    # `pkgs.llm-agents` scope (claude-code, codex, cursor-agent, opencode, ...)
+    # without shadowing any nixpkgs attributes.
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # MCP server exposing nixos.wiki + nixpkgs/Home Manager option search to
+    # coding agents. Wired as a personal stdio MCP in home/llms.nix.
+    mcp-nixos = {
+      url = "github:utensils/mcp-nixos";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst";
 
@@ -249,6 +272,7 @@
               schonfinkel =
                 let
                   particular = [
+                    inputs.ai-memory.nixosModules.default
                     disko.nixosModules.disko
                   ];
                 in

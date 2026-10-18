@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 {
@@ -50,6 +51,18 @@
 
   homeModules.ghostty = {
     enable = true;
+  };
+
+  # AI coding agents (llm-agents.nix) + declarative MCP servers. Work MCPs
+  # (datadog/jenkins) stay off this machine; the nixos option-search server
+  # is secret-free and useful everywhere.
+  homeModules.llms = {
+    enable = true;
+    personalMcpServers = {
+      nixos.command = "${
+        inputs.mcp-nixos.packages.${pkgs.stdenv.hostPlatform.system}.mcp-nixos
+      }/bin/mcp-nixos";
+    };
   };
 
   homeModules.media = {

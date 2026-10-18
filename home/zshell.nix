@@ -7,10 +7,10 @@
 
 let
   cfg = config.homeModules.zshell;
+
   inherit (lib)
     mkEnableOption
     mkIf
-    mkMerge
     mkOption
     ;
 in
@@ -25,9 +25,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-    ];
-
     programs.fzf = {
       enable = true;
       enableBashIntegration = true;

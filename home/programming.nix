@@ -15,17 +15,6 @@ let
     "~/Code/Work/foratravel/" = "mail_fat";
   };
 
-  # https://github.com/NixOS/nixpkgs/issues/563241#issuecomment-5728169843
-  # opencode_patch = pkgs.opencode.overrideAttrs (
-  #   final: prev: {
-  #     postPatch = prev.postPatch + ''
-  #       # fix for bun 1.4.x
-  #       substituteInPlace packages/opencode/script/build.ts \
-  #         --replace-fail 'splitting: true,' 'splitting: false,'
-  #     '';
-  #   }
-  # );
-
   cfg = config.homeModules.programming;
   inherit (lib)
     mkEnableOption
@@ -72,18 +61,12 @@ in
   config = mkIf cfg.enable (mkMerge [
     {
       home.packages = with pkgs; [
-        # AI
-        # opencode_patch
-        opencode
-        claude-code
-        codex
+        # AI agents and their MCP wiring live in home/llms.nix.
 
-        # Cloud
-        awscli2
         # azure-cli
         # azure-functions-core-tools
         kubectl
-        lens
+        kubectx
 
         # Diagrams
         d2
@@ -237,6 +220,18 @@ in
     })
 
     (mkIf cfg.enableWorkProfile {
+      home.packages = with pkgs; [
+        # Cloud
+        awscli2
+        saml2aws
+
+        # K8s
+        lens
+
+        # Tools
+        jira-cli-go
+      ];
+
       # Declaratively write the public "work" key file
       # Run `gpg --export-ssh-key B653691B6E9D5D4A` once to get this string
       home.file.".ssh/work_github.pub".text = ''

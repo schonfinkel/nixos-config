@@ -69,6 +69,10 @@ in
   # and the SSH host keys.
   fileSystems."/persist".neededForBoot = true;
 
+  # ai-memory's wiki and derived index must survive the ephemeral root. The
+  # service remains loopback-only and uses its zero-cloud defaults.
+  environment.persistence."/persist".directories = [ "/var/lib/ai-memory" ];
+
   # This will add each flake input as a registry
   # To make nix3 commands consistent with your flake
   nix.registry = (lib.mapAttrs (_: flake: { inherit flake; })) (
@@ -112,6 +116,8 @@ in
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
+
+  services.ai-memory.enable = true;
 
   # GPU config
   hardware.nvidia = {

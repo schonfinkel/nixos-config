@@ -18,6 +18,7 @@ let
   # Home-relative directories persisted for cfg.username. Entries are either a
   # plain string or an attrset carrying a mode.
   userDirectories = [
+    ".agents"
     ".android"
     ".aws"
     ".azure"
@@ -25,19 +26,30 @@ let
     ".cert"
     ".cache/opencode"
     ".codex"
+    ".cursor"
+    ".config/.jira"
+    ".config/1Password"
     ".config/BraveSoftware"
+    ".config/Cursor"
     ".config/discord"
     ".config/gh"
     ".config/mgc"
     ".config/opencode"
     ".config/Signal"
     ".config/Slack"
-    ".claude"
+    # Only the CLAUDE_CONFIG_DIR profiles used by ccp; anything else is scratch.
+    ".claude/personal"
+    ".claude/work"
     ".kube"
-    ".local/share/opencode"
+    ".k8slens"
+    # .local/share/
+    ".local/share/ai-memory"
+    ".local/share/cursor"
+    ".local/share/nix"
     ".local/share/noctalia"
-    ".local/share/direnv"
+    ".local/share/opencode"
     ".local/share/TelegramDesktop"
+    # .local/state/
     ".local/state/nvim/dbee"
     ".local/state/noctalia"
     ".local/state/opencode"
@@ -52,6 +64,10 @@ let
     "Videos"
     {
       directory = ".gnupg";
+      mode = "0700";
+    }
+    {
+      directory = ".config/op";
       mode = "0700";
     }
     {
@@ -146,6 +162,7 @@ in
             ".bash_history"
             ".config/systemsettingsrc"
             ".pgpass"
+            ".saml2aws"
             ".zsh_history"
           ];
         };
