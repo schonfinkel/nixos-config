@@ -37,7 +37,7 @@ let
     ".config/opencode"
     ".config/Signal"
     ".config/Slack"
-    # Only the CLAUDE_CONFIG_DIR profiles used by cc; anything else is scratch.
+    # Only the CLAUDE_CONFIG_DIR profiles used by ccp; anything else is scratch.
     ".claude/personal"
     ".claude/work"
     ".kube"

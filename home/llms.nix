@@ -113,27 +113,31 @@ let
 
   json = pkgs.formats.json { };
 
+  renderHttpServer =
+    type: s:
+    {
+      inherit type;
+    }
+    // (lib.optionalAttrs (s.urlSecret != null) { url = null; })
+    // (lib.optionalAttrs (s.url != null) { url = s.url; })
+    // (lib.optionalAttrs (s.headers != { } || s.secretHeaders != { }) {
+      headers = s.headers // (lib.mapAttrs (_: _: null) s.secretHeaders);
+    });
+
+  renderStdioServer =
+    s:
+    {
+      command = "${s.command}";
+    }
+    // (lib.optionalAttrs (s.args != [ ]) { args = s.args; })
+    // (lib.optionalAttrs (s.env != { }) { env = s.env; });
+
   # Render the shared Claude Code / Cursor JSON shape. Secret leaves are null
   # placeholders, filled at runtime by jq (see jqSecretFill).
   renderMcpServers = servers: {
     mcpServers = lib.mapAttrs (
       _name: s:
-      if isRemote s then
-        {
-          type = "http";
-        }
-        // (lib.optionalAttrs (s.urlSecret != null) { url = null; })
-        // (lib.optionalAttrs (s.url != null) { url = s.url; })
-        // (lib.optionalAttrs (s.headers != { } || s.secretHeaders != { }) {
-          headers = s.headers // (lib.mapAttrs (_: _: null) s.secretHeaders);
-        })
-      else
-        {
-          type = "stdio";
-          command = "${s.command}";
-        }
-        // (lib.optionalAttrs (s.args != [ ]) { args = s.args; })
-        // (lib.optionalAttrs (s.env != { }) { env = s.env; })
+      if isRemote s then renderHttpServer "http" s else { type = "stdio"; } // renderStdioServer s
     ) servers;
   };
 
@@ -142,14 +146,7 @@ let
     mcp = lib.mapAttrs (
       _name: s:
       if isRemote s then
-        {
-          type = "remote";
-        }
-        // (lib.optionalAttrs (s.urlSecret != null) { url = null; })
-        // (lib.optionalAttrs (s.url != null) { url = s.url; })
-        // (lib.optionalAttrs (s.headers != { } || s.secretHeaders != { }) {
-          headers = s.headers // (lib.mapAttrs (_: _: null) s.secretHeaders);
-        })
+        renderHttpServer "remote" s
         # Basic-auth servers must not trigger OpenCode's OAuth flow.
         // (lib.optionalAttrs (s.secretHeaders != { }) { oauth = false; })
       else
@@ -209,26 +206,51 @@ let
       exec ${pkgs.jq}/bin/jq ${lib.concatStringsSep " " (map lib.escapeShellArg fill.args)} ${lib.escapeShellArg fill.program} ${template}
     '';
 
-  personalTemplate = json.generate "claude-mcp-personal.json" (renderMcpServers personalServers);
-  workTemplate = json.generate "claude-mcp-work.json" (renderMcpServers allServers);
-  cursorTemplate = json.generate "cursor-mcp.json" (renderMcpServers allServers);
-  opencodeTemplate = json.generate "opencode-mcp.json" (renderOpencode allServers);
+  mkJsonRenderer =
+    {
+      scriptName,
+      templateName,
+      rootAttr,
+      servers,
+      render,
+    }:
+    mkRenderer scriptName (json.generate templateName (render servers)) (jqSecretFill rootAttr servers);
 
-  claudePersonalRenderer = mkRenderer "llms-claude-personal" personalTemplate (
-    jqSecretFill "mcpServers" personalServers
-  );
-  claudeWorkRenderer = mkRenderer "llms-claude-work" workTemplate (
-    jqSecretFill "mcpServers" allServers
-  );
-  cursorRenderer = mkRenderer "llms-cursor" cursorTemplate (jqSecretFill "mcpServers" allServers);
-  opencodeRenderer = mkRenderer "llms-opencode" opencodeTemplate (jqSecretFill "mcp" allServers);
+  claudePersonalRenderer = mkJsonRenderer {
+    scriptName = "llms-claude-personal";
+    templateName = "claude-mcp-personal.json";
+    rootAttr = "mcpServers";
+    servers = personalServers;
+    render = renderMcpServers;
+  };
+  claudeWorkRenderer = mkJsonRenderer {
+    scriptName = "llms-claude-work";
+    templateName = "claude-mcp-work.json";
+    rootAttr = "mcpServers";
+    servers = allServers;
+    render = renderMcpServers;
+  };
+  cursorRenderer = mkJsonRenderer {
+    scriptName = "llms-cursor";
+    templateName = "cursor-mcp.json";
+    rootAttr = "mcpServers";
+    servers = allServers;
+    render = renderMcpServers;
+  };
+  opencodeRenderer = mkJsonRenderer {
+    scriptName = "llms-opencode";
+    templateName = "opencode-mcp.json";
+    rootAttr = "mcp";
+    servers = allServers;
+    render = renderOpencode;
+  };
 
-  # `cc` replaces the old ccp/ccw wrappers. The active profile comes from
+  # `ccp` is the custom-Claude-profile wrapper. The active profile comes from
   # CLAUDE_CONFIG_DIR (set per project via the direnv `claude_profile` helper
   # below); it defaults to the personal profile. Work MCPs load only under
   # the work profile; personal MCPs (secret-free) load everywhere.
-  cc = pkgs.writeShellApplication {
-    name = "cc";
+  ccp = pkgs.writeShellApplication {
+    name = "ccp";
     runtimeInputs = [ pkgs.jq ];
     text = ''
       profile="''${CLAUDE_CONFIG_DIR:-${cfg.profiles.personal}}"
@@ -241,7 +263,7 @@ let
       mcp_config="$(mktemp "''${XDG_RUNTIME_DIR:-/tmp}/llms-mcp.XXXXXX")"
       if ! "$renderer" > "$mcp_config" 2>/dev/null; then
         rm -f "$mcp_config"
-        echo "cc: could not render MCP config (agenix secrets unreadable?); starting without MCPs" >&2
+        echo "ccp: could not render MCP config (agenix secrets unreadable?); starting without MCPs" >&2
         exec ${agents.claude-code}/bin/claude "$@"
       fi
       chmod 600 "$mcp_config"
@@ -268,11 +290,7 @@ let
           if isRemote s then
             { url = s.url; } // (lib.optionalAttrs (s.headers != { }) { http_headers = s.headers; })
           else
-            {
-              command = "${s.command}";
-            }
-            // (lib.optionalAttrs (s.args != [ ]) { args = s.args; })
-            // (lib.optionalAttrs (s.env != { }) { env = s.env; })
+            renderStdioServer s
         ) safeServers;
       };
 
@@ -349,6 +367,11 @@ let
   aiMemoryActivation =
     let
       aiMemory = lib.getExe cfg.aiMemory.package;
+      enabledAgentClients = lib.filter (client: cfg.clients.${client}) [
+        "codex"
+        "cursor"
+        "opencode"
+      ];
       path = lib.makeBinPath (
         [ cfg.aiMemory.package ] ++ lib.optionals cfg.clients.opencode [ agents.opencode ]
       );
@@ -372,10 +395,8 @@ let
     (lib.optionalString cfg.clients.claude (
       installClaude cfg.profiles.personal + installClaude cfg.profiles.work
     ))
-    + (lib.optionalString cfg.clients.codex (installHooks "codex"))
-    + (lib.optionalString cfg.clients.cursor (installHooks "cursor"))
-    + (lib.optionalString cfg.clients.opencode (installHooks "opencode"))
-    + (lib.optionalString (cfg.clients.codex || cfg.clients.cursor || cfg.clients.opencode) ''
+    + (lib.concatMapStrings installHooks enabledAgentClients)
+    + (lib.optionalString (enabledAgentClients != [ ]) ''
       $DRY_RUN_CMD ${aiMemory} install-skills --scope global --agent agents
     '');
 in
@@ -387,7 +408,7 @@ in
       claude = mkOption {
         type = types.bool;
         default = true;
-        description = "Install Claude Code and the `cc` profile-aware wrapper.";
+        description = "Install Claude Code and the `ccp` profile-aware wrapper.";
       };
       codex = mkOption {
         type = types.bool;
@@ -450,7 +471,7 @@ in
     mcpServers = mkOption {
       type = types.attrsOf mcpServerType;
       default = { };
-      description = "Work MCP servers: loaded by codex/cursor/opencode and by `cc` under the work profile.";
+      description = "Work MCP servers: loaded by codex/cursor/opencode and by `ccp` under the work profile.";
     };
 
     personalMcpServers = mkOption {
@@ -465,7 +486,7 @@ in
       home.packages =
         (lib.optionals cfg.clients.claude [
           agents.claude-code
-          cc
+          ccp
         ])
         ++ (lib.optionals cfg.clients.codex (
           [ agents.codex ] ++ (lib.optional (secretServers != { }) codexw)

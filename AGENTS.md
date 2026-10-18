@@ -150,7 +150,7 @@ AI coding agents (claude-code, codex, cursor-agent, opencode) come from the `llm
 its `shared-nixpkgs` overlay, which adds a `pkgs.llm-agents.<name>` scope without shadowing
 nixpkgs. `home/llms.nix` installs them and renders MCP servers declared once in
 `homeModules.llms.{personalMcpServers,mcpServers}` into each client's native config: Claude Code
-via the profile-aware `cc` wrapper (`--mcp-config`, rendered per launch), Codex via a declarative
+via the profile-aware `ccp` wrapper (`--mcp-config`, rendered per launch), Codex via a declarative
 `~/.codex/config.toml` plus the `codexw` wrapper, and Cursor/OpenCode via real files materialised
 by a Home Manager activation script (Cursor cannot follow symlinks). Claude Code subscriptions are
 split per project with direnv: a `claude_profile personal|work` helper (in `direnvrc`) exports

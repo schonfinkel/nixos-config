@@ -50,7 +50,7 @@
     enable = true;
     aiMemory.enable = true;
 
-    # Work MCPs: loaded by codex/cursor/opencode and by `cc` under the work
+    # Work MCPs: loaded by codex/cursor/opencode and by `ccp` under the work
     # profile. Jenkins URL/token come from /run/agenix at runtime.
     mcpServers = {
       datadog = {
