@@ -245,34 +245,88 @@ let
     render = renderOpencode;
   };
 
+  claudeRenderers = {
+    personal = claudePersonalRenderer;
+    work = claudeWorkRenderer;
+  };
+
+  # Renders Claude's MCP config for the given profiles (default: all) to a
+  # stable per-profile path in the runtime dir, printing each path written.
+  # The path must be stable: Claude Code background jobs store their launch
+  # flags (including --mcp-config) and respawn with them later, outside
+  # `ccp`, so a per-launch temp file breaks them once it is gone. Writes are
+  # atomic so a respawning session never reads a partial file; on failure the
+  # previous file is kept and the script exits non-zero.
+  claudeMcp = pkgs.writeShellApplication {
+    name = "llms-claude-mcp";
+    runtimeInputs = [ pkgs.coreutils ];
+    text = ''
+      dir="''${XDG_RUNTIME_DIR:-/tmp}/llms-mcp"
+      mkdir -p "$dir"
+      chmod 700 "$dir"
+
+      render() { # $1 profile, $2 renderer
+        local target="$dir/claude-$1.json" tmp
+        tmp="$(mktemp "$dir/.claude-$1.XXXXXX")"
+        if "$2" > "$tmp" 2>/dev/null; then
+          chmod 600 "$tmp"
+          mv -f "$tmp" "$target"
+          echo "$target"
+        else
+          rm -f "$tmp"
+          echo "llms-claude-mcp: could not render $target (agenix secrets unreadable?)" >&2
+          return 1
+        fi
+      }
+
+      [ "$#" -gt 0 ] || set -- ${lib.concatStringsSep " " (lib.attrNames claudeRenderers)}
+      status=0
+      for profile in "$@"; do
+        case "$profile" in
+          ${lib.concatStrings (
+            lib.mapAttrsToList (name: renderer: ''
+              ${name}) render ${name} ${renderer} || status=1 ;;
+            '') claudeRenderers
+          )}
+          *)
+            echo "llms-claude-mcp: unknown profile '$profile'" >&2
+            status=2
+            ;;
+        esac
+      done
+      exit "$status"
+    '';
+  };
+
   # `ccp` is the custom-Claude-profile wrapper. The active profile comes from
   # CLAUDE_CONFIG_DIR (set per project via the direnv `claude_profile` helper
   # below); it defaults to the personal profile. Work MCPs load only under
   # the work profile; personal MCPs (secret-free) load everywhere.
   ccp = pkgs.writeShellApplication {
     name = "ccp";
-    runtimeInputs = [ pkgs.jq ];
+    runtimeInputs = [
+      pkgs.jq
+      claudeMcp
+      agents.claude-code
+    ];
     text = ''
       profile="''${CLAUDE_CONFIG_DIR:-${cfg.profiles.personal}}"
-      renderer="${claudePersonalRenderer}"
+      name=personal
       if [ "$profile" = "${cfg.profiles.work}" ]; then
-        renderer="${claudeWorkRenderer}"
+        name=work
       fi
       export CLAUDE_CONFIG_DIR="$profile"
 
-      mcp_config="$(mktemp "''${XDG_RUNTIME_DIR:-/tmp}/llms-mcp.XXXXXX")"
-      if ! "$renderer" > "$mcp_config" 2>/dev/null; then
-        rm -f "$mcp_config"
-        echo "ccp: could not render MCP config (agenix secrets unreadable?); starting without MCPs" >&2
-        exec ${agents.claude-code}/bin/claude "$@"
+      # Re-rendered on every launch so rotated secrets are picked up.
+      if ! mcp_config="$(llms-claude-mcp "$name")"; then
+        echo "ccp: could not render MCP config; starting without MCPs" >&2
+        exec claude "$@"
       fi
-      chmod 600 "$mcp_config"
 
       if jq -e '.mcpServers | length > 0' "$mcp_config" > /dev/null 2>&1; then
-        exec ${agents.claude-code}/bin/claude --mcp-config "$mcp_config" "$@"
+        exec claude --mcp-config "$mcp_config" "$@"
       fi
-      rm -f "$mcp_config"
-      exec ${agents.claude-code}/bin/claude "$@"
+      exec claude "$@"
     '';
   };
 
@@ -550,6 +604,21 @@ in
         '')
       );
     }
+
+    # The runtime dir is wiped on logout/reboot; re-render Claude's MCP
+    # configs at login so background jobs respawned before any `ccp` launch
+    # still find their --mcp-config file.
+    (mkIf cfg.clients.claude {
+      systemd.user.services.llms-claude-mcp = {
+        Unit.Description = "Render Claude Code MCP configs into the runtime dir";
+        Service = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStart = lib.getExe claudeMcp;
+        };
+        Install.WantedBy = [ "default.target" ];
+      };
+    })
 
     (mkIf cfg.aiMemory.enable {
       home.activation.llmsAiMemory = lib.hm.dag.entryAfter [ "llmsMcpConfigs" ] aiMemoryActivation;
