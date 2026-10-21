@@ -330,8 +330,10 @@ let
     '';
   };
 
-  # Codex keeps its non-secret servers in ~/.codex/config.toml (store
-  # symlink). Servers with secrets are injected per invocation: the URL via
+  # Codex keeps its non-secret servers in ~/.codex/config.toml. Codex also
+  # writes its own state there (project trust, model, TUI flags), so the file
+  # stays a real file and activation only replaces its `mcp_servers` table
+  # (see codexActivation). Servers with secrets are injected per invocation: the URL via
   # `codex -c` and header values via env_http_headers, whose values codex
   # reads from the exported environment. Nothing secret hits the store.
   codexConfigToml =
@@ -418,6 +420,38 @@ let
     }
   '';
 
+  # Merges the declarative `mcp_servers` table into ~/.codex/config.toml,
+  # keeping everything Codex wrote itself. Earlier generations symlinked the
+  # file into the store; that link is replaced, seeding from config.toml.bkp
+  # (the pre-symlink copy) when present.
+  codexActivation =
+    let
+      codexDir = "${config.home.homeDirectory}/.codex";
+      toml2json = "${pkgs.remarshal}/bin/toml2json";
+      json2toml = "${pkgs.remarshal}/bin/json2toml";
+      jq = lib.getExe pkgs.jq;
+    in
+    ''
+      codex_config="${codexDir}/config.toml"
+      $DRY_RUN_CMD ${pkgs.coreutils}/bin/mkdir -p "${codexDir}"
+      if [ -L "$codex_config" ]; then
+        $DRY_RUN_CMD rm -f "$codex_config"
+      fi
+      if [ ! -e "$codex_config" ] && [ -f "${codexDir}/config.toml.bkp" ]; then
+        $DRY_RUN_CMD ${pkgs.coreutils}/bin/install -m 600 "${codexDir}/config.toml.bkp" "$codex_config"
+      fi
+      tmp="$(mktemp)"
+      if { if [ -f "$codex_config" ]; then ${toml2json} "$codex_config"; else echo '{}'; fi; } \
+          | ${jq} --argjson managed "$(${toml2json} ${codexConfigToml})" \
+            '.mcp_servers = $managed.mcp_servers' \
+          | ${json2toml} > "$tmp" 2>/dev/null; then
+        $DRY_RUN_CMD ${pkgs.coreutils}/bin/install -m 600 "$tmp" "$codex_config"
+      else
+        echo "llms: skipped $codex_config (could not merge existing TOML)" >&2
+      fi
+      rm -f "$tmp"
+    '';
+
   aiMemoryActivation =
     let
       aiMemory = lib.getExe cfg.aiMemory.package;
@@ -467,7 +501,7 @@ in
       codex = mkOption {
         type = types.bool;
         default = true;
-        description = "Install Codex CLI, its declarative config.toml and the `codexw` wrapper.";
+        description = "Install Codex CLI, merge MCP servers into its config.toml and add the `codexw` wrapper.";
       };
       cursor = mkOption {
         type = types.bool;
@@ -583,10 +617,6 @@ in
         ++ (serverAssertions "personalMcpServers" cfg.personalMcpServers);
     }
 
-    (mkIf (cfg.clients.codex && safeServers != { }) {
-      home.file.".codex/config.toml".source = codexConfigToml;
-    })
-
     {
       # Cursor (symlink-intolerant) and OpenCode (needs secret URL inline)
       # get real files rendered during Home Manager activation. Only touched
@@ -594,6 +624,7 @@ in
       # but an empty MCP set keep their files untouched.
       home.activation.llmsMcpConfigs = lib.hm.dag.entryAfter [ "writeBoundary" ] (
         mcpActivation
+        + (lib.optionalString (cfg.clients.codex && safeServers != { }) codexActivation)
         + (lib.optionalString (cfg.clients.cursor && allServers != { }) ''
           $DRY_RUN_CMD ${pkgs.coreutils}/bin/mkdir -p "${config.home.homeDirectory}/.cursor"
           render "${cursorRenderer}" "${config.home.homeDirectory}/.cursor/mcp.json"

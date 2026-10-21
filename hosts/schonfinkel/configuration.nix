@@ -62,8 +62,6 @@ in
     "kernel.sysrq" = 128;
   };
 
-  boot.initrd.systemd.enable = true;
-
   # impermanence builds its bind mounts in stage 1, so every persistence root
   # has to be mounted by then. /persist additionally carries the agenix identity
   # and the SSH host keys.
@@ -237,6 +235,10 @@ in
   };
 
   hostModules.themes = {
+    enable = true;
+  };
+
+  hostModules.yggdrasil = {
     enable = true;
   };
 

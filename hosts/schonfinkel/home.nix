@@ -53,6 +53,12 @@
     # Work MCPs: loaded by codex/cursor/opencode and by `ccp` under the work
     # profile. Jenkins URL/token come from /run/agenix at runtime.
     mcpServers = {
+      atlassian = {
+        # OAuth: authenticate once per client (`/mcp`, `codex mcp login`, ...).
+        # Cloud-hosted bridge for all Atlassian sites; the company site is
+        # bound at OAuth login, not via the URL.
+        url = "https://mcp.atlassian.com/v2/mcp";
+      };
       datadog = {
         # OAuth: authenticate once per client (`/mcp`, `codex mcp login`, ...).
         url = "https://mcp.datadoghq.com/v1/mcp?toolsets=core";

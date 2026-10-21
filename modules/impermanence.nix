@@ -37,6 +37,8 @@ let
     ".config/opencode"
     ".config/Signal"
     ".config/Slack"
+    # My custom tooling
+    ".config/ugarit"
     # Only the CLAUDE_CONFIG_DIR profiles used by ccp; anything else is scratch.
     ".claude/personal"
     ".claude/work"
