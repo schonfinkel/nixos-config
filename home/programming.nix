@@ -105,7 +105,7 @@ in
         # This is here in case I work for a place that already uses
         # direnv, but without the nix goodies. So I can simply drop a
         # .envrc.local there and keep using my Nix shells like a pro.
-        # 
+        #
         # mkAfter makes this block sort last in the merged stdlib, so
         # .envrc.local is sourced after helpers other modules define
         # there (e.g. claude_profile from home/llms.nix) and can use them.

@@ -240,6 +240,10 @@ in
     enable = true;
   };
 
+  hostModules.yggdrasil = {
+    enable = true;
+  };
+
   # See `man configuration.nix` or
   # https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   # Do NOT change this after the initial install.
