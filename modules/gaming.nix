@@ -7,6 +7,7 @@
 
 let
   cfg = config.hostModules.gaming;
+  impermanenceCfg = config.hostModules.impermanence;
   inherit (lib)
     mkEnableOption
     mkIf
@@ -44,5 +45,18 @@ in
         vulkan-tools
       ];
     }
+
+    # Steam keeps its library, compatdata and config in:
+    # - ~/.local/share/Steam
+    # - ~/.steam
+    # Without this, impermanent hosts lose every installed game on reboot. 
+    (mkIf impermanenceCfg.enable {
+      environment.persistence."${impermanenceCfg.persistDirectory}".users."${impermanenceCfg.username
+      }".directories =
+        builtins.filter (d: !(builtins.elem d impermanenceCfg.dataUserDirectories)) [
+          ".local/share/Steam"
+          ".steam"
+        ];
+    })
   ]);
 }

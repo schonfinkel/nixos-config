@@ -44,6 +44,12 @@ in
         tree
       ];
 
+      # > 4
+      security.pki.caCertificateBlacklist = [
+        "Comodo AAA Services root"
+        "emSign ECC Root CA - G3"
+      ];
+
       # Select internationalisation properties.
       console.useXkbConfig = true;
 
