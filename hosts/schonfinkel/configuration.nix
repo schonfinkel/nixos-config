@@ -240,6 +240,7 @@ in
 
   hostModules.yggdrasil = {
     enable = true;
+    controlUsers = [ "mbenevides" ];
   };
 
   # See `man configuration.nix` or

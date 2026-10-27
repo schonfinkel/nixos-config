@@ -182,6 +182,14 @@
     username = "mbenevides";
   };
 
+  hostModules.yggdrasil = {
+    enable = true;
+    controlUsers = [ "mbenevides" ];
+    # Its own identity (203:2771:c078:b6e8:eda9:9a40:4785:e914): the default
+    # key belongs to schonfinkel, and two nodes cannot share an address.
+    privateKeySecret = "buzz_yggdrasil_euclid_pk";
+  };
+
   hostModules.ssh = {
     enable = true;
     allowUsers = [ "mbenevides" ];

@@ -22,6 +22,21 @@ let
   jumpcloud = osConfig.hostModules.jumpcloud or { };
   vpnProfiles = if jumpcloud.enable or false then jumpcloud.profiles else [ ];
   vpnEnabled = vpnProfiles != [ ];
+
+  # Mesh status and peer management from the local mbenevides/yggdrasil
+  # plugin, when the host enables hostModules.yggdrasil. Known nodes are
+  # labelled from the host's networking.hosts, keeping only mesh addresses
+  # (200::/7: 2xx: nodes and 3xx: subnets).
+  yggEnabled = osConfig.hostModules.yggdrasil.enable or false;
+  isYggAddress = address: builtins.match "[23][0-9a-f]{2}:.*" address != null;
+  yggNames = lib.concatLists (
+    lib.mapAttrsToList (address: hostNames: map (name: "${address}=${name}") hostNames) (
+      lib.filterAttrs (address: _: isYggAddress address) (osConfig.networking.hosts or { })
+    )
+  );
+
+  localPlugins =
+    lib.optional vpnEnabled "mbenevides/vpn" ++ lib.optional yggEnabled "mbenevides/yggdrasil";
 in
 {
   # programs.noctalia comes from Home Manager itself. The noctalia flake's
@@ -95,6 +110,7 @@ in
               "network"
             ]
             ++ lib.optional vpnEnabled "vpn"
+            ++ lib.optional yggEnabled "yggdrasil"
             ++ [
               "cpu"
               "ram"
@@ -135,21 +151,33 @@ in
         }
         // lib.optionalAttrs vpnEnabled {
           vpn.type = "mbenevides/vpn:menu";
+        }
+        // lib.optionalAttrs yggEnabled {
+          yggdrasil.type = "mbenevides/yggdrasil:menu";
         };
 
-        plugin_settings = mkIf vpnEnabled {
-          "mbenevides/vpn" = {
-            profiles = vpnProfiles;
-            # Drop the panel down from the bar, next to the icon.
-            panel_placement = "attached";
-            panel_open_near_click = true;
-          };
-        };
+        # Both panels drop down from the bar, next to their icon.
+        plugin_settings = mkIf (localPlugins != [ ]) (
+          lib.optionalAttrs vpnEnabled {
+            "mbenevides/vpn" = {
+              profiles = vpnProfiles;
+              panel_placement = "attached";
+              panel_open_near_click = true;
+            };
+          }
+          // lib.optionalAttrs yggEnabled {
+            "mbenevides/yggdrasil" = {
+              names = yggNames;
+              panel_placement = "attached";
+              panel_open_near_click = true;
+            };
+          }
+        );
 
-        # A `path` source is read-only to Noctalia, so the plugin lives in the
-        # store and is updated by rebuilding, not by Noctalia's git updater.
-        plugins = mkIf vpnEnabled {
-          enabled = [ "mbenevides/vpn" ];
+        # A `path` source is read-only to Noctalia, so the plugins live in the
+        # store and are updated by rebuilding, not by Noctalia's git updater.
+        plugins = mkIf (localPlugins != [ ]) {
+          enabled = localPlugins;
           source = [
             {
               name = "local-nix";
