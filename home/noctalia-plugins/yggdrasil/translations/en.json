@@ -1,0 +1,4 @@
+{
+  "settings.names.label": "Node names",
+  "settings.names.description": "Labels for known Yggdrasil addresses, one \"<address>=<name>\" per entry."
+}
