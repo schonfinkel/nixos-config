@@ -45,7 +45,6 @@ in
 
     # Virtualisation
     ../../virtualisation/docker.nix
-    ../../virtualisation/waydroid.nix
   ];
 
   # Bootloader (UEFI). profiles/disko/ext4_ephemeral.nix also lays down a BIOS
