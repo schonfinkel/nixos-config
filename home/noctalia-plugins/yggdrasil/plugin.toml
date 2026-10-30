@@ -1,0 +1,45 @@
+# Yggdrasil mesh status and peer management behind a single bar icon: a
+# service polls `yggdrasilctl -json getSelf/getPeers`, the bar widget
+# summarises them, and clicking it opens a panel with the node address and
+# one row per peer, plus a field to add runtime peers. Wired up by
+# home/noctalia.nix, which adds this directory as a read-only `path` plugin
+# source when hostModules.yggdrasil is on. The admin socket needs membership
+# in the `yggdrasil` group (hostModules.yggdrasil.controlUsers).
+
+id = "mbenevides/yggdrasil"
+name = "Yggdrasil"
+version = "1.0.0"
+# 24 = direct-argv: runAsync with an argument array.
+plugin_api = 24
+author = "mbenevides"
+license = "GPL-3.0-only"
+icon = "topology-star-3"
+description = "Yggdrasil node address, peer telemetry and runtime peer add/remove (yggdrasilctl)."
+dependencies = ["yggdrasilctl"]
+
+# Labels for known nodes, filled from networking.hosts by home/noctalia.nix.
+[[setting]]
+key = "names"
+type = "string_list"
+label_key = "settings.names.label"
+description_key = "settings.names.description"
+default = []
+
+# Polls yggdrasilctl and publishes the result as state.
+[[service]]
+id = "poller"
+entry = "poller.luau"
+
+# The bar icon. Click opens the panel.
+[[widget]]
+id = "menu"
+entry = "menu.luau"
+
+# Node details, peers and the add-peer field.
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 420
+height = 460
+placement = "attached"
+open_near_click = true

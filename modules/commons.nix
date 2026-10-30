@@ -35,7 +35,7 @@ in
   };
 
   config = mkIf cfg.enable (mkMerge [
-    ({
+    {
       # Default system packages
       environment.systemPackages = with pkgs; [
         brightnessctl
@@ -75,6 +75,6 @@ in
       # Easiest to use and most distros use this by default.
       networking.networkmanager.enable = true;
 
-    })
+    }
   ]);
 }

@@ -245,39 +245,95 @@ let
     render = renderOpencode;
   };
 
+  claudeRenderers = {
+    personal = claudePersonalRenderer;
+    work = claudeWorkRenderer;
+  };
+
+  # Renders Claude's MCP config for the given profiles (default: all) to a
+  # stable per-profile path in the runtime dir, printing each path written.
+  # The path must be stable: Claude Code background jobs store their launch
+  # flags (including --mcp-config) and respawn with them later, outside
+  # `ccp`, so a per-launch temp file breaks them once it is gone. Writes are
+  # atomic so a respawning session never reads a partial file; on failure the
+  # previous file is kept and the script exits non-zero.
+  claudeMcp = pkgs.writeShellApplication {
+    name = "llms-claude-mcp";
+    runtimeInputs = [ pkgs.coreutils ];
+    text = ''
+      dir="''${XDG_RUNTIME_DIR:-/tmp}/llms-mcp"
+      mkdir -p "$dir"
+      chmod 700 "$dir"
+
+      render() { # $1 profile, $2 renderer
+        local target="$dir/claude-$1.json" tmp
+        tmp="$(mktemp "$dir/.claude-$1.XXXXXX")"
+        if "$2" > "$tmp" 2>/dev/null; then
+          chmod 600 "$tmp"
+          mv -f "$tmp" "$target"
+          echo "$target"
+        else
+          rm -f "$tmp"
+          echo "llms-claude-mcp: could not render $target (agenix secrets unreadable?)" >&2
+          return 1
+        fi
+      }
+
+      [ "$#" -gt 0 ] || set -- ${lib.concatStringsSep " " (lib.attrNames claudeRenderers)}
+      status=0
+      for profile in "$@"; do
+        case "$profile" in
+          ${lib.concatStrings (
+            lib.mapAttrsToList (name: renderer: ''
+              ${name}) render ${name} ${renderer} || status=1 ;;
+            '') claudeRenderers
+          )}
+          *)
+            echo "llms-claude-mcp: unknown profile '$profile'" >&2
+            status=2
+            ;;
+        esac
+      done
+      exit "$status"
+    '';
+  };
+
   # `ccp` is the custom-Claude-profile wrapper. The active profile comes from
   # CLAUDE_CONFIG_DIR (set per project via the direnv `claude_profile` helper
   # below); it defaults to the personal profile. Work MCPs load only under
   # the work profile; personal MCPs (secret-free) load everywhere.
   ccp = pkgs.writeShellApplication {
     name = "ccp";
-    runtimeInputs = [ pkgs.jq ];
+    runtimeInputs = [
+      pkgs.jq
+      claudeMcp
+      agents.claude-code
+    ];
     text = ''
       profile="''${CLAUDE_CONFIG_DIR:-${cfg.profiles.personal}}"
-      renderer="${claudePersonalRenderer}"
+      name=personal
       if [ "$profile" = "${cfg.profiles.work}" ]; then
-        renderer="${claudeWorkRenderer}"
+        name=work
       fi
       export CLAUDE_CONFIG_DIR="$profile"
 
-      mcp_config="$(mktemp "''${XDG_RUNTIME_DIR:-/tmp}/llms-mcp.XXXXXX")"
-      if ! "$renderer" > "$mcp_config" 2>/dev/null; then
-        rm -f "$mcp_config"
-        echo "ccp: could not render MCP config (agenix secrets unreadable?); starting without MCPs" >&2
-        exec ${agents.claude-code}/bin/claude "$@"
+      # Re-rendered on every launch so rotated secrets are picked up.
+      if ! mcp_config="$(llms-claude-mcp "$name")"; then
+        echo "ccp: could not render MCP config; starting without MCPs" >&2
+        exec claude "$@"
       fi
-      chmod 600 "$mcp_config"
 
       if jq -e '.mcpServers | length > 0' "$mcp_config" > /dev/null 2>&1; then
-        exec ${agents.claude-code}/bin/claude --mcp-config "$mcp_config" "$@"
+        exec claude --mcp-config "$mcp_config" "$@"
       fi
-      rm -f "$mcp_config"
-      exec ${agents.claude-code}/bin/claude "$@"
+      exec claude "$@"
     '';
   };
 
-  # Codex keeps its non-secret servers in ~/.codex/config.toml (store
-  # symlink). Servers with secrets are injected per invocation: the URL via
+  # Codex keeps its non-secret servers in ~/.codex/config.toml. Codex also
+  # writes its own state there (project trust, model, TUI flags), so the file
+  # stays a real file and activation only replaces its `mcp_servers` table
+  # (see codexActivation). Servers with secrets are injected per invocation: the URL via
   # `codex -c` and header values via env_http_headers, whose values codex
   # reads from the exported environment. Nothing secret hits the store.
   codexConfigToml =
@@ -364,6 +420,38 @@ let
     }
   '';
 
+  # Merges the declarative `mcp_servers` table into ~/.codex/config.toml,
+  # keeping everything Codex wrote itself. Earlier generations symlinked the
+  # file into the store; that link is replaced, seeding from config.toml.bkp
+  # (the pre-symlink copy) when present.
+  codexActivation =
+    let
+      codexDir = "${config.home.homeDirectory}/.codex";
+      toml2json = "${pkgs.remarshal}/bin/toml2json";
+      json2toml = "${pkgs.remarshal}/bin/json2toml";
+      jq = lib.getExe pkgs.jq;
+    in
+    ''
+      codex_config="${codexDir}/config.toml"
+      $DRY_RUN_CMD ${pkgs.coreutils}/bin/mkdir -p "${codexDir}"
+      if [ -L "$codex_config" ]; then
+        $DRY_RUN_CMD rm -f "$codex_config"
+      fi
+      if [ ! -e "$codex_config" ] && [ -f "${codexDir}/config.toml.bkp" ]; then
+        $DRY_RUN_CMD ${pkgs.coreutils}/bin/install -m 600 "${codexDir}/config.toml.bkp" "$codex_config"
+      fi
+      tmp="$(mktemp)"
+      if { if [ -f "$codex_config" ]; then ${toml2json} "$codex_config"; else echo '{}'; fi; } \
+          | ${jq} --argjson managed "$(${toml2json} ${codexConfigToml})" \
+            '.mcp_servers = $managed.mcp_servers' \
+          | ${json2toml} > "$tmp" 2>/dev/null; then
+        $DRY_RUN_CMD ${pkgs.coreutils}/bin/install -m 600 "$tmp" "$codex_config"
+      else
+        echo "llms: skipped $codex_config (could not merge existing TOML)" >&2
+      fi
+      rm -f "$tmp"
+    '';
+
   aiMemoryActivation =
     let
       aiMemory = lib.getExe cfg.aiMemory.package;
@@ -413,7 +501,7 @@ in
       codex = mkOption {
         type = types.bool;
         default = true;
-        description = "Install Codex CLI, its declarative config.toml and the `codexw` wrapper.";
+        description = "Install Codex CLI, merge MCP servers into its config.toml and add the `codexw` wrapper.";
       };
       cursor = mkOption {
         type = types.bool;
@@ -529,10 +617,6 @@ in
         ++ (serverAssertions "personalMcpServers" cfg.personalMcpServers);
     }
 
-    (mkIf (cfg.clients.codex && safeServers != { }) {
-      home.file.".codex/config.toml".source = codexConfigToml;
-    })
-
     {
       # Cursor (symlink-intolerant) and OpenCode (needs secret URL inline)
       # get real files rendered during Home Manager activation. Only touched
@@ -540,6 +624,7 @@ in
       # but an empty MCP set keep their files untouched.
       home.activation.llmsMcpConfigs = lib.hm.dag.entryAfter [ "writeBoundary" ] (
         mcpActivation
+        + (lib.optionalString (cfg.clients.codex && safeServers != { }) codexActivation)
         + (lib.optionalString (cfg.clients.cursor && allServers != { }) ''
           $DRY_RUN_CMD ${pkgs.coreutils}/bin/mkdir -p "${config.home.homeDirectory}/.cursor"
           render "${cursorRenderer}" "${config.home.homeDirectory}/.cursor/mcp.json"
@@ -550,6 +635,21 @@ in
         '')
       );
     }
+
+    # The runtime dir is wiped on logout/reboot; re-render Claude's MCP
+    # configs at login so background jobs respawned before any `ccp` launch
+    # still find their --mcp-config file.
+    (mkIf cfg.clients.claude {
+      systemd.user.services.llms-claude-mcp = {
+        Unit.Description = "Render Claude Code MCP configs into the runtime dir";
+        Service = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStart = lib.getExe claudeMcp;
+        };
+        Install.WantedBy = [ "default.target" ];
+      };
+    })
 
     (mkIf cfg.aiMemory.enable {
       home.activation.llmsAiMemory = lib.hm.dag.entryAfter [ "llmsMcpConfigs" ] aiMemoryActivation;

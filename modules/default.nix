@@ -12,5 +12,6 @@
     ./noctalia.nix
     ./themes.nix
     ./ssh.nix
+    ./yggdrasil.nix
   ];
 }

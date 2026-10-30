@@ -45,7 +45,6 @@ in
 
     # Virtualisation
     ../../virtualisation/docker.nix
-    ../../virtualisation/waydroid.nix
   ];
 
   # Bootloader (UEFI). profiles/disko/ext4_ephemeral.nix also lays down a BIOS
@@ -61,8 +60,6 @@ in
   boot.kernel.sysctl = {
     "kernel.sysrq" = 128;
   };
-
-  boot.initrd.systemd.enable = true;
 
   # impermanence builds its bind mounts in stage 1, so every persistence root
   # has to be mounted by then. /persist additionally carries the agenix identity
@@ -238,6 +235,11 @@ in
 
   hostModules.themes = {
     enable = true;
+  };
+
+  hostModules.yggdrasil = {
+    enable = true;
+    controlUsers = [ "mbenevides" ];
   };
 
   # See `man configuration.nix` or

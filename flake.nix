@@ -66,9 +66,14 @@
 
     # MCP server exposing nixos.wiki + nixpkgs/Home Manager option search to
     # coding agents. Wired as a personal stdio MCP in home/llms.nix.
+    #
+    # TODO(upstream): restore `inputs.nixpkgs.follows = "nixpkgs"` once
+    # utensils/mcp-nixos fixes the fastmcp4.nix keepMcp fixpoint recursion
+    # against nixpkgs shipping mcp >= 2 alongside mcp-types (nixos-unstable
+    # >= 3ec636362e18).
     mcp-nixos = {
       url = "github:utensils/mcp-nixos";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.url = "github:NixOS/nixpkgs/fe13242281a67641c0102cdb1087f0ebe586c7df";
     };
 
     nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst";

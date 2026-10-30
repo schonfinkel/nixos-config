@@ -19,7 +19,10 @@
   # system-wide after the next switch; flake.nix carries the same values for
   # builds run with --accept-flake-config before then.
   nix.settings = {
-    trusted-users = [ "mbenevides" "root" ];
+    trusted-users = [
+      "mbenevides"
+      "root"
+    ];
     substituters = [
       "https://noctalia.cachix.org"
       "https://cache.numtide.com"
