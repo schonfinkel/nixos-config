@@ -182,6 +182,11 @@
     username = "mbenevides";
   };
 
+  hostModules.onepassword = {
+    enable = true;
+    polkitPolicyOwners = [ "mbenevides" ];
+  };
+
   hostModules.yggdrasil = {
     enable = true;
     controlUsers = [ "mbenevides" ];

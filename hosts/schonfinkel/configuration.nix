@@ -228,6 +228,11 @@ in
     user = "mbenevides";
   };
 
+  hostModules.onepassword = {
+    enable = true;
+    polkitPolicyOwners = [ "mbenevides" ];
+  };
+
   hostModules.ssh = {
     enable = true;
     allowUsers = [ "mbenevides" ];
