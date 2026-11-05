@@ -95,6 +95,14 @@ in
 
       manual.manpages.enable = true;
 
+      # Keep pytest's tmp_path/tmpdir out of /tmp: on a tmpfs root, leftover
+      # pytest-of-$USER runs can fill RAM and break unrelated tools (SQLite,
+      # nix-collect-garbage). The relative --basetemp lands in the directory
+      # pytest is run from (normally the repo root); pytest wipes it at the
+      # start of every run, so only the latest run is kept. A project's own
+      # --basetemp on the command line still wins, since it comes later.
+      home.sessionVariables.PYTEST_ADDOPTS = "--basetemp=.pytest_tmp";
+
       programs.direnv = {
         enable = true;
         enableZshIntegration = true;
@@ -141,6 +149,9 @@ in
           ".devenv"
           ".direnv"
           ".pre-commit-config.yaml"
+
+          # pytest basetemp (see PYTEST_ADDOPTS above)
+          ".pytest_tmp"
         ];
 
         settings = {
