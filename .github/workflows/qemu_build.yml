@@ -44,8 +44,14 @@ jobs:
         with:
           hatchet-protocol: 'rampage'
 
+      # nothing-but-nix exports TMPDIR=/nix/tmp/..., but the multi-user
+      # installer takes ownership of /nix while setting it up, which locks the
+      # runner out of its own unpack dir there. Unpack outside /nix instead;
+      # later steps still get the /nix/tmp TMPDIR.
       - name: Install Nix
         uses: cachix/install-nix-action@v31
+        env:
+          TMPDIR: ${{ runner.temp }}
         with:
           # Mostly to avoid GitHub rate limiting
           extra_nix_config: |
