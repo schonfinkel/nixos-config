@@ -27,6 +27,10 @@ in
   };
 
   config = mkIf cfg.enable {
+    environment.etc."1password/custom_allowed_browsers".text = ''
+      firefox
+    '';
+
     # The setgid (onepassword-cli) wrapper the desktop app talks to.
     programs._1password.enable = true;
 

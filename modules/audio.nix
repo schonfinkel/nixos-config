@@ -25,6 +25,7 @@ in
       environment.systemPackages = with pkgs; [
         flac
         pavucontrol
+        pipewire.jack
       ];
 
       # Enable sound.
@@ -35,7 +36,6 @@ in
         alsa.enable = true;
         alsa.support32Bit = true;
         pulse.enable = true;
-        jack.enable = true;
       };
 
     })

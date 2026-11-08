@@ -37,6 +37,10 @@
     enable = true;
   };
 
+  homeModules.firefox = {
+    enable = true;
+  };
+
   homeModules.hyprland = {
     enable = true;
     # TODO: adjust once the real outputs are known (`hyprctl monitors`).

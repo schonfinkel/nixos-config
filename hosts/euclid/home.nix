@@ -36,6 +36,10 @@
     enable = true;
   };
 
+  homeModules.firefox = {
+    enable = true;
+  };
+
   homeModules.hyprland = {
     enable = true;
     monitors = [
