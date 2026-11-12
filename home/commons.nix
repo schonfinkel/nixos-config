@@ -21,7 +21,6 @@ in
     home.pointerCursor.enable = true;
 
     home.packages = with pkgs; [
-      brave
       curl
       croc
       dig

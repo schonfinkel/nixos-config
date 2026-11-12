@@ -24,4 +24,7 @@
       docker-compose
     ]
   );
+
+  # fakecloud needs this to emulate some services
+  networking.firewall.trustedInterfaces = [ "docker0" ];
 }

@@ -187,14 +187,8 @@ in
       pkgs.networkmanager-openvpn
     ];
 
-    # Shouldn't be really here, but no better place to put this yet
-    programs._1password = {
-      enable = true;
-    };
-
-    programs._1password-gui = {
-      enable = true;
-    };
+    # `jumpcloud-aws` reads its credentials with `op`.
+    hostModules.onepassword.enable = lib.mkDefault true;
 
     # openvpn3's netcfg service (v27.1) dies on startup without
     # org.freedesktop.resolve1, even with `systemd_resolved = false`. With

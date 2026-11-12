@@ -7,6 +7,7 @@
     ./chats.nix
     ./commons.nix
     ./emacs.nix
+    ./firefox.nix
     ./ghostty.nix
     ./hyprland.nix
     ./llms.nix

@@ -500,7 +500,7 @@ in
       };
       codex = mkOption {
         type = types.bool;
-        default = true;
+        default = false;
         description = "Install Codex CLI, merge MCP servers into its config.toml and add the `codexw` wrapper.";
       };
       cursor = mkOption {

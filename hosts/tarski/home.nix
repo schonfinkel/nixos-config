@@ -37,6 +37,10 @@
     enable = true;
   };
 
+  homeModules.firefox = {
+    enable = true;
+  };
+
   homeModules.ghostty = {
     enable = true;
   };

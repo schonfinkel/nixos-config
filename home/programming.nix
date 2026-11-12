@@ -267,12 +267,25 @@ in
       # Declaratively configure SSH Host alias and force IdentitiesOnly
       programs.ssh = {
         enable = true;
-        matchBlocks = {
+        enableDefaultConfig = false;
+        settings = {
           "github.com-work" = {
-            hostname = "github.com";
-            user = "git";
-            identitiesOnly = true;
-            identityFile = "~/.ssh/work_github.pub";
+            HostName = "github.com";
+            User = "git";
+            IdentitiesOnly = true;
+            IdentityFile = "~/.ssh/work_github.pub";
+          };
+          "*" = {
+            ForwardAgent = false;
+            AddKeysToAgent = "no";
+            Compression = false;
+            ServerAliveInterval = 0;
+            ServerAliveCountMax = 3;
+            HashKnownHosts = false;
+            UserKnownHostsFile = "~/.ssh/known_hosts";
+            ControlMaster = "no";
+            ControlPath = "~/.ssh/master-%r@%n:%p";
+            ControlPersist = "no";
           };
         };
       };

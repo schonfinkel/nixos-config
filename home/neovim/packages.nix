@@ -95,6 +95,7 @@ in
   ];
   prv = with private; [ vim-taskjuggler ];
   tooling = with plugins; [
+    diffview-nvim
     direnv-vim
     gitsigns-nvim
     Ionide-vim

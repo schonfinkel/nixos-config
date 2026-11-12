@@ -10,6 +10,7 @@
     ./impermanence.nix
     ./jumpcloud.nix
     ./noctalia.nix
+    ./onepassword.nix
     ./themes.nix
     ./ssh.nix
     ./yggdrasil.nix
