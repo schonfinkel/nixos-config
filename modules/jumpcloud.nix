@@ -127,18 +127,26 @@ let
       # Default to staging if no flag is provided
       target_env=''${target_env:-stag}
       case "$target_env" in
-        stag) idp_account=$(< ${config.age.secrets.${idpSecretName "staging"}.path}) ;;
-        prod) idp_account=$(< ${config.age.secrets.${idpSecretName "prod"}.path}) ;;
+        stag)
+          idp_account=$(< ${config.age.secrets.${idpSecretName "staging"}.path})
+          username_item=${lib.escapeShellArg cfg.onePassword.stagingUsernameItem}
+          ;;
+        prod)
+          idp_account=$(< ${config.age.secrets.${idpSecretName "prod"}.path})
+          username_item=${lib.escapeShellArg cfg.onePassword.prodUsernameItem}
+          ;;
       esac
 
-      SAML2AWS_USERNAME=$(op read "op://${cfg.onePassword.vault}/${cfg.onePassword.item}/username")
+      SAML2AWS_USERNAME=$(op read "op://${cfg.onePassword.vault}/$username_item/username")
       SAML2AWS_PASSWORD=$(op read "op://${cfg.onePassword.vault}/${cfg.onePassword.item}/password")
       SAML2AWS_MFA_TOKEN=$(op item get "${cfg.onePassword.item}" --vault "${cfg.onePassword.vault}" --otp)
       export SAML2AWS_USERNAME SAML2AWS_PASSWORD SAML2AWS_MFA_TOKEN
 
       echo "Connecting with SAML as $SAML2AWS_USERNAME for environment: $target_env"
 
-      saml2aws login --idp-account="$idp_account" --force
+      # 1Password supplies the credentials above; don't look them up or save
+      # them in the Linux keyring, or prompt again while the TOTP expires.
+      saml2aws login --idp-account="$idp_account" --force --disable-keychain --skip-prompt
     '';
   };
 in
@@ -173,7 +181,19 @@ in
       item = mkOption {
         type = lib.types.str;
         default = "JumpCloud";
-        description = "1Password item (username, password and OTP) used by `jumpcloud-aws`.";
+        description = "1Password item holding the password and OTP used by `jumpcloud-aws`.";
+      };
+
+      stagingUsernameItem = mkOption {
+        type = lib.types.str;
+        default = "AWS_STAGING";
+        description = "1Password item holding the staging AWS username used by `jumpcloud-aws`.";
+      };
+
+      prodUsernameItem = mkOption {
+        type = lib.types.str;
+        default = "AWS_PROD";
+        description = "1Password item holding the production AWS username used by `jumpcloud-aws`.";
       };
     };
   };
