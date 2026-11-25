@@ -33,6 +33,8 @@ in
       ghostty.enable = true;
       neovim.enable = true;
       noctalia.enable = true;
+      # This is breaking my build
+      wayprompt.enable = false;
     };
   };
 }
