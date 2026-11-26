@@ -182,6 +182,11 @@
     username = "mbenevides";
   };
 
+  hostModules.jumpcloud = {
+    enable = true;
+    user = "mbenevides";
+  };
+
   hostModules.onepassword = {
     enable = true;
     polkitPolicyOwners = [ "mbenevides" ];

@@ -90,12 +90,22 @@ in
         personal = {
           id = 0;
           isDefault = true;
-          storeId = "9c7ec49f";
+          # Both profiles share one StoreID so they land in the same Firefox
+          # "profile group" and the GUI switcher lists them together.
+          # home-manager's `storeId` option rejects duplicates, so set the group
+          # ID through the pref directly.
+          settings = {
+            "browser.profiles.enabled" = true;
+            "toolkit.profiles.storeID" = "9c7ec49f";
+          };
         };
         work = {
           id = 1;
           isDefault = false;
-          storeId = "8ae87879";
+          settings = {
+            "browser.profiles.enabled" = true;
+            "toolkit.profiles.storeID" = "9c7ec49f";
+          };
         };
       };
     };
