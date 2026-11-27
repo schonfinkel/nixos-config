@@ -49,7 +49,7 @@ jobs:
       # runner out of its own unpack dir there. Unpack outside /nix instead;
       # later steps still get the /nix/tmp TMPDIR.
       - name: Install Nix
-        uses: cachix/install-nix-action@v31
+        uses: cachix/install-nix-action@v32
         env:
           TMPDIR: ${{ runner.temp }}
         with:
